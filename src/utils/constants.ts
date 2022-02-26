@@ -1,6 +1,6 @@
 import { createTheme } from "@mui/material";
 
-export const VERSION = "0.0.2b";
+export const VERSION = "0.0.3b";
 
 // API
 export const DEV_MODE = process.env.NODE_ENV === "development";
@@ -24,6 +24,7 @@ export const SOURCE_URL = "https://github.com/jukebox42/raidinator";
 export const ASSET_URL = "https://www.bungie.net";
 export const API_URL = `${ASSET_URL}/platform`;
 export const LASER_SOUNDS_URL =  `${ASSET_URL}/en/ClanV2/Index?groupId=221919`;
+export const LIGHT_GG_URL = "https://www.light.gg/db/items/";
 export const BUNGIE_API_URLS = {
   SEARCH_USER: `${API_URL}/User/Search/GlobalName/{page}/`,
   GET_USER_BY_ID: `${API_URL}/User/GetMembershipsById/{membershipId}/254/`,

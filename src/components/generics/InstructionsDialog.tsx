@@ -54,6 +54,10 @@ const InstructionsDialog = ({ onClose, open = false }: InstructionsDialogProps) 
             <ListItemIcon><TouchAppIcon /></ListItemIcon>
             <ListItemText>Tap mods to view name.</ListItemText>
           </ListItem>
+          <ListItem>
+            <ListItemIcon><TouchAppIcon /></ListItemIcon>
+            <ListItemText>Double tap equipment to open light.gg.</ListItemText>
+          </ListItem>
         </List>
       </DialogContent>
     </Dialog>

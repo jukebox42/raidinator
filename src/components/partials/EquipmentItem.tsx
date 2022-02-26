@@ -7,6 +7,7 @@ import { getAssetUrl } from "../../utils/functions";
 
 // Interfaces
 import * as BI from "../../bungie/interfaces";
+import { LIGHT_GG_URL } from "../../utils/constants";
 
 interface EquipmentItemProps {
   itemDefinition: BI.Destiny.Definitions.DestinyInventoryItemDefinition;
@@ -41,6 +42,7 @@ const buildClassString = (itemInstance: BI.Destiny.Entities.Items.DestinyItemCom
 }
 
 const EquipmentItem = ( {itemDefinition, itemInstance, itemInstanceDetails, damageTypes, energyTypes}: EquipmentItemProps ) => {
+  const [clickCount, setClickCount] = useState(0);
   const isWeapon = itemDefinition.traitIds.includes("item_type.weapon");
   const isArmor = itemDefinition.traitIds.includes("item_type.armor");
   const isExoticArmor = itemDefinition.equippingBlock.uniqueLabel === "exotic_armor";
@@ -65,11 +67,45 @@ const EquipmentItem = ( {itemDefinition, itemInstance, itemInstanceDetails, dama
     return et.hash === itemInstanceDetails.damageTypeHash;
   });
 
+  const itemUrl = `${LIGHT_GG_URL}${itemDefinition.hash}`;
+
+  const onClick = (e: any) => {
+    setClickCount(clickCount + 1);
+  }
+
+  // handle open in new window
+  useEffect(() => {
+    if (clickCount === 0) {
+      return;
+    }
+
+    // on the first click set a timeout
+    if (clickCount === 1) {
+      setTimeout(() => {
+        setClickCount(0);
+      }, 200);
+      return;
+    }
+
+    setClickCount(0);
+    window.open(itemUrl, '_blank')
+  }, [clickCount])
+
   return (
-    <Paper key={itemInstance.itemInstanceId} elevation={0} className={classes}>
+    <Paper
+      key={itemInstance.itemInstanceId}
+      elevation={0}
+      className={classes}
+      onClick={onClick}
+    >
       <img src={getAssetUrl(itemDefinition.displayProperties.icon)} className="icon" />
-      <img src={getAssetUrl(itemDefinition.quality.displayVersionWatermarkIcons[itemInstance.versionNumber])} className="icon" />
-      {elementType?.displayProperties.hasIcon && <img src={getAssetUrl(elementType.displayProperties.icon)} className="icon-element"/>}
+      <img
+        src={getAssetUrl(itemDefinition.quality.displayVersionWatermarkIcons[itemInstance.versionNumber])}
+        className="icon"
+
+      />
+      {elementType?.displayProperties.hasIcon &&
+        <img src={getAssetUrl(elementType.displayProperties.icon)} className="icon-element"/>}
     </Paper>
   )
 }
