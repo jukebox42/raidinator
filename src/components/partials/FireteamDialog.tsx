@@ -25,13 +25,13 @@ interface CardData {
 }
 
 interface FireteamDialogProps {
-  isOpen: boolean;
+  open: boolean;
   player: PlayerData | null;
   onLoadFireteam: (guardians: CardData[]) => void;
   onClose: () => void;
 }
 
-const FireteamDialog = ({ onLoadFireteam, onClose, player, isOpen = false }: FireteamDialogProps) => {
+const FireteamDialog = ({ onLoadFireteam, onClose, player, open = false }: FireteamDialogProps) => {
   const [fetchingFireteam, setFetchingFireteam] = useState(false);
 
   const fetchFireteam = async () => {
@@ -87,7 +87,7 @@ const FireteamDialog = ({ onLoadFireteam, onClose, player, isOpen = false }: Fir
   }
 
   return (
-    <Dialog open={isOpen} onClose={onClose}>
+    <Dialog open={open} onClose={onClose}>
       <DialogTitle>
         Load Active Fireteam For {player ? player.bungieGlobalDisplayName : ""}#
         {player ? player.bungieGlobalDisplayNameCode : ""}?

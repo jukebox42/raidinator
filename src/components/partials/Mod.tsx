@@ -12,7 +12,6 @@ import { getAssetUrl } from "../../utils/functions";
 // Interfaces
 import * as BI from "../../bungie/interfaces"
 
-
 interface ModProps {
   plug: BI.Destiny.Definitions.DestinyInventoryItemDefinition;
 }

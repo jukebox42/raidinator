@@ -241,7 +241,7 @@ function App() {
       <FireteamDialog
         player={fireteamDialogPlayer}
         onClose={() => setFireteamDialogOpen(false)}
-        isOpen={fireteamDialogOpen}
+        open={fireteamDialogOpen}
         onLoadFireteam={(fireteamPlayers) => onLoadFireteam(fireteamPlayers)} />
     </ThemeProvider>
   );
