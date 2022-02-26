@@ -141,7 +141,7 @@ const FindPlayer = ({ onFoundPlayer, cardKey, onDelete }: FindPlayerProps) => {
             onChange={async (event: any, newValue: PlayerData | null) => {
               if (newValue) {
                 await db.putSearchResult(newValue); // store player in search table.
-                onFoundPlayer(newValue, cardKey); // pass the found player back to the app for processing.
+                onFoundPlayer(newValue, cardKey); // pass the found player back to the app
               }
             }}
             getOptionLabel={(option) => option.membershipId.toString()}

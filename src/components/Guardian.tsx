@@ -85,6 +85,11 @@ const Guardian = ( { playerId, cardKey, onDelete, onLoadFireteam }: GuardianProp
       characterPlugSets: BI.Destiny.Components.PlugSets.DestinyPlugSetsComponent,
     ) => setGuardian({character, inventory, itemComponents, characterPlugSets});
 
+  const changeCharacter = () => {
+    setGuardian(null);
+    setCachedGuardianId("");
+  }
+
   return (
     <TouchCard
       className="guardianCard"
@@ -94,9 +99,18 @@ const Guardian = ( { playerId, cardKey, onDelete, onLoadFireteam }: GuardianProp
       <CardContent sx={{ p: 0, pb: "0px !important" }}>
         {loading && <Box sx={{ p: 0 }}><Loading marginTop="48px" /></Box>}
         {!loading && player && !guardian && loadedCachedPlayer &&
-          <PickGuardian player={player} guardianId={cachedGuardianId} pickedGuardian={pickedGuardian}/>}
+          <PickGuardian
+            player={player}
+            guardianId={cachedGuardianId}
+            pickedGuardian={pickedGuardian}
+          />}
         {!loading && player && guardian && guardian.character.light &&
-          <DisplayGuardian player={player} guardian={guardian} onLoadFireteam={() => onLoadFireteam(player)} />}
+          <DisplayGuardian
+            player={player}
+            guardian={guardian}
+            onLoadFireteam={() => onLoadFireteam(player)}
+            onChangeCharacter={changeCharacter}
+          />}
       </CardContent>
     </TouchCard>
   );

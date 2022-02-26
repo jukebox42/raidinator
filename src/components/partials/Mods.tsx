@@ -1,8 +1,10 @@
+// UNUSED, Needed to get stats on equipped super
 import React, { useState, useEffect, useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
-  Stack,
   Paper,
+  Stack,
+  Tooltip,
 } from "@mui/material";
 
 import db from "../../store/db";

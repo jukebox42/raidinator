@@ -31,10 +31,11 @@ import * as BI from "../../bungie/interfaces/";
 interface DisplayGuardianProps {
   player: PlayerData;
   guardian: GuardianData;
-  onLoadFireteam: () => void
+  onChangeCharacter: () => void;
+  onLoadFireteam: () => void;
 }
 
-const DisplayGuardian = ( { player, guardian, onLoadFireteam }: DisplayGuardianProps ) => {
+const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam }: DisplayGuardianProps ) => {
   const [damageTypes, setDamageTypes] = useState<BI.Destiny.Definitions.DestinyDamageTypeDefinition[]>([]);
   const [energyTypes, setEnergyTypes] = useState<BI.Manifest.DestinyEnergyType[]>([]);
   const [statTypes, setStatTypes] = useState<BI.Manifest.DestinyStatType[]>([]);
@@ -69,18 +70,26 @@ const DisplayGuardian = ( { player, guardian, onLoadFireteam }: DisplayGuardianP
   }
 
   const subclassDefinition = itemDefinitions.find(itemDefinition => isSubClass(itemDefinition));
-  const subclassInstance = guardian.inventory.items.find(gi => gi.itemHash === subclassDefinition?.hash);
+  const subclassInstance = guardian.inventory.items.find(
+    gi => gi.itemHash === subclassDefinition?.hash);
 
   return (
     <>
       <Box sx={{p:0, m:0, ml: 1, display: "flex", flexDirection: "row"}}>
-        <img src={getAssetUrl(guardian.character.emblemPath)} className="icon-emblem"/>
+        <img
+          src={getAssetUrl(guardian.character.emblemPath)}
+          className="icon-emblem"
+          onClick={onChangeCharacter}
+        />
         <Box sx={{ flexGrow: 1 }}>
           <PlayerName player={player} />
           <CharacterStats stats={guardian.character.stats} statTypes={statTypes} />
         </Box>
         <Box sx={{ display: "flex", m: 1, mb: 0 }}>
-          <img src={getAssetUrl(lightStatType.displayProperties.icon)} className="icon-light invert" />
+          <img
+            src={getAssetUrl(lightStatType.displayProperties.icon)}
+            className="icon-light invert"
+          />
           <Typography variant="subtitle1" sx={{ mt: "-3px" }}>
             {guardian.character.light}
           </Typography>
@@ -96,10 +105,13 @@ const DisplayGuardian = ( { player, guardian, onLoadFireteam }: DisplayGuardianP
           if (!itemDefinition.traitIds || !shouldDisplayEquipmentItem(itemDefinition)) {
             return;
           }
-          const itemInstance = guardian.inventory.items.find(gi => gi.itemHash === itemDefinition.hash);
-          const itemInstanceDetails = guardian.itemComponents.instances.data[(itemInstance as any).itemInstanceId];
+          const itemInstance = guardian.inventory.items.find(
+            gi => gi.itemHash === itemDefinition.hash);
+          const itemInstanceDetails =
+            guardian.itemComponents.instances.data[(itemInstance as any).itemInstanceId];
           return (
-            <EquipmentItem key={(itemInstance as BI.Destiny.Entities.Items.DestinyItemComponent).itemInstanceId}
+            <EquipmentItem
+              key={(itemInstance as BI.Destiny.Entities.Items.DestinyItemComponent).itemInstanceId}
               itemInstance={itemInstance as BI.Destiny.Entities.Items.DestinyItemComponent}
               itemDefinition={itemDefinition}
               itemInstanceDetails={itemInstanceDetails}
@@ -120,7 +132,10 @@ const DisplayGuardian = ( { player, guardian, onLoadFireteam }: DisplayGuardianP
           itemSockets={guardian.itemComponents.sockets}
           characterEquipment={guardian.inventory}
         />
-        {/*<Mods characterId={guardian.character.characterId.toString()} characterPlugSets={guardian.characterPlugSets} />*/}
+        {/*<Mods
+          characterId={guardian.character.characterId.toString()}
+          characterPlugSets={guardian.characterPlugSets}
+        />*/}
       </Box>
     </>
   )

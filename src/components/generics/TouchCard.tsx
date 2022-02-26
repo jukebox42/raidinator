@@ -60,8 +60,16 @@ function TouchCard<C extends React.ElementType>(
   delete (cleanProps as any).onDelete;
 
   return (
-    <Card {...cleanProps} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
-      {deleting && <DeleteForeverIcon color="error" sx={{ position: "absolute", mt: "32px", fontSize: 80, right: 1, zIndex: 999 }} />}
+    <Card {...cleanProps}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
+      {deleting &&
+        <DeleteForeverIcon
+          color="error"
+          sx={{ position: "absolute", mt: "32px", fontSize: 80, right: 1, zIndex: 999 }}
+        />}
       {props.children}
     </Card>
   )

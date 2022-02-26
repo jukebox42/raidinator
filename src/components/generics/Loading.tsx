@@ -14,7 +14,8 @@ const Loading = ({ marginTop, loadingText}: LoaderProps) => {
   return (
     <Box className="loading" sx={{ mt: marginTop, justifyContent: "center", textAlign: "center" }}>
       <CircularProgress sx={{ color: loadingText? "white" : "" }} size={60} />
-      {loadingText && <Typography variant="body1" sx={{ color: "white" }}>{loadingText}</Typography>}
+      {loadingText &&
+        <Typography variant="body1" sx={{ color: "white" }}>{loadingText}</Typography>}
     </Box>
   );
 };

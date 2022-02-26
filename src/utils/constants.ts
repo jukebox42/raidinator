@@ -1,11 +1,14 @@
 import { createTheme } from "@mui/material";
 
-export const VERSION = "0.0.1b";
+export const VERSION = "0.0.2b";
 
 // API
-export const DEV_MODE = false;
-export const API_KEY =
-  DEV_MODE ? process.env.REACT_APP_DEV_API_KEY : process.env.REACT_APP_API_KEY;
+export const DEV_MODE = process.env.NODE_ENV === "development";
+let key = DEV_MODE ? process.env.REACT_APP_DEV_API_KEY : process.env.REACT_APP_API_KEY;
+if (!key) {
+  throw new Error("Missing .env file for API key. See .envExample")
+}
+export const API_KEY = key;
 
 if (DEV_MODE) {
   console.log("---------------------");
@@ -39,9 +42,18 @@ export const DESTINY_API_URLS = {
 
 // Special Mods
 export const specialMods = [
-  "Thermoclastic Strike",
-  "Particle Deconstruction",
+  // champ mods that dont start with a champ word
+  "Piercing Bowstring",
+  "Inferno Whip",
+  // life mods
+  "Thermoshock Plating",
+  "Well of Tenacity",
+  "Well of Life",
   "Protective Light",
+  // damage mods
+  "Suppressing Glave",
+  "Suppressive Darkness",
+
 ];
 
 // MUI Theme

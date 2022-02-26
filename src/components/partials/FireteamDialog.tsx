@@ -16,7 +16,7 @@ import { getMemberById, getProfile } from "../../bungie/api";
 import { Loading } from "../generics";
 
 // Interfaces
-import * as BI from "../../bungie/interfaces";
+import * as Components from "../../bungie/interfaces/Destiny/Components";
 import { PlayerData } from "../../utils/interfaces";
 
 interface CardData {
@@ -47,8 +47,8 @@ const FireteamDialog = ({ onLoadFireteam, onClose, player, isOpen = false }: Fir
       console.log("No Party, not logged in");
       return onClose();
     }
-    const party = result.profileTransitoryData?.data?.partyMembers;
-    if (party?.length <= 1) {
+    const party = result.profileTransitoryData.data.partyMembers;
+    if (party.length <= 1) {
       console.log("No party, player is solo");
       return onClose();
     }
@@ -56,9 +56,9 @@ const FireteamDialog = ({ onLoadFireteam, onClose, player, isOpen = false }: Fir
     loadFireteam(party);
   };
 
-  const loadFireteam = (party: BI.Destiny.Components.Profiles.DestinyProfileTransitoryPartyMember[]) => {
+  const loadFireteam = (party: Components.Profiles.DestinyProfileTransitoryPartyMember[]) => {
     // TODO: refactor this and maybe the player selector?
-      //       Also we could check if the player is already cached and not reload them.
+    //       Also we could check if the player is already cached and not reload them.
     const promises = party.map(async (member) => {
       const resp = await getMemberById(member.membershipId);
       const primaryMembership = resp.destinyMemberships.find(
@@ -89,7 +89,8 @@ const FireteamDialog = ({ onLoadFireteam, onClose, player, isOpen = false }: Fir
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>
-        Load Active Fireteam For {player ? player.bungieGlobalDisplayName : ""}#{player ? player.bungieGlobalDisplayNameCode : ""}?
+        Load Active Fireteam For {player ? player.bungieGlobalDisplayName : ""}#
+        {player ? player.bungieGlobalDisplayNameCode : ""}?
       </DialogTitle>
       {fetchingFireteam && <DialogContent>
         <Loading marginTop="0px" />

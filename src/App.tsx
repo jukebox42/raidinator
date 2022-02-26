@@ -38,7 +38,8 @@ function App() {
   const [fireteamDialogPlayer, setFreteamDialogPlayer] = useState<PlayerData | null>(null);
 
   /**
-   * Handle refreshing the app. purges all cached guardian data but NOT player data and character selections per player
+   * Handle refreshing the app. purges all cached guardian data but NOT player data and character
+   * selections per player.
    */
   const refreshCallback = async (refresh: () => Promise<void>) => {
     setRefreshing(true);
@@ -53,9 +54,11 @@ function App() {
     return getManifestContent(manifestPath).then(manifestResponse => {
       const promises = Object.keys(manifestResponse).map((table: any) => {
         const dbkeys = Object.keys(manifestResponse[table]);
-        const dbvalues: any = Object.keys(manifestResponse[table]).map((oskey: any) => manifestResponse[table][oskey]);
+        const dbvalues: any = Object.keys(manifestResponse[table]).map(
+          (oskey: any) => manifestResponse[table][oskey]);
         console.log("Writing Table...");
-        return (db[table as ManifestTables] as any).bulkPut(dbvalues, dbkeys).catch((e: any) => console.error("Db Write failed:", table, e));
+        return (db[table as ManifestTables] as any).bulkPut(dbvalues, dbkeys).catch(
+          (e: any) => console.error("Db Write failed:", table, e));
       });
       return Promise.allSettled(promises);
     });
@@ -172,8 +175,6 @@ function App() {
    * Handle showing the fireteam loader dialog
    */
   const loadFireteam = (player: PlayerData) => {
-    // clear the character selections. This will be reloaded by
-    db.AppPlayersSelectedCharacter.clear();
     setFreteamDialogPlayer(player);
     setFireteamDialogOpen(true);
   }
@@ -182,8 +183,7 @@ function App() {
    * Handle the on load fireteam even from the dialog
    */
   const onLoadFireteam = (fireteamPlayers: CardData[]) => {
-    // TODO: These need to be set somehow...
-    // db.AppPlayersSelectedCharacter.bulkPut()
+    db.AppPlayersSelectedCharacter.clear();
     setGuardians(fireteamPlayers);
   }
 
