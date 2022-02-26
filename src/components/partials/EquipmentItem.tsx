@@ -83,7 +83,7 @@ const EquipmentItem = ( {itemDefinition, itemInstance, itemInstanceDetails, dama
     if (clickCount === 1) {
       setTimeout(() => {
         setClickCount(0);
-      }, 200);
+      }, 300);
       return;
     }
 
