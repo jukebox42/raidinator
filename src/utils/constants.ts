@@ -4,7 +4,9 @@ export const VERSION = "0.0.1b";
 
 // API
 export const DEV_MODE = false;
-export const API_KEY = DEV_MODE ? "APIKEY" : "APIKEY";
+export const API_KEY =
+  DEV_MODE ? process.env.REACT_APP_DEV_API_KEY : process.env.REACT_APP_API_KEY;
+
 if (DEV_MODE) {
   console.log("---------------------");
   console.log("DEV MODE", DEV_MODE);
@@ -15,7 +17,7 @@ if (DEV_MODE) {
 export const LANGUAGE = "en";
 
 // URLS
-export const SOURCE_URL = "#";
+export const SOURCE_URL = "https://github.com/jukebox42/raidinator";
 export const ASSET_URL = "https://www.bungie.net";
 export const API_URL = `${ASSET_URL}/platform`;
 export const LASER_SOUNDS_URL =  `${ASSET_URL}/en/ClanV2/Index?groupId=221919`;
