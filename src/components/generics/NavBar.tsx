@@ -18,9 +18,13 @@ import CodeIcon from "@mui/icons-material/Code";
 import DataThresholdingIcon from "@mui/icons-material/DataThresholding";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import HelpIcon from '@mui/icons-material/Help';
 
 import db from "../../store/db";
 import { LASER_SOUNDS_URL, SOURCE_URL, VERSION } from "../../utils/constants";
+
+// Components
+import InstructionsDialog from "./InstructionsDialog";
 
 interface NavBarProps {
   acting: boolean;
@@ -29,6 +33,7 @@ interface NavBarProps {
 
 const NavBar = ( { acting, refreshCallback }: NavBarProps) => {
   const [open, setOpen] = useState(false);
+  const [instructionsOpen, setInstructionsOpen] = useState(false);
 
   const refreshAll = () => {
     if (acting) {
@@ -84,6 +89,10 @@ const NavBar = ( { acting, refreshCallback }: NavBarProps) => {
             <ListItemIcon><DataThresholdingIcon /></ListItemIcon>
             <ListItemText primary="Reset App Data" />
           </ListItemButton>
+          <ListItemButton key="help" onClick={() => setInstructionsOpen(true)}>
+            <ListItemIcon><HelpIcon /></ListItemIcon>
+            <ListItemText primary="Help" />
+          </ListItemButton>
           <ListItemButton key="clan" component="a" href={LASER_SOUNDS_URL} target="_blank">
             <ListItemIcon><FavoriteIcon /></ListItemIcon>
             <ListItemText primary="Laser Sounds" />
@@ -98,6 +107,7 @@ const NavBar = ( { acting, refreshCallback }: NavBarProps) => {
           </ListItem>
         </List>
       </Drawer>
+      <InstructionsDialog open={instructionsOpen} onClose={() => setInstructionsOpen(false)} />
     </Box>
   );
 }
