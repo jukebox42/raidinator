@@ -5,8 +5,20 @@ import {
 
 import { getAssetUrl } from "../../utils/functions";
 
+// Components
+import { ReactComponent as HunterSymbol } from '../../assets/hunter_emblem.svg';
+import { ReactComponent as WarlockSymbol } from '../../assets/warlock_emblem.svg';
+import { ReactComponent as TitanSymbol } from '../../assets/titan_emblem.svg';
+
 // Interfaces
 import * as BI from "../../bungie/interfaces";
+
+// so I dont need to get them from the DB
+enum ClassType {
+  WARLOCK = 2,
+  TITAN = 0,
+  HUNTER = 1,
+};
 
 enum EnergyType {
   VOID = 3,
@@ -18,6 +30,20 @@ enum EnergyType {
 interface CharacterSubclassProps {
   itemDefinition: BI.Destiny.Definitions.DestinyInventoryItemDefinition | undefined;
   itemInstance: BI.Destiny.Entities.Items.DestinyItemComponent | undefined;
+}
+
+/**
+ * Returns the svg of the characters class
+ */
+export const getClassSvg = (classType: ClassType) => {
+  if (classType === ClassType.HUNTER) {
+    return <HunterSymbol />;
+  }
+  if (classType === ClassType.TITAN) {
+    return <TitanSymbol />;
+  }
+
+  return <WarlockSymbol />;
 }
 
 /**

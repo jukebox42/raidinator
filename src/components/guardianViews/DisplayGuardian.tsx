@@ -23,7 +23,8 @@ import {
   isSubClass,
   getSubclassEnergyType,
   EquipmentItem,
-  shouldDisplayEquipmentItem
+  shouldDisplayEquipmentItem,
+  getClassSvg
 } from "../partials";
 
 // Interfaces
@@ -93,7 +94,7 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
           onClick={onChangeCharacter}
         />
         <Box sx={{ flexGrow: 1 }}>
-          <PlayerName player={player} />
+          <PlayerName player={player} classType={guardian.character.classType} />
           <CharacterStats stats={guardian.character.stats} statTypes={statTypes} />
         </Box>
         <Box sx={{ display: "flex", m: 1, mb: 0 }}>

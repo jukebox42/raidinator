@@ -11,7 +11,7 @@ import { getAssetUrl } from "../../utils/functions";
 
 // Components
 import { Loading } from "../generics";
-import { PlayerName } from "../partials";
+import { PlayerName, getClassSvg } from "../partials";
 
 // Interfaces
 import * as BI from "../../bungie/interfaces";
@@ -178,12 +178,13 @@ const PickGuardian = ({ player, guardianId, pickedGuardian }: PickGuardianProps)
 
   return (
     <>
-      <PlayerName player={player} />
+      <PlayerName player={player} showCode={true} />
       <Stack direction="row" justifyContent="center" alignItems="center">
       {characters && inventories && Object.keys(characters.data).map((i: string) => {
         const character = characters.data[i as any];
         return (
           <Button
+            className="icon-character-button"
             key={character.characterId}
             variant="text"
             onClick={(_) => {
@@ -198,6 +199,7 @@ const PickGuardian = ({ player, guardianId, pickedGuardian }: PickGuardianProps)
             }}
           >
             <img src={getAssetUrl(character.emblemPath)} className="icon-character"/>
+            {getClassSvg(character.classType)}
           </Button>
         )
       })}
