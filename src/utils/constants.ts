@@ -41,21 +41,10 @@ export const DESTINY_API_URLS = {
   GET_PROFILE: `${API_URL}/Destiny2/{membershipType}/Profile/{destinyMembershipId}/?components=${PROFILE_COMPONENTS.join(",")}`,
 }
 
-// Special Mods
-export const specialMods = [
-  // champ mods that dont start with a champ word
-  "Piercing Bowstring",
-  "Inferno Whip",
-  // life mods
-  "Thermoshock Plating",
-  "Well of Tenacity",
-  "Well of Life",
-  "Protective Light",
-  // damage mods
+export const specialDamageMods = [
   "Suppressing Glave",
   "Suppressive Darkness",
-
-];
+]
 
 // MUI Theme
 export const theme = createTheme({

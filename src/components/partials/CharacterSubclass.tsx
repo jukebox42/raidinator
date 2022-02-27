@@ -8,9 +8,40 @@ import { getAssetUrl } from "../../utils/functions";
 // Interfaces
 import * as BI from "../../bungie/interfaces";
 
+enum EnergyType {
+  VOID = 3,
+  SOLAR = 2,
+  ARC = 1,
+  STASIS = 6,
+};
+
 interface CharacterSubclassProps {
   itemDefinition: BI.Destiny.Definitions.DestinyInventoryItemDefinition | undefined;
   itemInstance: BI.Destiny.Entities.Items.DestinyItemComponent | undefined;
+}
+
+/**
+ * Get the energy of the subclass
+ *
+ * TODO: this is silly, there has to be a better way(and a better spot)
+ */
+export const getSubclassEnergyType = (subclassDefinition: any) => {
+  if (/^void/.test(subclassDefinition.talentGrid.buildName)) {
+    return EnergyType.VOID;
+  }
+  if (/^thermal/.test(subclassDefinition.talentGrid.buildName)) {
+    return EnergyType.SOLAR;
+  }
+  if (/^arc/.test(subclassDefinition.talentGrid.buildName)) {
+    return EnergyType.ARC;
+  }
+  if (/^stasis/.test(subclassDefinition.talentGrid.buildName)) {
+    return EnergyType.STASIS;
+  }
+
+  // fallthrough
+  console.error("ENERGY TYPE NOT MATCHED", subclassDefinition);
+  return EnergyType.SOLAR;
 }
 
 /**
@@ -26,7 +57,7 @@ const CharacterSubclass = ( {itemDefinition, itemInstance}: CharacterSubclassPro
   if (!itemDefinition || !itemInstance) {
     return <></>;
   }
-  // console.log("Subclass", itemDefinition, itemInstance);
+  console.log("Subclass", itemDefinition, itemInstance);
   return (
     <Paper key={itemInstance.itemInstanceId} elevation={0} className="icon-item">
       <img src={getAssetUrl(itemDefinition.displayProperties.icon)} className="icon" />

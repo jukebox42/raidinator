@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import uniq from "lodash/uniq";
 
 import db from "../../store/db";
 import { getAssetUrl } from "../../utils/functions";
@@ -20,6 +21,7 @@ import {
   CharacterStats,
   CharacterSubclass,
   isSubClass,
+  getSubclassEnergyType,
   EquipmentItem,
   shouldDisplayEquipmentItem
 } from "../partials";
@@ -27,6 +29,7 @@ import {
 // Interfaces
 import { GuardianData, PlayerData } from "../../utils/interfaces";
 import * as BI from "../../bungie/interfaces/";
+import { DestinyInventoryItemDefinition } from "../../bungie/interfaces/Destiny/Definitions";
 
 interface DisplayGuardianProps {
   player: PlayerData;
@@ -69,9 +72,17 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
     return <Box sx={{ p: 0 }}><Loading marginTop="43px" /></Box>;
   }
 
+  // get subclass
   const subclassDefinition = itemDefinitions.find(itemDefinition => isSubClass(itemDefinition));
   const subclassInstance = guardian.inventory.items.find(
     gi => gi.itemHash === subclassDefinition?.hash);
+
+  const weapons = (itemDefinitions as DestinyInventoryItemDefinition[])
+    .filter(i => i.traitIds && i.traitIds.includes("item_type.weapon"));
+  // get all the weapon energy types
+  const weaponEnergyTypes = uniq(weapons.map(w => w.damageTypes).flat());
+  // get all the weapon types. yes this will include item_type.weapon but we dont care.
+  const weaponTypes = uniq(weapons.map(i => i.traitIds).flat())
 
   return (
     <>
@@ -131,6 +142,9 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
           itemInstances={guardian.itemComponents.instances}
           itemSockets={guardian.itemComponents.sockets}
           characterEquipment={guardian.inventory}
+          weaponTypes={weaponTypes}
+          weaponEnergyTypes={weaponEnergyTypes}
+          subclassEnergyType={getSubclassEnergyType(subclassDefinition)}
         />
         {/*<Mods
           characterId={guardian.character.characterId.toString()}

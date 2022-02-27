@@ -54,8 +54,32 @@ body {
 }
 
 .icon-mods {
+  position: relative;
   width: 25px;
   height: 25px;
+  overflow: hidden;
+}
+
+.warning {
+  border: 1px solid red;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.warning:after {
+  position: absolute;
+  content: "";
+  left: 0;
+  top: 50%;
+  right: 0;
+  border-top: 1px solid;
+  border-color: red;
+
+  -webkit-transform:rotate(-45deg);
+  -moz-transform:rotate(-45deg);
+  -ms-transform:rotate(-45deg);
+  -o-transform:rotate(-45deg);
+  transform:rotate(-45deg);
 }
 
 .icon-light, .icon-platform {

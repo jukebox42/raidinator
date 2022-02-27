@@ -7,7 +7,13 @@ import { v4 as uuid } from "uuid";
 
 import db from "../../store/db";
 import { getAssetUrl } from "../../utils/functions";
-import { specialMods } from "../../utils/constants";
+import { specialDamageMods } from "../../utils/constants";
+import { getChampionMods, checkChampionMod } from "../../utils/rules/championRules";
+import {
+  getChargedWithLightChargerMods,
+  getChargedWithLightSpenderMods,
+  checkChargedWithLightMod,
+} from "../../utils/rules/chargedWithLightRules";
 
 // Components
 import Mod from "./Mod";
@@ -16,9 +22,12 @@ interface ModsProps {
   itemSockets: any; // TODO these arent any. we have these interfaces
   itemInstances: any;
   characterEquipment: any;
+  weaponTypes: string[]; // TODO this could be better yeah?
+  weaponEnergyTypes: any[]; // TODO same here
+  subclassEnergyType: any;
 }
 
-const ItemMods = ( {itemSockets, itemInstances, characterEquipment}: ModsProps ) => {
+const ItemMods = ( {itemSockets, itemInstances, characterEquipment, weaponTypes, weaponEnergyTypes, subclassEnergyType}: ModsProps ) => {
   const plugs = useLiveQuery(async () => {
     if (!itemSockets) {
       return;
@@ -49,27 +58,43 @@ const ItemMods = ( {itemSockets, itemInstances, characterEquipment}: ModsProps )
     return <></>;
   }
 
-  // console.log("PLUGS", plugs);
+  const championMods = getChampionMods(plugs);
+  const ChampionModHashes = championMods.map(m => m.hash);
 
-  const championRegex = /(Unstoppable|Anti-Barrier|Overload)/;
+  const chargedWithLightChargerMods = getChargedWithLightChargerMods(plugs);
+  const chargedWithLightChargerModHashes = chargedWithLightChargerMods.map(m => m.hash);
+  const chargedWithLightSpenderMods = getChargedWithLightSpenderMods(plugs);
+  const chargedWithLightSpenderModHashes = chargedWithLightSpenderMods.map(m => m.hash);
 
   return (
     <Stack direction="row" sx={{ml: 1}}>
-      {plugs.map(plug => {
-        // filter out plugs with icons and a name, ones the match champion mods, exotic intrinsics
-        // and a special list(seasonal)
-        if (
-          plug && plug.displayProperties?.icon && plug.displayProperties?.name  &&
-          (
-            championRegex.test(plug.displayProperties.name) || // find all unstop
-            // (plug.itemTypeAndTierDisplayName === "Exotic Intrinsic" && !/Frame$/.test(plug.displayProperties.name))|| // get exotic armor percs
-            specialMods.includes(plug.displayProperties.name)
-          )
-        ) {
-          // console.log(plug.displayProperties.name, plug);
-          return (
-            <Mod key={uuid()} plug={plug} />
-          );
+      {plugs.map((plug) => {
+        if (!plug) {
+          return;
+        }
+        // Champion Mods
+        if (ChampionModHashes.includes(plug.hash)) {;
+          const allGood = checkChampionMod(plug, weaponTypes, subclassEnergyType);
+          return (<Mod key={uuid()} plug={plug} showWarning={!allGood} warningReason="Missing required weapon." />);
+        }
+        // Charged With Light Mods
+        if (chargedWithLightChargerModHashes.includes(plug.hash)) {
+          const allGood = checkChargedWithLightMod(plug, weaponTypes, [], subclassEnergyType);
+          const hasSpenders = chargedWithLightSpenderMods.length > 0;
+          const warningReason = !hasSpenders ? "Missing mods to spend charged with light." : "Missing requirements to activate.";
+          return (<Mod key={uuid()} plug={plug} showWarning={!allGood || !hasSpenders} warningReason={warningReason} />);
+        }
+        if (chargedWithLightSpenderModHashes.includes(plug.hash)) {
+          const allGood = checkChargedWithLightMod(plug, weaponTypes, [], subclassEnergyType);
+          const hasChargers = chargedWithLightChargerMods.length > 0;
+          const warningReason = !hasChargers ? "Missing mods to create charged with light." : "Missing requirements to activate.";
+          return (<Mod key={uuid()} plug={plug} showWarning={!allGood || !hasChargers} warningReason={warningReason} />);
+        }
+        // TODO: Well Mods
+
+        // Additional Special Mods
+        if (plug.displayProperties && specialDamageMods.includes(plug.displayProperties.name)) {
+          return (<Mod key={uuid()} plug={plug} />);
         }
       })}
     </Stack>

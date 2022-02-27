@@ -6,6 +6,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import WarningIcon from '@mui/icons-material/Warning';
 
 import { getAssetUrl } from "../../utils/functions";
 
@@ -14,15 +15,23 @@ import * as BI from "../../bungie/interfaces"
 
 interface ModProps {
   plug: BI.Destiny.Definitions.DestinyInventoryItemDefinition;
+  showWarning?: boolean;
+  warningReason?: string;
 }
 
-const Mod = ( {plug}: ModProps ) => {
+const Mod = ( {plug, showWarning, warningReason}: ModProps ) => {
+  // console.log(plug.displayProperties.name, plug);
   return (
-    <Paper elevation={0} sx={{ display: "flex", m: 1, mb: 0, ml: 0 }}>
+    <Paper
+      elevation={0}
+      sx={{ display: "flex", m: 1, mb: 0, ml: 0, position: "relative" }}
+      className={showWarning? "warning" : ""}
+    >
       <Tooltip
         title={
           <>
             <Typography>{plug.displayProperties.name}</Typography>
+            {showWarning && warningReason && <Typography variant="caption" sx={{display: "flex"}}><WarningIcon fontSize="small" />Warning: {warningReason}</Typography>}
             {/*TODO: description would be nice*/}
           </>
         }
