@@ -24,7 +24,7 @@ import {
   getSubclassEnergyType,
   EquipmentItem,
   shouldDisplayEquipmentItem,
-  getClassSvg
+  convertDamageTypeToEnergyType
 } from "../partials";
 
 // Interfaces
@@ -81,7 +81,7 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
   const weapons = (itemDefinitions as DestinyInventoryItemDefinition[])
     .filter(i => i.traitIds && i.traitIds.includes("item_type.weapon"));
   // get all the weapon energy types
-  const weaponEnergyTypes = uniq(weapons.map(w => w.damageTypes).flat());
+  const weaponEnergyTypes = uniq(weapons.map(w => convertDamageTypeToEnergyType(w.damageTypes)).flat());
   // get all the weapon types. yes this will include item_type.weapon but we dont care.
   const weaponTypes = uniq(weapons.map(i => i.traitIds).flat())
 

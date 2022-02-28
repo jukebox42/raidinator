@@ -15,7 +15,6 @@ interface PlayerNameProps {
 }
 
 const PlayerName = ({ player, showCode, classType }: PlayerNameProps) => {
-  console.log("CS", classType);
   return (
     <Box sx={{ m: 1, ml: 0, mb: 0, display: "flex" }}>
        {Number.isInteger(classType) &&

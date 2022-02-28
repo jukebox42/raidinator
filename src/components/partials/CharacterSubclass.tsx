@@ -21,6 +21,7 @@ enum ClassType {
 };
 
 enum EnergyType {
+  KINETIC = 0,
   VOID = 3,
   SOLAR = 2,
   ARC = 1,
@@ -30,6 +31,27 @@ enum EnergyType {
 interface CharacterSubclassProps {
   itemDefinition: BI.Destiny.Definitions.DestinyInventoryItemDefinition | undefined;
   itemInstance: BI.Destiny.Entities.Items.DestinyItemComponent | undefined;
+}
+
+/**
+ * Conver an array of damage types to energy types. I dunno why these arent the same but they arent.
+ * see DestinySamageTypeDefinition and DestinyEnergyTypeDefinition for proof.
+ */
+export const convertDamageTypeToEnergyType = (damageTypes: number[]): EnergyType[] => {
+  return damageTypes.map(dt => {
+    switch(dt) {
+      case 2:
+        return EnergyType.ARC;
+      case 3:
+        return EnergyType.SOLAR;
+      case 4:
+        return EnergyType.VOID;
+      case 6:
+        return EnergyType.STASIS;
+      default:
+        return EnergyType.KINETIC;
+    }
+  });
 }
 
 /**

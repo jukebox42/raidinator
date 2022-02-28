@@ -58,17 +58,6 @@ const spenders: Spenders[] = [
 ];
 
 const itemTypeDisplayName = "Charged with Light Mod";
-
-export enum ModType {
-  CREATE = 0,
-  USE,
-};
-
-interface ReturnType {
-  type?: ModType;
-  works: boolean;
-};
-
 const isChargedWithLightMod = (mod: any) => mod.itemTypeDisplayName === itemTypeDisplayName;
 
 /**
@@ -92,7 +81,7 @@ export const getChargedWithLightSpenderMods = (mods: any[]) => {
 /**
  * Check if a charged with light mod's criteria is met.
  */
-export const checkChargedWithLightMod = (mod: any, weaponTypes: string[], weaponEnergies: EnergyType[], subclassEnergy: EnergyType): ReturnType | null => {
+export const checkChargedWithLightMod = (mod: any, weaponTypes: string[], weaponEnergies: EnergyType[], subclassEnergy: EnergyType): boolean | null => {
   // this function only cares about charged with light
   if (!isChargedWithLightMod(mod)) {
     return null;
@@ -100,43 +89,39 @@ export const checkChargedWithLightMod = (mod: any, weaponTypes: string[], weapon
 
   const charger = chargers.find(m => m.hash === mod.hash);
   if (charger) {
-    const type = ModType.CREATE;
-
     // can always create.
     if (charger.alwaysTrue) {
-      return { type, works: true };
+      return true;
     }
 
     // check if weapons match(if the user has a weapon that is needed by a mod)
     if (charger.sourceTraidIds) {
       const matchingTraits = intersection(charger.sourceTraidIds, weaponTypes);
-      return { type, works: matchingTraits.length > 0 };
+      return matchingTraits.length > 0;
     }
   }
 
   // If it's a mod that spends charged with light make sure it can
   const spender = spenders.find(m => m.hash === mod.hash);
   if (spender) {
-    const type = ModType.USE;
-
     // can always spend.
     if (spender.alwaysTrue) {
-      return { type, works: true };
+      return true;
     }
 
     // check if weapons match(if the user has a weapon that is needed by a mod)
     if (spender.useTraitIds) {
       const matchingTraits = intersection(spender.useTraitIds, weaponTypes);
-      return { type, works: matchingTraits.length > 0 };
+      return matchingTraits.length > 0;
     }
 
     // check if a required energy matches
     if (spender.useEnergy) {
       if (spender.useEnergy === subclassEnergy) {
-        return { type, works: true };
+        return true;
       }
       const hasMatchingEnergy = weaponEnergies.includes(spender.useEnergy);
-      return { type, works: hasMatchingEnergy };
+      return hasMatchingEnergy;
     }
   }
 

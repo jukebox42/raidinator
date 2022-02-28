@@ -69,8 +69,8 @@ export interface DestinyInventoryItemDefinition {
   breakerType: number;
   breakerTypeHash: number | null;
   equippable: boolean;
-  damageTypeHashes: number;
-  damageTypes: number;
+  damageTypeHashes: number[];
+  damageTypes: number[];
   defaultDamageType: number;
   defaultDamageTypeHash: number | null;
   seasonHash: number | null;
