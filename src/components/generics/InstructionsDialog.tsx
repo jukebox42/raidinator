@@ -15,6 +15,7 @@ import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import CachedIcon from "@mui/icons-material/Cached";
 import SwipeIcon from '@mui/icons-material/Swipe';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
+import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt';
 
 interface CardData {
   id?: string,
@@ -57,6 +58,10 @@ const InstructionsDialog = ({ onClose, open = false }: InstructionsDialogProps) 
           <ListItem>
             <ListItemIcon><TouchAppIcon /></ListItemIcon>
             <ListItemText>Double tap equipment to open light.gg.</ListItemText>
+          </ListItem>
+          <ListItem>
+            <ListItemIcon><DoNotDisturbAltIcon /></ListItemIcon>
+            <ListItemText>Mods crossed out don't have their requirements met. Tap for details.</ListItemText>
           </ListItem>
         </List>
       </DialogContent>

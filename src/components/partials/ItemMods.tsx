@@ -84,6 +84,7 @@ const ItemMods = ( {itemSockets, itemInstances, characterEquipment, weaponTypes,
         if (!plug) {
           return;
         }
+        // TODO: Exotic weapon/armor abilities
         // Champion Mods
         if (championModHashes.includes(plug.hash)) {;
           const allGood = checkChampionMod(plug, weaponTypes, subclassEnergyType);
@@ -113,6 +114,7 @@ const ItemMods = ( {itemSockets, itemInstances, characterEquipment, weaponTypes,
           const warningReason = !hasSpenders ? "Missing mods to use wells." : "Missing requirements to activate.";
           return (<Mod key={uuid()} plug={plug} showWarning={!allGood || !hasSpenders} warningReason={warningReason} />);
         }
+        // TODO: catch wasted stat mods
         // Additional Special Mods
         if (plug.displayProperties && specialDamageMods.includes(plug.displayProperties.name)) {
           return (<Mod key={uuid()} plug={plug} />);
