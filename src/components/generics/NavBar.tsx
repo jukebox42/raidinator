@@ -65,7 +65,7 @@ const NavBar = ( { acting, refreshCallback }: NavBarProps) => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>Shadows of Yor</Typography>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>Raid Watch</Typography>
           <IconButton
             disabled={acting}
             size="large"

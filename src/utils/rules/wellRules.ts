@@ -1,3 +1,4 @@
+// TODO: Pull this from another place. subclass component maybe?
 enum EnergyType {
   VOID = 3,
   SOLAR = 2,

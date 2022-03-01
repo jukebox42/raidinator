@@ -65,71 +65,66 @@ const ItemMods = ( {itemSockets, itemInstances, characterEquipment, weaponTypes,
   }
 
   const championMods = getChampionMods(plugs);
-  const championModHashes = championMods.map(m => m.hash);
 
   const chargedWithLightChargerMods = getChargedWithLightChargerMods(plugs);
-  const chargedWithLightChargerModHashes = chargedWithLightChargerMods.map(m => m.hash);
   const chargedWithLightSpenderMods = getChargedWithLightSpenderMods(plugs);
-  const chargedWithLightSpenderModHashes = chargedWithLightSpenderMods.map(m => m.hash);
 
   const wellGeneratorMods = getWellGeneratorMods(plugs);
-  const wellGeneratorModHashes = wellGeneratorMods.map(m => m.hash);
   const wellSpenderMods = getWellSpenderMods(plugs);
-  const wellSpenderModHashes = wellSpenderMods.map(m => m.hash);
   let wellEnergies: number[] = []; // hold energy from generators
 
   return (
     <Stack direction="row" sx={{ml: 1}}>
-      {plugs.map((plug) => {
-        if (!plug) {
-          return;
-        }
-        // TODO: Exotic weapon/armor abilities
+      {championMods.map((plug) => {
         // Champion Mods
-        if (championModHashes.includes(plug.hash)) {;
-          const allGood = checkChampionMod(plug, weaponTypes, subclassEnergyType);
-          return (<Mod key={uuid()} plug={plug} showWarning={!allGood} warningReason="Missing required weapon." />);
-        }
+        const allGood = checkChampionMod(plug, weaponTypes, subclassEnergyType);
+        return (<Mod key={uuid()} plug={plug} showWarning={!allGood} warningReason="Missing required weapon." />);
+      })}
+      {chargedWithLightChargerMods.map((plug) => {
         // Charged With Light Mods
-        if (chargedWithLightChargerModHashes.includes(plug.hash)) {
-          const allGood = checkChargedWithLightMod(plug, weaponTypes, weaponEnergyTypes, subclassEnergyType);
-          const hasSpenders = chargedWithLightSpenderMods.length > 0;
-          const warningReason = !hasSpenders ? "Missing mods to spend charged with light." : "Missing requirements to activate.";
-          return (<Mod key={uuid()} plug={plug} showWarning={!allGood || !hasSpenders} warningReason={warningReason} />);
-        }
-        if (chargedWithLightSpenderModHashes.includes(plug.hash)) {
-          const allGood = checkChargedWithLightMod(plug, weaponTypes, weaponEnergyTypes, subclassEnergyType);
-          const hasChargers = chargedWithLightChargerMods.length > 0;
-          const warningReason = !hasChargers ? "Missing mods to create charged with light." : "Missing requirements to activate.";
-          return (<Mod key={uuid()} plug={plug} showWarning={!allGood || !hasChargers} warningReason={warningReason} />);
-        }
+        const allGood = checkChargedWithLightMod(plug, weaponTypes, weaponEnergyTypes, subclassEnergyType);
+        const hasSpenders = chargedWithLightSpenderMods.length > 0;
+        const warningReason = !hasSpenders ? "Missing mods to spend charged with light." : "Missing requirements to activate.";
+        return (<Mod key={uuid()} plug={plug} showWarning={!allGood || !hasSpenders} warningReason={warningReason} />);
+      })}
+      {chargedWithLightSpenderMods.map((plug) => {
+        // Charged With Light Mods
+        const allGood = checkChargedWithLightMod(plug, weaponTypes, weaponEnergyTypes, subclassEnergyType);
+        const hasChargers = chargedWithLightChargerMods.length > 0;
+        const warningReason = !hasChargers ? "Missing mods to create charged with light." : "Missing requirements to activate.";
+        return (<Mod key={uuid()} plug={plug} showWarning={!allGood || !hasChargers} warningReason={warningReason} />);
+      })}
+      {wellGeneratorMods.map((plug) => {
         // Generating Well Mods
-        if (wellGeneratorModHashes.includes(plug.hash)) {
-          const wellType = checkWellMod(plug, weaponEnergyTypes, subclassEnergyType);
-          const allGood = Number.isInteger(wellType);
-          if (allGood) {
-            wellEnergies.push(wellType as any);
-          }
-          const hasSpenders = wellSpenderMods.length > 0;
-          const warningReason = !hasSpenders ? "Missing mods to use wells." : "Missing requirements to activate.";
-          return (<Mod key={uuid()} plug={plug} showWarning={!allGood || !hasSpenders} warningReason={warningReason} />);
+        const wellType = checkWellMod(plug, weaponEnergyTypes, subclassEnergyType);
+        const allGood = Number.isInteger(wellType);
+        if (allGood) {
+          wellEnergies.push(wellType as any);
         }
-        // TODO: catch wasted stat mods
-        // Additional Special Mods
-        if (plug.displayProperties && specialDamageMods.includes(plug.displayProperties.name)) {
-          return (<Mod key={uuid()} plug={plug} />);
-        }
+        const hasSpenders = wellSpenderMods.length > 0;
+        const warningReason = !hasSpenders ? "Missing mods to use wells." : "Missing requirements to activate.";
+        return (<Mod key={uuid()} plug={plug} showWarning={!allGood || !hasSpenders} warningReason={warningReason} />);
+      })}
+      {wellSpenderMods.map((plug) => {
+        // Spending Well Mods
+        const allGood = checkWellMod(plug, weaponEnergyTypes, subclassEnergyType, wellEnergies);
+        const hasChargers = wellGeneratorMods.length > 0;
+        const warningReason = !hasChargers ? "Missing mods to create wells." : "Missing requirements to activate.";
+       return (<Mod key={uuid()} plug={plug} showWarning={!allGood || !hasChargers} warningReason={warningReason} />);
       })}
       {plugs.map((plug) => {
         if (!plug) {
           return;
         }
-        // Spending Well Mods
-        if (wellSpenderModHashes.includes(plug.hash)) {
-          const allGood = checkWellMod(plug, weaponEnergyTypes, subclassEnergyType, wellEnergies);
-          const hasChargers = wellGeneratorMods.length > 0;
-          const warningReason = !hasChargers ? "Missing mods to create wells." : "Missing requirements to activate.";
-          return (<Mod key={uuid()} plug={plug} showWarning={!allGood || !hasChargers} warningReason={warningReason} />);
+        // TODO: Exotic weapon/armor abilities
+        // TODO: catch wasted stat mods
+        // TODO: Ammo Finder Mods
+        // Additional Special Mods
+        if (plug.displayProperties) {
+          console.log(plug.displayProperties.name, plug);
+        }
+        if (plug.displayProperties && specialDamageMods.includes(plug.displayProperties.name)) {
+          return (<Mod key={uuid()} plug={plug} />);
         }
       })}
     </Stack>
