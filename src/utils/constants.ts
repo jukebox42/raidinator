@@ -1,6 +1,7 @@
 import { createTheme } from "@mui/material";
+import { lightBlue } from "@mui/material/colors";
 
-export const VERSION = "0.0.9b";
+export const VERSION = "0.0.10b";
 
 // API
 export const DEV_MODE = process.env.NODE_ENV === "development";
@@ -49,17 +50,17 @@ export const specialDamageMods = [
 // MUI Theme
 export const theme = createTheme({
   palette: {
+    mode: "dark",
     primary: {
-      main: "#463B3E",
+      main: "#10131C",
     },
     secondary: {
-      main: "#50453A",
+      main: "#FFF",
     },
-    background: {
-      default: "#FBF6F0",
-      paper: "#AD9B96",
-    },
-    // divider: "#463B3E",
+    divider: "#FFF",
+  },
+  components: {
+
   },
   shape: {
     borderRadius: 3,

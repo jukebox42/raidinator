@@ -231,7 +231,6 @@ function App() {
       </Stack>
       </ErrorBoundary>
       {guardians.length < 6 && <Fab
-        color="primary"
         aria-label="add"
         size="small"
         className="fab-style"

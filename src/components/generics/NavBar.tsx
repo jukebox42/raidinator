@@ -97,13 +97,9 @@ const NavBar = ( { acting, refreshCallback }: NavBarProps) => {
             <ListItemIcon><FavoriteIcon /></ListItemIcon>
             <ListItemText primary="Laser Sounds" />
           </ListItemButton>
-          <ListItem component="a" href={SOURCE_URL} target="_blank">
+          <ListItem key="git" component="a" href={SOURCE_URL} target="_blank">
             <ListItemIcon><GitHubIcon /></ListItemIcon>
-            <ListItemText primary="Source" />
-          </ListItem>
-          <ListItem key="version">
-            <ListItemIcon><CodeIcon /></ListItemIcon>
-            <ListItemText primary={VERSION} />
+            <ListItemText primary={`Source (${VERSION})`} />
           </ListItem>
         </List>
       </Drawer>

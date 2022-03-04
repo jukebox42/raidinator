@@ -36,7 +36,7 @@ const Mod = ( {plug, showWarning, warningReason}: ModProps ) => {
     <ClickAwayListener onClickAway={handleTooltipClose}>
     <Paper
       elevation={0}
-      sx={{ display: "flex", m: 1, mb: 0, ml: 0, position: "relative" }}
+      sx={{ display: "flex", m: 1, mb: 0, ml: 0, position: "relative", background: "none" }}
       className={showWarning? "warning" : ""}
       onClick={handleTooltipOpen}
     >

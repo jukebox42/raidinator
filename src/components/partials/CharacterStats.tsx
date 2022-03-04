@@ -33,7 +33,7 @@ const CharacterStats = ( { stats, statTypes }: CharacterStatsProps ) => {
         }
 
         return (
-          <Paper key={statHash} elevation={0} sx={{ display: "flex", m: 1, mb: 0, ml: 0 }}>
+          <Paper key={statHash} elevation={0} sx={{ display: "flex", m: 1, mb: 0, ml: 0, background: "none" }}>
             <img src={getAssetUrl(statType.displayProperties.icon)} className="icon-stat invert" />
             <Typography variant="caption" sx={{ mt: "-3px" }}>{stats[statHash as any]}</Typography>
           </Paper>

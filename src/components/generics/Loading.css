@@ -1,0 +1,53 @@
+.whiteClock {
+  border: 3px solid #FFF !important;
+}
+.whiteClock:after, .whiteClock:before {
+  background-color: #fff !important;
+}
+
+.clock{
+	border-radius: 40px;
+	border: 3px solid #463B3E;
+	position: relative;
+  left: 50%;
+  margin-left: -30px;
+  display: block;
+  width: 60px;
+  height: 60px;
+}
+
+.clock:after{
+	content: "";
+	position: absolute;
+	background-color: #463B3E;
+	top: 10px;
+	left: 46%;
+	height: 20px;
+	width: 4px;
+	border-radius: 5px;
+	transform-origin: 50% 96%;
+	animation: grdAiguille 2s linear infinite;
+}
+
+@keyframes grdAiguille{
+    0%{transform:rotate(-0deg);}
+    100%{transform:rotate(-360deg);}
+}
+
+.clock:before{
+	content: "";
+	position: absolute;
+	background-color: #463B3E;
+	top: 2px;
+	left: 46%;
+	height: 30px;
+	width: 4px;
+	border-radius: 5px;
+	transform-origin: 50% 93%;
+	animation: ptAiguille 12s linear infinite;
+}
+
+@keyframes ptAiguille{
+    0%{transform:rotate(0deg);}
+    100%{transform:rotate(360deg);}
+}

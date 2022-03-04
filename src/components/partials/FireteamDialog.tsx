@@ -97,12 +97,12 @@ const FireteamDialog = ({ onLoadFireteam, onClose, player, open = false }: Firet
       </DialogContent>}
       {!fetchingFireteam && <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          This will clear out you other guardians and load their active party.
+          This will clear out your other guardians and load their active party.
         </DialogContentText>
       </DialogContent>}
       {!fetchingFireteam && <DialogActions>
-        <Button onClick={handleCloseWithCallback}>Yes</Button>
-        <Button onClick={onClose} autoFocus>No</Button>
+        <Button onClick={handleCloseWithCallback} color="secondary">Yes</Button>
+        <Button onClick={onClose} color="secondary" autoFocus>No</Button>
       </DialogActions>}
     </Dialog>
   );

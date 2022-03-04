@@ -1,15 +1,11 @@
 body {
   margin: 0;
-  background-color: #AD9B96;
+  background-color: #10131C;
   background-image: url("assets/bg.jpg");
-  background-size: 170%;
+  background-size: 380%;
   background-repeat:no-repeat;
-  background-position: 20% 54px;
+  background-position: 50% 54px;
   background-attachment: fixed;
-}
-
-.invert {
-  filter: invert(100%);
 }
 
 .fab-style {
@@ -35,7 +31,6 @@ body {
 .class-icon svg {
   width: 25px;
   height: 25px;
-  filter: invert(100%);
 }
 
 .icon-emblem, .icon-item, .icon-character {
@@ -82,24 +77,18 @@ body {
 }
 
 .warning {
-  border: 2px solid red;
+  box-shadow:0px 0px 0px 2px red inset !important;
   position: relative;
-  box-sizing: border-box;
 }
 
 .warning:after {
   position: absolute;
   content: "";
   left: 0;
-  top: 50%;
+  top: 49%;
   right: 0;
   border-top: 2px solid;
   border-color: red;
-
-  -webkit-transform:rotate(-45deg);
-  -moz-transform:rotate(-45deg);
-  -ms-transform:rotate(-45deg);
-  -o-transform:rotate(-45deg);
   transform:rotate(-45deg);
 }
 
@@ -122,5 +111,10 @@ body {
 }
 
 .guardianCard {
-  min-height: 165px;
+  min-height: 160px;
+}
+
+/* MUI really makes this hard... */
+a:visited {
+  color:#FFF;
 }

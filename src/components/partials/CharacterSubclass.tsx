@@ -107,7 +107,7 @@ const CharacterSubclass = ( {itemDefinition, itemInstance}: CharacterSubclassPro
   }
   console.log("Subclass", itemDefinition, itemInstance);
   return (
-    <Paper key={itemInstance.itemInstanceId} elevation={0} className="icon-item">
+    <Paper key={itemInstance.itemInstanceId} elevation={0} className="icon-item" sx={{ background: "none" }}>
       <img src={getAssetUrl(itemDefinition.displayProperties.icon)} className="icon" />
     </Paper>
   )

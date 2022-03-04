@@ -93,7 +93,7 @@ const Guardian = ( { playerId, cardKey, onDelete, onLoadFireteam }: GuardianProp
   return (
     <TouchCard
       className="guardianCard"
-      sx={{m: 1, mb: 0, p: 0}}
+      sx={{m: 1, mb: 0, p: 0, background: "rgb(16 19 28 / 0.65)" }}
       onDelete={() => onDelete(cardKey)}
     >
       <CardContent sx={{ p: 0, pb: "0px !important" }}>
