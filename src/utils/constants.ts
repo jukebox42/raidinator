@@ -1,7 +1,7 @@
 import { createTheme } from "@mui/material";
 import { lightBlue } from "@mui/material/colors";
 
-export const VERSION = "0.0.10b";
+export const VERSION = "0.0.11b";
 
 // API
 export const DEV_MODE = process.env.NODE_ENV === "development";

@@ -81,3 +81,25 @@ export interface DestinyInventoryItemDefinition {
   index: number;
   redacted: boolean;
 }
+
+// https://bungie-net.github.io/multi/schema_Destiny-Definitions-DestinyTalentNodeStepGroups.html#schema_Destiny-Definitions-DestinyTalentNodeStepGroups
+export interface DestinyTalentNodeStepGroups {
+  weaponPerformance: number;
+  impactEffects: number;
+  guardianAttributes: number;
+  lightAbilities: number;
+  damageTypes: number;
+}
+
+// https://bungie-net.github.io/multi/schema_Destiny-Definitions-DestinySandboxPerkDefinition.html#schema_Destiny-Definitions-DestinySandboxPerkDefinition
+export interface DestinySandboxPerkDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  perkIdentifier: string;
+  isDisplayable: boolean;
+  damageType: number;
+  damageTypeHash: number;
+  perkGroups: DestinyTalentNodeStepGroups;
+  hash: number;
+  index: number;
+  redacted: boolean;
+}

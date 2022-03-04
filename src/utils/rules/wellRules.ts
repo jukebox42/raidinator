@@ -27,6 +27,9 @@ interface Spenders {
   energy?: EnergyType; // the well energy type that is needed. empty means any (see matchSubclass)
 }
 
+/**
+ * TODO: Pull from database instead of hard code
+ */
 const chargers: Generators[] = [
   // === Artifact ===
   { name: "Melee Wellmaker", hash: 288409047, matchSubclass: true, },

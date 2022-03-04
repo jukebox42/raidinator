@@ -8,11 +8,13 @@ import {
 } from "@mui/material";
 import WarningIcon from '@mui/icons-material/Warning';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
+import { v4 as uuid } from "uuid";
 
 import { getAssetUrl } from "../../utils/functions";
 
 // Interfaces
 import * as BI from "../../bungie/interfaces"
+import db from "../../store/db";
 
 interface ModProps {
   plug: BI.Destiny.Definitions.DestinyInventoryItemDefinition;
@@ -23,6 +25,21 @@ interface ModProps {
 const Mod = ( {plug, showWarning, warningReason}: ModProps ) => {
   // console.log(plug.displayProperties.name, plug);
   const [open, setOpen] = React.useState(false);
+  const [perks, setPerks] = React.useState<any[]>([]);
+
+  useEffect(() => {
+    const perks = plug.perks.map((p:any) => p.perkHash.toString());
+    db.DestinySandboxPerkDefinition.bulkGet(perks).then(r => {
+      const first = r[0];
+      const reducedPerksList = r.filter(p => {
+        // TODO: why are things duped?
+        if (p.displayProperties.description !== first.displayProperties.description) {
+          return p;
+        }
+      });
+      setPerks([first, ...reducedPerksList]);
+    })
+  })
 
   const handleTooltipClose = () => {
     setOpen(false);
@@ -53,9 +70,9 @@ const Mod = ( {plug, showWarning, warningReason}: ModProps ) => {
               <Typography variant="caption" sx={{display: "flex"}}>
                 <WarningIcon fontSize="small" />Warning: {warningReason}
               </Typography>}
-            <Typography>{plug.displayProperties.name}</Typography>
-
-            {/*TODO: description would be nice*/}
+            <Typography variant="body1">{plug.displayProperties.name}:</Typography>
+            {perks && perks.map(p => <Typography key={uuid()} variant="caption"><p>{p.displayProperties.description}</p></Typography>)}
+            {plug.tooltipNotifications.map(t => <Typography key={uuid()} variant="caption"><p>{t.displayString}</p></Typography>)}
           </>
         }
       >

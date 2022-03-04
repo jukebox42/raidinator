@@ -121,7 +121,7 @@ const ItemMods = ( {itemSockets, itemInstances, characterEquipment, weaponTypes,
         // TODO: Ammo Finder Mods
         // Additional Special Mods
         if (plug.displayProperties) {
-          console.log(plug.displayProperties.name, plug);
+          //console.log(plug.displayProperties.name, plug);
         }
         if (plug.displayProperties && specialDamageMods.includes(plug.displayProperties.name)) {
           return (<Mod key={uuid()} plug={plug} />);
