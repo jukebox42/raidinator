@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
-  Stack,
+  Alert,
   Paper,
   Tooltip,
   Typography,
 } from "@mui/material";
-import WarningIcon from '@mui/icons-material/Warning';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import { v4 as uuid } from "uuid";
+import uniq from "lodash/uniq";
 
 import { getAssetUrl } from "../../utils/functions";
 
@@ -29,25 +29,12 @@ const Mod = ( {plug, showWarning, warningReason}: ModProps ) => {
 
   useEffect(() => {
     const perks = plug.perks.map((p:any) => p.perkHash.toString());
-    db.DestinySandboxPerkDefinition.bulkGet(perks).then(r => {
-      const first = r[0];
-      const reducedPerksList = r.filter(p => {
-        // TODO: why are things duped?
-        if (p.displayProperties.description !== first.displayProperties.description) {
-          return p;
-        }
-      });
-      setPerks([first, ...reducedPerksList]);
-    })
+    db.DestinySandboxPerkDefinition.bulkGet(perks).then(r => setPerks(uniq(r)));
   })
 
-  const handleTooltipClose = () => {
-    setOpen(false);
-  };
+  const handleTooltipClose = () => setOpen(false);
 
-  const handleTooltipOpen = () => {
-    setOpen(true);
-  };
+  const handleTooltipOpen = () => setOpen(true);
 
   return (
     <ClickAwayListener onClickAway={handleTooltipClose}>
@@ -66,13 +53,10 @@ const Mod = ( {plug, showWarning, warningReason}: ModProps ) => {
         disableTouchListener
         title={
           <>
-            {showWarning && warningReason &&
-              <Typography variant="caption" sx={{display: "flex"}}>
-                <WarningIcon fontSize="small" />Warning: {warningReason}
-              </Typography>}
+            {showWarning && warningReason && <Alert severity="warning">{warningReason}</Alert>}
             <Typography variant="body1">{plug.displayProperties.name}:</Typography>
-            {perks && perks.map(p => <Typography key={uuid()} variant="caption"><p>{p.displayProperties.description}</p></Typography>)}
-            {plug.tooltipNotifications.map(t => <Typography key={uuid()} variant="caption"><p>{t.displayString}</p></Typography>)}
+            {perks && perks.map(p => <Typography key={uuid()} variant="caption" component="p" mt={1}>{p.displayProperties.description}</Typography>)}
+            {plug.tooltipNotifications.map(t => <Typography key={uuid()} variant="caption" component="p" mt={1}>{t.displayString}</Typography>)}
           </>
         }
       >

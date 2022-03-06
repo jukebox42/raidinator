@@ -134,7 +134,7 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
         })}
       </Stack>
       <Box sx={{ ml: 1, display: "flex", flexDirection: "row" }}>
-        <Box sx={{ width: "55px" }}>
+        <Box sx={{ width: "55px", mt: 1 }}>
           <IconButton size="small" onClick={onLoadFireteam} sx={{ p: 0 }}>
             <GroupAddIcon fontSize="small" />
           </IconButton>

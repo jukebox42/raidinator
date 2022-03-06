@@ -1,7 +1,7 @@
 import { createTheme } from "@mui/material";
 import { lightBlue } from "@mui/material/colors";
 
-export const VERSION = "0.0.11b";
+export const VERSION = "0.0.12b";
 
 // API
 export const DEV_MODE = process.env.NODE_ENV === "development";
@@ -60,7 +60,14 @@ export const theme = createTheme({
     divider: "#FFF",
   },
   components: {
-
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          background: "rgba(0, 0, 0, 0.90)",
+          padding: "5px",
+        }
+      }
+    }
   },
   shape: {
     borderRadius: 3,

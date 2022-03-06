@@ -6,7 +6,6 @@ import {
 import { v4 as uuid } from "uuid";
 
 import db from "../../store/db";
-import { getAssetUrl } from "../../utils/functions";
 import { specialDamageMods } from "../../utils/constants";
 import { getChampionMods, checkChampionMod } from "../../utils/rules/championRules";
 import {
@@ -71,27 +70,27 @@ const ItemMods = ( {itemSockets, itemInstances, characterEquipment, weaponTypes,
 
   const wellGeneratorMods = getWellGeneratorMods(plugs);
   const wellSpenderMods = getWellSpenderMods(plugs);
-  let wellEnergies: number[] = []; // hold energy from generators
+  const wellEnergies: number[] = []; // hold energy from generators
 
   return (
     <Stack direction="row" sx={{ml: 1}}>
       {championMods.map((plug) => {
         // Champion Mods
         const allGood = checkChampionMod(plug, weaponTypes, subclassEnergyType);
-        return (<Mod key={uuid()} plug={plug} showWarning={!allGood} warningReason="Missing required weapon." />);
+        return (<Mod key={uuid()} plug={plug} showWarning={!allGood} warningReason="Required champion weapon is not equipped." />);
       })}
       {chargedWithLightChargerMods.map((plug) => {
         // Charged With Light Mods
         const allGood = checkChargedWithLightMod(plug, weaponTypes, weaponEnergyTypes, subclassEnergyType);
         const hasSpenders = chargedWithLightSpenderMods.length > 0;
-        const warningReason = !hasSpenders ? "Missing mods to spend charged with light." : "Missing requirements to activate.";
+        const warningReason = !hasSpenders ? "Missing mods to spend charged with light." : "Missing requirements to activate this mod.";
         return (<Mod key={uuid()} plug={plug} showWarning={!allGood || !hasSpenders} warningReason={warningReason} />);
       })}
       {chargedWithLightSpenderMods.map((plug) => {
         // Charged With Light Mods
         const allGood = checkChargedWithLightMod(plug, weaponTypes, weaponEnergyTypes, subclassEnergyType);
         const hasChargers = chargedWithLightChargerMods.length > 0;
-        const warningReason = !hasChargers ? "Missing mods to create charged with light." : "Missing requirements to activate.";
+        const warningReason = !hasChargers ? "Missing mods to create charged with light." : "Missing requirements to activate this mod.";
         return (<Mod key={uuid()} plug={plug} showWarning={!allGood || !hasChargers} warningReason={warningReason} />);
       })}
       {wellGeneratorMods.map((plug) => {
@@ -102,14 +101,14 @@ const ItemMods = ( {itemSockets, itemInstances, characterEquipment, weaponTypes,
           wellEnergies.push(wellType as any);
         }
         const hasSpenders = wellSpenderMods.length > 0;
-        const warningReason = !hasSpenders ? "Missing mods to use wells." : "Missing requirements to activate.";
+        const warningReason = !hasSpenders ? "Missing mods to use wells." : "Missing requirements to activate this mod.";
         return (<Mod key={uuid()} plug={plug} showWarning={!allGood || !hasSpenders} warningReason={warningReason} />);
       })}
       {wellSpenderMods.map((plug) => {
         // Spending Well Mods
         const allGood = checkWellMod(plug, weaponEnergyTypes, subclassEnergyType, wellEnergies);
         const hasChargers = wellGeneratorMods.length > 0;
-        const warningReason = !hasChargers ? "Missing mods to create wells." : "Missing requirements to activate.";
+        const warningReason = !hasChargers ? "Missing mods to create wells." : "Missing requirements to activate this mod.";
        return (<Mod key={uuid()} plug={plug} showWarning={!allGood || !hasChargers} warningReason={warningReason} />);
       })}
       {plugs.map((plug) => {
