@@ -65,6 +65,9 @@ export const theme = createTheme({
         tooltip: {
           background: "rgba(0, 0, 0, 0.90)",
           padding: "5px",
+        },
+        arrow: {
+          color: "rgba(0, 0, 0, 0.90)",
         }
       }
     }
