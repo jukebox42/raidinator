@@ -25,12 +25,17 @@ interface ModProps {
 const Mod = ( {plug, showWarning, warningReason}: ModProps ) => {
   // console.log(plug.displayProperties.name, plug);
   const [open, setOpen] = React.useState(false);
-  const [perks, setPerks] = React.useState<any[]>([]);
+  const [perks, setPerks] = React.useState<string[]>([]);
 
   useEffect(() => {
-    const perks = plug.perks.map((p:any) => p.perkHash.toString());
-    db.DestinySandboxPerkDefinition.bulkGet(perks).then(r => setPerks(uniq(r)));
-  })
+    const perkHashes = plug.perks.map((p:any) => p.perkHash.toString());
+    db.DestinySandboxPerkDefinition.bulkGet(perkHashes).then(resp => {
+      const perkDescriptions = resp
+        .map(p => p.displayProperties?.description)
+        .filter(p => p !== undefined);
+      setPerks(uniq(perkDescriptions));
+    });
+  }, []);
 
   const handleTooltipClose = () => setOpen(false);
 
@@ -55,7 +60,7 @@ const Mod = ( {plug, showWarning, warningReason}: ModProps ) => {
           <>
             {showWarning && warningReason && <Alert severity="warning">{warningReason}</Alert>}
             <Typography variant="body1">{plug.displayProperties.name}:</Typography>
-            {perks && perks.map(p => <Typography key={uuid()} variant="caption" component="p" mt={1}>{p.displayProperties.description}</Typography>)}
+            {perks && perks.map(p => <Typography key={uuid()} variant="caption" component="p" mt={1}>{p}</Typography>)}
             {plug.tooltipNotifications.map(t => <Typography key={uuid()} variant="caption" component="p" mt={1}>{t.displayString}</Typography>)}
           </>
         }

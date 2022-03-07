@@ -235,7 +235,7 @@ function App() {
         size="small"
         className="fab-style"
         onClick={() => {setGuardians([...guardians, {key: uuid()}])}}>
-          <AddIcon sx={{ mr: 1 }} />
+          <AddIcon />
         </Fab>}
       <FireteamDialog
         player={fireteamDialogPlayer}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   Box,
@@ -40,45 +40,43 @@ interface DisplayGuardianProps {
 }
 
 const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam }: DisplayGuardianProps ) => {
-  const [damageTypes, setDamageTypes] = useState<BI.Destiny.Definitions.DestinyDamageTypeDefinition[]>([]);
-  const [energyTypes, setEnergyTypes] = useState<BI.Manifest.DestinyEnergyType[]>([]);
-  const [statTypes, setStatTypes] = useState<BI.Manifest.DestinyStatType[]>([]);
-  const [plugTypes, setPlugTypes] = useState<BI.Manifest.DestinyStatType[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  let damageTypes =  useRef<BI.Destiny.Definitions.DestinyDamageTypeDefinition[]>([]);
+  let energyTypes = useRef<BI.Manifest.DestinyEnergyType[]>([]);
+  let statTypes = useRef<BI.Manifest.DestinyStatType[]>([]);
+  let plugTypes = useRef<BI.Manifest.DestinyStatType[]>([]);
+  let itemDefinitions = useRef<(DestinyInventoryItemDefinition | undefined)[]>([]);
 
   // Load character dbs
-  const itemDefinitions = useLiveQuery(async () => {
-    setDamageTypes(await db.DestinyDamageTypeDefinition.toArray());
-    setEnergyTypes(await db.DestinyEnergyTypeDefinition.toArray());
-    setStatTypes(await db.DestinyStatDefinition.toArray());
-    setPlugTypes(await db.DestinyPlugSetDefinition.toArray());
+  useLiveQuery(async () => {
+    damageTypes.current = await db.DestinyDamageTypeDefinition.toArray();
+    energyTypes.current = await db.DestinyEnergyTypeDefinition.toArray();
+    statTypes.current = await db.DestinyStatDefinition.toArray();
+    plugTypes.current = await db.DestinyPlugSetDefinition.toArray();
 
     // push items into a map so they are easier to index
-    return await db.DestinyInventoryItemDefinition.bulkGet(
+    itemDefinitions.current = await db.DestinyInventoryItemDefinition.bulkGet(
       guardian.inventory.items.map(item => item.itemHash.toString())
     );
+    setLoaded(true);
   });
 
-  // Get the light stat type
-  const lightStatType = statTypes.find(type => type.hash === 1935470627);
+  
 
   // Wait for all the dbs to load
-  if(
-    damageTypes.length === 0 ||
-    energyTypes.length === 0 ||
-    statTypes.length === 0 ||
-    plugTypes.length === 0 ||
-    !itemDefinitions || itemDefinitions.length === 0 ||
-    !lightStatType
-  ) {
+  if(!loaded) {
     return <Box sx={{ p: 0 }}><Loading marginTop="43px" /></Box>;
   }
 
+  // Get the light stat type
+  const lightStatType = statTypes.current.find(type => type.hash === 1935470627);
+
   // get subclass
-  const subclassDefinition = itemDefinitions.find(itemDefinition => isSubClass(itemDefinition));
+  const subclassDefinition = itemDefinitions.current.find(itemDefinition => isSubClass(itemDefinition));
   const subclassInstance = guardian.inventory.items.find(
     gi => gi.itemHash === subclassDefinition?.hash);
 
-  const weapons = (itemDefinitions as DestinyInventoryItemDefinition[])
+  const weapons = (itemDefinitions.current as DestinyInventoryItemDefinition[])
     .filter(i => i.traitIds && i.traitIds.includes("item_type.weapon"));
   // get all the weapon energy types
   const weaponEnergyTypes = uniq(weapons.map(w => convertDamageTypeToEnergyType(w.damageTypes)).flat());
@@ -95,11 +93,11 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
         />
         <Box sx={{ flexGrow: 1 }}>
           <PlayerName player={player} classType={guardian.character.classType} />
-          <CharacterStats stats={guardian.character.stats} statTypes={statTypes} />
+          <CharacterStats stats={guardian.character.stats} statTypes={statTypes.current} />
         </Box>
         <Box sx={{ display: "flex", m: 1, mb: 0 }}>
           <img
-            src={getAssetUrl(lightStatType.displayProperties.icon)}
+            src={getAssetUrl((lightStatType as BI.Manifest.DestinyStatType).displayProperties.icon)}
             className="icon-light invert"
           />
           <Typography variant="subtitle1" sx={{ mt: "-3px" }}>
@@ -112,7 +110,7 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
           itemDefinition={subclassDefinition}
           itemInstance={subclassInstance}
         />
-        {itemDefinitions?.map((itemDefinition: any) => {
+        {itemDefinitions.current.map((itemDefinition: any) => {
           // only equipment has traits so dont render an item
           if (!itemDefinition.traitIds || !shouldDisplayEquipmentItem(itemDefinition)) {
             return;
@@ -127,8 +125,8 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
               itemInstance={itemInstance as BI.Destiny.Entities.Items.DestinyItemComponent}
               itemDefinition={itemDefinition}
               itemInstanceDetails={itemInstanceDetails}
-              damageTypes={damageTypes}
-              energyTypes={energyTypes}
+              damageTypes={damageTypes.current}
+              energyTypes={energyTypes.current}
             />
           )
         })}
