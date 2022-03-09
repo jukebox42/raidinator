@@ -1,5 +1,4 @@
 import { createTheme } from "@mui/material";
-import { lightBlue } from "@mui/material/colors";
 
 export const VERSION = "0.0.13b";
 
@@ -45,7 +44,14 @@ export const DESTINY_API_URLS = {
 export const specialDamageMods = [
   "Suppressing Glave",
   "Suppressive Darkness",
-]
+];
+
+// Misc
+
+/**
+ * This is the hash of the light stat. Used to pull it out of the list.
+ */
+export const LIGHT_STAT_HASH = "1935470627";
 
 // MUI Theme
 export const theme = createTheme({

@@ -1,4 +1,3 @@
-import React, { useState, useEffect, useMemo } from "react";
 import {
   Paper,
 } from "@mui/material";
@@ -105,10 +104,12 @@ const CharacterSubclass = ( {itemDefinition, itemInstance}: CharacterSubclassPro
   if (!itemDefinition || !itemInstance) {
     return <></>;
   }
-  console.log("Subclass", itemDefinition, itemInstance);
   return (
     <Paper key={itemInstance.itemInstanceId} elevation={0} className="icon-item" sx={{ background: "none" }}>
-      <img src={getAssetUrl(itemDefinition.displayProperties.icon)} className="icon" />
+      <img
+        src={getAssetUrl(itemDefinition.displayProperties.icon)}
+        className="icon"
+      />
     </Paper>
   )
 }

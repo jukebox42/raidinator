@@ -11,7 +11,7 @@ import clone from "lodash/clone";
 
 import db, { ManifestTables } from "./store/db";
 import { LANGUAGE, theme } from "./utils/constants";
-import { getManifest, getManifestContent, getMemberById, getProfile } from "./bungie/api";
+import { getManifest, getManifestContent } from "./bungie/api";
 
 // Components
 import FindPlayer from "./components/FindPlayer";
@@ -19,21 +19,18 @@ import Guardian from "./components/Guardian";
 import { FireteamDialog } from "./components/partials"
 import { Loading, NavBar, ErrorBoundary } from "./components/generics";
 
+import { AppContext, IAppContext } from "./store/AppContext";
+
 // Interfaces
 import * as BI from "./bungie/interfaces";
 import { PlayerData } from "./utils/interfaces";
-
-interface CardData {
-  id?: string,
-  key: string,
-}
 
 function App() {
   const [error, setError] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [playerCacheLoaded, setPlayerCacheLoaded] = useState(false)
-  const [guardians, setGuardians] = useState<CardData[]>([]);
+  const [guardians, setGuardians] = useState<IAppContext[]>([]);
   const [fireteamDialogOpen, setFireteamDialogOpen] = useState(false);
   const [fireteamDialogPlayer, setFreteamDialogPlayer] = useState<PlayerData | null>(null);
 
@@ -148,7 +145,6 @@ function App() {
    */
   const deleteGuardian = (key: string) => {
     const guardiansCopy = guardians.filter(g => {
-
       if (g.key === key && g.id) {
         db.deletePlayerCache(g.id);
       }
@@ -162,7 +158,7 @@ function App() {
    */
   const foundPlayer = async (player: PlayerData, cardKey: string) => {
     await db.AppPlayers.put(player, player.membershipId); // store player in player database.
-    const guardiansCopy = clone(guardians).map((g) => {
+    const guardiansCopy = clone(guardians).map(g => {
       if (g.key === cardKey) {
         g.id = player.membershipId as any;
       }
@@ -182,7 +178,7 @@ function App() {
   /**
    * Handle the on load fireteam even from the dialog
    */
-  const onLoadFireteam = (fireteamPlayers: CardData[]) => {
+  const onLoadFireteam = (fireteamPlayers: IAppContext[]) => {
     db.AppPlayersSelectedCharacter.clear();
     setGuardians(fireteamPlayers);
   }
@@ -205,44 +201,54 @@ function App() {
     );
   }
 
+  const renderGuardian = (card: IAppContext) => {
+    return (
+      <Guardian
+        key={card.key}
+        playerId={card.id}
+        cardKey={card.key}
+        onDelete={deleteGuardian}
+        onLoadFireteam={loadFireteam}/>);
+  };
+
+  const renderFindPlayer = (card: IAppContext) => {
+    return (
+      <FindPlayer
+        key={card.key}
+        cardKey={card.key}
+        onDelete={deleteGuardian}
+        onFoundPlayer={foundPlayer}/>);
+  };
+
   return (
-    <ThemeProvider theme={theme}>
-      <NavBar refreshCallback={refreshCallback} acting={!loaded || refreshing}/>
-      <ErrorBoundary>
-      <Stack sx={{ mx: "auto", pt: "56px", pb: "50px" }}>
-        {guardians.map((card) => {
-          // either render a search box or a guardian card if there's a player id
-          if (!card.id) {
-            return (
-              <FindPlayer
-                key={card.key}
-                cardKey={card.key}
-                onDelete={deleteGuardian}
-                onFoundPlayer={foundPlayer}/>);
-          }
-          return (
-            <Guardian
-              key={card.key}
-              playerId={card.id}
-              cardKey={card.key}
-              onDelete={deleteGuardian}
-              onLoadFireteam={loadFireteam}/>);
-        })}
-      </Stack>
-      </ErrorBoundary>
-      {guardians.length < 6 && <Fab
-        aria-label="add"
-        size="small"
-        className="fab-style"
-        onClick={() => {setGuardians([...guardians, {key: uuid()}])}}>
-          <AddIcon />
-        </Fab>}
-      <FireteamDialog
-        player={fireteamDialogPlayer}
-        onClose={() => setFireteamDialogOpen(false)}
-        open={fireteamDialogOpen}
-        onLoadFireteam={(fireteamPlayers) => onLoadFireteam(fireteamPlayers)} />
-    </ThemeProvider>
+    <AppContext.Provider value={guardians}>
+      <ThemeProvider theme={theme}>
+        <NavBar refreshCallback={refreshCallback} acting={!loaded || refreshing}/>
+        <ErrorBoundary>
+        <Stack sx={{ mx: "auto", pt: "56px", pb: "50px" }}>
+          {guardians.map((card) => {
+            // either render a search box or a guardian card if there's a player id
+            if (!card.id) {
+              return renderFindPlayer(card);
+            }
+            return renderGuardian(card); 
+          })}
+        </Stack>
+        </ErrorBoundary>
+        {guardians.length < 6 && <Fab
+          aria-label="add"
+          size="small"
+          className="fab-style"
+          onClick={() => {setGuardians([...guardians, {key: uuid()}])}}>
+            <AddIcon />
+          </Fab>}
+        <FireteamDialog
+          player={fireteamDialogPlayer}
+          onClose={() => setFireteamDialogOpen(false)}
+          open={fireteamDialogOpen}
+          onLoadFireteam={(fireteamPlayers) => onLoadFireteam(fireteamPlayers)} />
+      </ThemeProvider>
+    </AppContext.Provider>
   );
 }
 

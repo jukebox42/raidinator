@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useContext } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   Box,
@@ -21,6 +21,7 @@ import { TouchCard } from "./generics";
 import { findPlayers } from "../bungie/api";
 import * as BI from "../bungie/interfaces";
 import { PlayerData } from "../utils/interfaces";
+import { AppContext } from "../store/AppContext";
 
 interface FindPlayerProps {
   cardKey: string;
@@ -29,13 +30,16 @@ interface FindPlayerProps {
 }
 
 const FindPlayer = ({ onFoundPlayer, cardKey, onDelete }: FindPlayerProps) => {
+  const context = useContext(AppContext);
   const [value, setValue] = useState<PlayerData | null>(null); //todo: do i need this?
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState<PlayerData[]>([]);
   const [dbOptions, setdbOptions] = useState<PlayerData[]>([]);
 
   useLiveQuery(async () => {
-    const previousSearches = await db.AppSearches.toArray();
+    const ids = context.map(c => c.id);
+    const previousSearches = (await db.AppSearches.toArray())
+      .filter(item => !ids.includes(item.membershipId.toString()));
     setOptions([...options, ...previousSearches]);
     setdbOptions([...previousSearches]);
   });
@@ -59,9 +63,10 @@ const FindPlayer = ({ onFoundPlayer, cardKey, onDelete }: FindPlayerProps) => {
 
     search(inputValue, (response: BI.User.UserSearchResponse) => {
       if (active) {
+        const ids = context.map(c => c.id);
         // if no results (or error)
-        if (!response.searchResults){
-          setOptions([...dbOptions]);
+        if (!response.searchResults) {
+          setOptions([...dbOptions.filter(item => !ids.includes(item.membershipId.toString()))]);
           return;
         }
 
@@ -74,6 +79,7 @@ const FindPlayer = ({ onFoundPlayer, cardKey, onDelete }: FindPlayerProps) => {
         // filter out the players without memberships then map them to player objects
         const searchOptions = response.searchResults
           .filter(item => item.destinyMemberships.length > 0)
+          .filter(item => !ids.includes(item.destinyMemberships[0].membershipId.toString()))
           .map(item => {
             return {
               bungieGlobalDisplayName: item.bungieGlobalDisplayName,
@@ -93,7 +99,7 @@ const FindPlayer = ({ onFoundPlayer, cardKey, onDelete }: FindPlayerProps) => {
     return () => {
       active = false;
     }
-  }, [value, inputValue, search]);
+  }, [value, inputValue, search, context]);
 
   const renderOption = (props: any, option: PlayerData) => {
     return (
@@ -117,6 +123,7 @@ const FindPlayer = ({ onFoundPlayer, cardKey, onDelete }: FindPlayerProps) => {
         }}
         variant="standard"
         autoComplete="new-password"
+        autoFocus
       />
     );
   };

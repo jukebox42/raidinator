@@ -9,6 +9,7 @@ import { getAssetUrl } from "../../utils/functions";
 
 // Interfaces
 import * as BI from "../../bungie/interfaces";
+import { LIGHT_STAT_HASH } from "../../utils/constants";
 
 interface CharacterStatsProps {
   stats: {
@@ -18,24 +19,27 @@ interface CharacterStatsProps {
 }
 
 const CharacterStats = ( { stats, statTypes }: CharacterStatsProps ) => {
+  // sort the stats so they match the game. Thankfully they have an index
+  statTypes.sort((a,b) => a.index - b.index);
+
   return (
     <Stack direction="row">
-      {Object.keys(stats).map(statHash => {
+      {statTypes.map(statType => {
         // Skip the light stat. We don't want/need it in the list.
-        if (statHash === "1935470627") {
+        if (statType.hash.toString() === LIGHT_STAT_HASH) {
           return;
         }
 
-        // Find the statType that matches
-        const statType = statTypes.find(type => type.hash.toString() === statHash);
-        if (!statType) {
+        // Find the stat that matches
+        const statKey = Object.keys(stats).find(statHash => statType.hash.toString() === statHash);
+        if (!statKey) {
           return;
         }
 
         return (
-          <Paper key={statHash} elevation={0} sx={{ display: "flex", m: 1, mb: 0, ml: 0, background: "none" }}>
+          <Paper key={statKey} elevation={0} sx={{ display: "flex", m: 1, mb: 0, ml: 0, background: "none" }}>
             <img src={getAssetUrl(statType.displayProperties.icon)} className="icon-stat invert" />
-            <Typography variant="caption" sx={{ mt: "-3px" }}>{stats[statHash as any]}</Typography>
+            <Typography variant="caption" sx={{ mt: "-3px" }}>{stats[statKey as any]}</Typography>
           </Paper>
         )
       })}

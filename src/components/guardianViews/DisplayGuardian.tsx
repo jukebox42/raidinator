@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   Box,
@@ -11,11 +11,11 @@ import uniq from "lodash/uniq";
 
 import db from "../../store/db";
 import { getAssetUrl } from "../../utils/functions";
+import { LIGHT_STAT_HASH } from "../../utils/constants";
 
 // Components
 import { Loading } from "../generics";
 import {
-  Mods,
   ItemMods,
   PlayerName,
   CharacterStats,
@@ -41,11 +41,11 @@ interface DisplayGuardianProps {
 
 const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam }: DisplayGuardianProps ) => {
   const [loaded, setLoaded] = useState(false);
-  let damageTypes =  useRef<BI.Destiny.Definitions.DestinyDamageTypeDefinition[]>([]);
-  let energyTypes = useRef<BI.Manifest.DestinyEnergyType[]>([]);
-  let statTypes = useRef<BI.Manifest.DestinyStatType[]>([]);
-  let plugTypes = useRef<BI.Manifest.DestinyStatType[]>([]);
-  let itemDefinitions = useRef<(DestinyInventoryItemDefinition | undefined)[]>([]);
+  const damageTypes =  useRef<BI.Destiny.Definitions.DestinyDamageTypeDefinition[]>([]);
+  const energyTypes = useRef<BI.Manifest.DestinyEnergyType[]>([]);
+  const statTypes = useRef<BI.Manifest.DestinyStatType[]>([]);
+  const plugTypes = useRef<BI.Manifest.DestinyStatType[]>([]);
+  const itemDefinitions = useRef<DestinyInventoryItemDefinition[]>([]);
 
   // Load character dbs
   useLiveQuery(async () => {
@@ -57,11 +57,9 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
     // push items into a map so they are easier to index
     itemDefinitions.current = await db.DestinyInventoryItemDefinition.bulkGet(
       guardian.inventory.items.map(item => item.itemHash.toString())
-    );
+    ) as DestinyInventoryItemDefinition[];
     setLoaded(true);
   });
-
-  
 
   // Wait for all the dbs to load
   if(!loaded) {
@@ -69,19 +67,19 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
   }
 
   // Get the light stat type
-  const lightStatType = statTypes.current.find(type => type.hash === 1935470627);
+  const lightStatType = statTypes.current.find(t => t.hash.toString() === LIGHT_STAT_HASH);
 
   // get subclass
-  const subclassDefinition = itemDefinitions.current.find(itemDefinition => isSubClass(itemDefinition));
+  const subclassDefinition = itemDefinitions.current.find(idef => isSubClass(idef));
   const subclassInstance = guardian.inventory.items.find(
     gi => gi.itemHash === subclassDefinition?.hash);
 
-  const weapons = (itemDefinitions.current as DestinyInventoryItemDefinition[])
+  const weapons = itemDefinitions.current
     .filter(i => i.traitIds && i.traitIds.includes("item_type.weapon"));
   // get all the weapon energy types
   const weaponEnergyTypes = uniq(weapons.map(w => convertDamageTypeToEnergyType(w.damageTypes)).flat());
   // get all the weapon types. yes this will include item_type.weapon but we dont care.
-  const weaponTypes = uniq(weapons.map(i => i.traitIds).flat())
+  const weaponTypes = uniq(weapons.map(i => i.traitIds).flat());
 
   return (
     <>
@@ -110,7 +108,7 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
           itemDefinition={subclassDefinition}
           itemInstance={subclassInstance}
         />
-        {itemDefinitions.current.map((itemDefinition: any) => {
+        {itemDefinitions.current.map(itemDefinition => {
           // only equipment has traits so dont render an item
           if (!itemDefinition.traitIds || !shouldDisplayEquipmentItem(itemDefinition)) {
             return;
@@ -138,9 +136,7 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
           </IconButton>
         </Box>
         <ItemMods
-          itemInstances={guardian.itemComponents.instances}
-          itemSockets={guardian.itemComponents.sockets}
-          characterEquipment={guardian.inventory}
+          guardian={guardian}
           weaponTypes={weaponTypes}
           weaponEnergyTypes={weaponEnergyTypes}
           subclassEnergyType={getSubclassEnergyType(subclassDefinition)}

@@ -1,4 +1,3 @@
-import React, { useState, useEffect, useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   Stack,
@@ -23,39 +22,39 @@ import {
 // Components
 import Mod from "./Mod";
 
+// Interfaces
+import { DestinyItemSocketState } from "../../bungie/interfaces/Destiny/Entities/Items";
+
 interface ModsProps {
-  itemSockets: any; // TODO these arent any. we have these interfaces
-  itemInstances: any;
-  characterEquipment: any;
+  guardian: any;
   weaponTypes: string[]; // TODO this could be better yeah?
   weaponEnergyTypes: any[]; // TODO same here
   subclassEnergyType: any;
 }
 
-const ItemMods = ( {itemSockets, itemInstances, characterEquipment, weaponTypes, weaponEnergyTypes, subclassEnergyType}: ModsProps ) => {
+const ItemMods = ( {guardian, weaponTypes, weaponEnergyTypes, subclassEnergyType}: ModsProps ) => {
+  // const context = useContext(GuardianContext);
+  const instances = guardian.itemComponents.instances;
+  const sockets = guardian.itemComponents.sockets;
+  const characterEquipment = guardian.inventory;
+
   const plugs = useLiveQuery(async () => {
-    if (!itemSockets) {
+    if (!sockets) {
       return;
     }
     // get item instance ids to filter with. itemSockets includes ALL characters items
-    let equippedItemKeys: string[] = [];
-    characterEquipment.items.forEach(
-      (equipment: any) => equippedItemKeys.push(equipment.itemInstanceId));
+    const equippedItemKeys = characterEquipment.items.map((e: any) => e.itemInstanceId.toString());
 
     // get full list of plugs in sockets
-    let flatPlugs: any[] = [];
-    Object.keys(itemInstances.data).forEach(itemId => {
-      if (equippedItemKeys.includes(itemId) && itemSockets.data[itemId]) {
-        flatPlugs = flatPlugs.concat(itemSockets.data[itemId].sockets);
+    let flatPlugs: DestinyItemSocketState[] = [];
+    Object.keys(instances.data).forEach(itemId => {
+      if (equippedItemKeys.includes(itemId) && sockets.data[itemId as any]) {
+        flatPlugs = flatPlugs.concat(sockets.data[itemId as any].sockets);
       }
     });
     // push items into a map so they are easier to index
     return await db.DestinyInventoryItemDefinition.bulkGet(
-      flatPlugs.map(item => {
-        if (item.plugHash) {
-          return item.plugHash.toString();
-        }
-      })
+      flatPlugs.filter(i => !!i.plugHash).map(i => i.plugHash.toString())
     );
   });
 
@@ -64,10 +63,8 @@ const ItemMods = ( {itemSockets, itemInstances, characterEquipment, weaponTypes,
   }
 
   const championMods = getChampionMods(plugs);
-
   const chargedWithLightChargerMods = getChargedWithLightChargerMods(plugs);
   const chargedWithLightSpenderMods = getChargedWithLightSpenderMods(plugs);
-
   const wellGeneratorMods = getWellGeneratorMods(plugs);
   const wellSpenderMods = getWellSpenderMods(plugs);
   const wellEnergies: number[] = []; // hold energy from generators
@@ -125,6 +122,7 @@ const ItemMods = ( {itemSockets, itemInstances, characterEquipment, weaponTypes,
         if (plug.displayProperties && specialDamageMods.includes(plug.displayProperties.name)) {
           return (<Mod key={uuid()} plug={plug} />);
         }
+        return;
       })}
     </Stack>
   )
