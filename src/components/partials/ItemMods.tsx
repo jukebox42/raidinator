@@ -25,14 +25,14 @@ import Mod from "./Mod";
 // Interfaces
 import { DestinyItemSocketState } from "../../bungie/interfaces/Destiny/Entities/Items";
 
-interface ModsProps {
+type ItemModsProps = {
   guardian: any;
   weaponTypes: string[]; // TODO this could be better yeah?
   weaponEnergyTypes: any[]; // TODO same here
   subclassEnergyType: any;
 }
 
-const ItemMods = ( {guardian, weaponTypes, weaponEnergyTypes, subclassEnergyType}: ModsProps ) => {
+const ItemMods = ( {guardian, weaponTypes, weaponEnergyTypes, subclassEnergyType}: ItemModsProps ) => {
   // const context = useContext(GuardianContext);
   const instances = guardian.itemComponents.instances;
   const sockets = guardian.itemComponents.sockets;

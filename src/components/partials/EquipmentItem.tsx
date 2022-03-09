@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import {
   Paper,
 } from "@mui/material";
@@ -9,7 +9,7 @@ import { getAssetUrl } from "../../utils/functions";
 import * as BI from "../../bungie/interfaces";
 import { LIGHT_GG_URL } from "../../utils/constants";
 
-interface EquipmentItemProps {
+type EquipmentItemProps = {
   itemDefinition: BI.Destiny.Definitions.DestinyInventoryItemDefinition;
   itemInstance: BI.Destiny.Entities.Items.DestinyItemComponent;
   itemInstanceDetails: BI.Destiny.Entities.Items.DestinyItemInstanceComponent;

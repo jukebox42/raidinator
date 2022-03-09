@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Box,
   Button,
@@ -28,7 +28,7 @@ interface GuardiansData {
   characterPlugSets: Components.PlugSets.DestinyPlugSetsComponent;
 };
 
-interface PickGuardianProps {
+type PickGuardianProps = {
   player: PlayerData;
   guardianId: string;
   pickedGuardian: (

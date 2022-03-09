@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useContext } from "react";
+import { useState, useEffect, useMemo, useContext } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   Box,
@@ -23,7 +23,7 @@ import * as BI from "../bungie/interfaces";
 import { PlayerData } from "../utils/interfaces";
 import { AppContext } from "../store/AppContext";
 
-interface FindPlayerProps {
+type FindPlayerProps = {
   cardKey: string;
   onDelete: (key: string) => void;
   onFoundPlayer: (player: PlayerData, cardKey: string) => void;

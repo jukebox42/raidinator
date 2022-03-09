@@ -1,16 +1,14 @@
 // UNUSED, Needed to get stats on equipped super
-import React, { useState, useEffect, useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   Paper,
   Stack,
-  Tooltip,
 } from "@mui/material";
 
 import db from "../../store/db";
 import { getAssetUrl } from "../../utils/functions";
 
-interface ModsProps {
+type ModsProps = {
   characterPlugSets: any;
   characterId: string;
 }

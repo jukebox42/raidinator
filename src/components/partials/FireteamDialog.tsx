@@ -24,7 +24,7 @@ interface CardData {
   key: string,
 }
 
-interface FireteamDialogProps {
+type FireteamDialogProps = {
   open: boolean;
   player: PlayerData | null;
   onLoadFireteam: (guardians: CardData[]) => void;

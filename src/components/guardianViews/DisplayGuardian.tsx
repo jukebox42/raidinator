@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   Box,
@@ -83,7 +83,7 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
 
   return (
     <>
-      <Box sx={{p:0, m:0, ml: 1, display: "flex", flexDirection: "row"}}>
+      <Box sx={{ p: 0, m: 0, ml: 1, display: "flex", flexDirection: "row" }}>
         <img
           src={getAssetUrl(guardian.character.emblemPath)}
           className="icon-emblem"

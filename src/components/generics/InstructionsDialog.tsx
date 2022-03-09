@@ -1,10 +1,6 @@
-import React, { useEffect, useState } from "react";
 import {
-  Button,
   Dialog,
-  DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   List,
   ListItem,
@@ -17,12 +13,7 @@ import SwipeIcon from '@mui/icons-material/Swipe';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
 import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt';
 
-interface CardData {
-  id?: string,
-  key: string,
-}
-
-interface InstructionsDialogProps {
+type InstructionsDialogProps = {
   open: boolean;
   onClose: () => void;
 }

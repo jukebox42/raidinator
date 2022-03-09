@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
-  Button,
   Snackbar,
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-interface ToastProps {
+type ToastProps = {
   message: string;
 }
 

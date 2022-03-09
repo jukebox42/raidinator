@@ -46,8 +46,6 @@ export const specialDamageMods = [
   "Suppressive Darkness",
 ];
 
-// Misc
-
 /**
  * This is the hash of the light stat. Used to pull it out of the list.
  */

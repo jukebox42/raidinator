@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   AppBar,
   Box,
@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CachedIcon from "@mui/icons-material/Cached";
-import CodeIcon from "@mui/icons-material/Code";
 import DataThresholdingIcon from "@mui/icons-material/DataThresholding";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import GitHubIcon from "@mui/icons-material/GitHub";
@@ -26,7 +25,7 @@ import { LASER_SOUNDS_URL, SOURCE_URL, VERSION } from "../../utils/constants";
 // Components
 import InstructionsDialog from "./InstructionsDialog";
 
-interface NavBarProps {
+type NavBarProps = {
   acting: boolean;
   refreshCallback: (refresh: () => Promise<void>) => void;
 }

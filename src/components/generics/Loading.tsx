@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useMemo, memo } from "react";
+import { memo } from "react";
 import {
   Box,
-  CircularProgress,
   Typography,
 } from "@mui/material";
 
 import "./Loading.css";
 
-interface LoaderProps {
+type LoaderProps = {
   marginTop: string;
   loadingText?: string;
 }

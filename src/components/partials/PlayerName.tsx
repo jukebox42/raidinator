@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Typography,
@@ -8,7 +7,7 @@ import { getClassSvg } from "../partials";
 
 import { PlayerData } from "../../utils/interfaces";
 
-interface PlayerNameProps {
+type PlayerNameProps = {
   player: PlayerData;
   showCode?: boolean;
   classType?: number;

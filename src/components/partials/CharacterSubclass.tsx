@@ -1,10 +1,12 @@
 import {
   Paper,
+  Typography,
 } from "@mui/material";
 
 import { getAssetUrl } from "../../utils/functions";
 
 // Components
+import { DetailTooltip } from "../generics";
 import { ReactComponent as HunterSymbol } from '../../assets/hunter_emblem.svg';
 import { ReactComponent as WarlockSymbol } from '../../assets/warlock_emblem.svg';
 import { ReactComponent as TitanSymbol } from '../../assets/titan_emblem.svg';
@@ -27,7 +29,7 @@ enum EnergyType {
   STASIS = 6,
 };
 
-interface CharacterSubclassProps {
+type CharacterSubclassProps = {
   itemDefinition: BI.Destiny.Definitions.DestinyInventoryItemDefinition | undefined;
   itemInstance: BI.Destiny.Entities.Items.DestinyItemComponent | undefined;
 }
@@ -101,15 +103,23 @@ export const isSubClass = (itemDefinition: BI.Destiny.Definitions.DestinyInvento
 }
 
 const CharacterSubclass = ( {itemDefinition, itemInstance}: CharacterSubclassProps ) => {
+  console.log("Subclass", itemDefinition, itemInstance)
   if (!itemDefinition || !itemInstance) {
     return <></>;
   }
   return (
     <Paper key={itemInstance.itemInstanceId} elevation={0} className="icon-item" sx={{ background: "none" }}>
-      <img
-        src={getAssetUrl(itemDefinition.displayProperties.icon)}
-        className="icon"
-      />
+      <DetailTooltip title={
+        <>
+          <Typography variant="body1">{itemDefinition.displayProperties.name}</Typography>
+          {/*perks && perks.map(p => <Typography key={uuid()} variant="caption" component="p" mt={1}>{p}</Typography>)*/}
+        </>
+      } flow={false}>
+        <img
+          src={getAssetUrl(itemDefinition.displayProperties.icon)}
+          className="icon"
+        />
+      </DetailTooltip>
     </Paper>
   )
 }

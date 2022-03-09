@@ -1,4 +1,3 @@
-import React, { useState, useEffect, useMemo } from "react";
 import {
   Stack,
   Paper,
@@ -11,7 +10,7 @@ import { getAssetUrl } from "../../utils/functions";
 import * as BI from "../../bungie/interfaces";
 import { LIGHT_STAT_HASH } from "../../utils/constants";
 
-interface CharacterStatsProps {
+type CharacterStatsProps = {
   stats: {
     [key: number]: number;
   };
