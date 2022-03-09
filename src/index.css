@@ -2,16 +2,31 @@ body {
   margin: 0;
   background-color: #10131C;
   background-image: url("assets/bg.jpg");
-  background-size: 380%;
   background-repeat:no-repeat;
-  background-position: 50% 54px;
-  background-attachment: fixed;
+  background-size: auto;
+}
+
+#root {
+  max-width: 450px;
 }
 
 .fab-style {
   position: fixed !important;
   bottom: 5px !important;
   right: 5px !important;
+}
+
+@media screen and (max-width: 450px) {
+  body {
+    background-size: 380%;
+    background-position: 50% 54px;
+    background-attachment: fixed;
+  }
+
+  #root {
+    width: 100%;
+    position: relative;
+  }
 }
 
 .icon-item {
@@ -111,7 +126,7 @@ body {
 }
 
 .guardianCard {
-  min-height: 160px;
+  min-height: 155px;
 }
 
 /* MUI really makes this hard... */

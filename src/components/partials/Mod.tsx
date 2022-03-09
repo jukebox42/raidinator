@@ -35,6 +35,7 @@ const Mod = ( {plug, showWarning, warningReason}: ModProps ) => {
 
   return (
     <DetailTooltip
+      warning={showWarning}
       title={
         <>
           {showWarning && warningReason && <Alert severity="warning">{warningReason}</Alert>}

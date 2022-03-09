@@ -8,10 +8,11 @@ import ClickAwayListener from '@mui/material/ClickAwayListener';
 type TooltipProps = {
   title: React.ReactElement<any, any> | string;
   flow?: boolean;
+  warning?: boolean;
   children: React.ReactElement<any, any>;
 }
 
-const DetailTooltip = ( {title, children, flow = true}: TooltipProps ) => {
+const DetailTooltip = ( {title, children, flow = true, warning = false}: TooltipProps ) => {
   const [open, setOpen] = React.useState(false);
   
   const handleTooltipClose = () => setOpen(false);
@@ -26,6 +27,7 @@ const DetailTooltip = ( {title, children, flow = true}: TooltipProps ) => {
         elevation={0}
         sx={flow ? sx : {}}
         onClick={handleTooltipOpen}
+        className={warning ? "warning" : ""}
       >
         <Tooltip
           onClose={handleTooltipClose}
