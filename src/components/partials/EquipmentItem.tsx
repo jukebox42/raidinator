@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Paper,
-} from "@mui/material";
+import { Paper } from "@mui/material";
 
 import { getAssetUrl } from "../../utils/functions";
 

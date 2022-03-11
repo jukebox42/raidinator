@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
   Typography,
@@ -8,6 +8,9 @@ import uniq from "lodash/uniq";
 
 import { DetailTooltip } from "../generics";
 import { getAssetUrl } from "../../utils/functions";
+
+// Components
+import { Caption } from "../generics";
 
 // Interfaces
 import * as BI from "../../bungie/interfaces"
@@ -21,7 +24,7 @@ type ModProps = {
 
 const Mod = ( {plug, showWarning, warningReason}: ModProps ) => {
   // console.log(plug.displayProperties.name, plug);
-  const [perks, setPerks] = React.useState<string[]>([]);
+  const [perks, setPerks] = useState<string[]>([]);
 
   useEffect(() => {
     const perkHashes = plug.perks.map((p:any) => p.perkHash.toString());
@@ -39,9 +42,10 @@ const Mod = ( {plug, showWarning, warningReason}: ModProps ) => {
       title={
         <>
           {showWarning && warningReason && <Alert severity="warning">{warningReason}</Alert>}
-          <Typography variant="body1">{plug.displayProperties.name}:</Typography>
-          {perks && perks.map(p => <Typography key={uuid()} variant="caption" component="p" mt={1}>{p}</Typography>)}
-          {plug.tooltipNotifications.map(t => <Typography key={uuid()} variant="caption" component="p" mt={1}>{t.displayString}</Typography>)}
+          <Typography variant="body1"><strong>{plug.displayProperties.name}</strong></Typography>
+          <Caption fade>{plug.itemTypeDisplayName}</Caption>
+          {perks && perks.map(p => <Caption key={uuid()}>{p}</Caption>)}
+          {plug.tooltipNotifications.map(t => <Caption key={uuid()}>{t.displayString}</Caption>)}
         </>
       }
     >

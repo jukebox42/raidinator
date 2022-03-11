@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { useLiveQuery } from "dexie-react-hooks";
 import {
   Paper,
   Typography,
@@ -6,13 +8,15 @@ import {
 import { getAssetUrl } from "../../utils/functions";
 
 // Components
-import { DetailTooltip } from "../generics";
+import { Caption, DetailTooltip } from "../generics";
 import { ReactComponent as HunterSymbol } from '../../assets/hunter_emblem.svg';
 import { ReactComponent as WarlockSymbol } from '../../assets/warlock_emblem.svg';
 import { ReactComponent as TitanSymbol } from '../../assets/titan_emblem.svg';
 
 // Interfaces
 import * as BI from "../../bungie/interfaces";
+import { GuardianData } from "../../utils/interfaces";
+import db from "../../store/db";
 
 // so I dont need to get them from the DB
 enum ClassType {
@@ -30,6 +34,7 @@ enum EnergyType {
 };
 
 type CharacterSubclassProps = {
+  guardian: GuardianData;
   itemDefinition: BI.Destiny.Definitions.DestinyInventoryItemDefinition | undefined;
   itemInstance: BI.Destiny.Entities.Items.DestinyItemComponent | undefined;
 }
@@ -102,21 +107,46 @@ export const isSubClass = (itemDefinition: BI.Destiny.Definitions.DestinyInvento
          itemDefinition.traitIds.includes("item_type.dark_subclass"));
 }
 
-const CharacterSubclass = ( {itemDefinition, itemInstance}: CharacterSubclassProps ) => {
-  console.log("Subclass", itemDefinition, itemInstance)
-  if (!itemDefinition || !itemInstance) {
+const CharacterSubclass = ( {itemDefinition, itemInstance, guardian}: CharacterSubclassProps ) => {
+  // console.log("Subclass", itemDefinition, itemInstance);
+
+  // Find super ability
+  const superAbility = useLiveQuery(async () => {
+    if (!itemInstance) {
+      return;
+    }
+    const sockets = guardian.itemComponents.sockets;
+    const id = itemInstance.itemInstanceId;
+    // New super 3.0
+    if (sockets.data[id]) {
+      const definitions = await db.DestinyInventoryItemDefinition.bulkGet(
+        sockets.data[id].sockets.map(i => i.plugHash.toString())
+      )
+
+      return definitions.find(a => a?.itemTypeDisplayName === "Super Ability");
+    }
+
+    // I checked talent grid and there's nothing in there. I need to
+    // find the super icons for non 3.0 supers.
+    return itemDefinition;
+  });
+
+  if (!itemDefinition || !itemInstance || !superAbility) {
     return <></>;
   }
+
+  // console.log("Subclass Socket", superAbility);
+
   return (
     <Paper key={itemInstance.itemInstanceId} elevation={0} className="icon-item" sx={{ background: "none" }}>
       <DetailTooltip title={
         <>
-          <Typography variant="body1">{itemDefinition.displayProperties.name}</Typography>
-          {/*perks && perks.map(p => <Typography key={uuid()} variant="caption" component="p" mt={1}>{p}</Typography>)*/}
+          <Typography variant="body1"><strong>{itemDefinition.displayProperties.name}</strong></Typography>
+          <Caption>{superAbility.displayProperties.name}</Caption>
         </>
       } flow={false}>
         <img
-          src={getAssetUrl(itemDefinition.displayProperties.icon)}
+          src={getAssetUrl(superAbility.displayProperties.icon)}
           className="icon"
         />
       </DetailTooltip>

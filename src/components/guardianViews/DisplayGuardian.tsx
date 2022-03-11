@@ -105,6 +105,7 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
       </Box>
       <Stack direction="row" sx={{ ml: 1 }}>
         <CharacterSubclass
+          guardian={guardian}
           itemDefinition={subclassDefinition}
           itemInstance={subclassInstance}
         />

@@ -16,6 +16,10 @@ body {
   right: 5px !important;
 }
 
+.guardianCard {
+  min-height: 155px;
+}
+
 @media screen and (max-width: 450px) {
   body {
     background-size: 380%;
@@ -123,10 +127,6 @@ body {
   position: absolute;
   right: 2px;
   bottom: 2px;
-}
-
-.guardianCard {
-  min-height: 155px;
 }
 
 /* MUI really makes this hard... */
