@@ -83,11 +83,6 @@ body {
   height: 55px;
 }
 
-.masterworked {
-  box-sizing: border-box;
-  border: 3px solid #EADE8B;
-}
-
 .icon-mods {
   position: relative;
   width: 25px;
@@ -96,7 +91,7 @@ body {
 }
 
 .warning {
-  box-shadow:0px 0px 0px 2px red inset !important;
+  box-shadow:0px 0px 0px 2px rgb(255, 167, 38) inset !important;
   position: relative;
 }
 
@@ -107,8 +102,16 @@ body {
   top: 49%;
   right: 0;
   border-top: 2px solid;
-  border-color: red;
+  border-color: rgb(255, 167, 38);
   transform:rotate(-45deg);
+}
+
+.warning.error {
+  box-shadow:0px 0px 0px 2px red inset !important;
+}
+
+.warning.error:after {
+  border-color: red;
 }
 
 .icon-light, .icon-platform {

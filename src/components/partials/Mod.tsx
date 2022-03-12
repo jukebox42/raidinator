@@ -19,10 +19,11 @@ import db from "../../store/db";
 type ModProps = {
   plug: BI.Destiny.Definitions.DestinyInventoryItemDefinition;
   showWarning?: boolean;
-  warningReason?: string;
+  showError?:boolean;
+  reason?: string;
 }
 
-const Mod = ( {plug, showWarning, warningReason}: ModProps ) => {
+const Mod = ( {plug, showWarning, showError, reason}: ModProps ) => {
   // console.log(plug.displayProperties.name, plug);
   const [perks, setPerks] = useState<string[]>([]);
 
@@ -39,9 +40,11 @@ const Mod = ( {plug, showWarning, warningReason}: ModProps ) => {
   return (
     <DetailTooltip
       warning={showWarning}
+      error={showError}
       title={
         <>
-          {showWarning && warningReason && <Alert severity="warning">{warningReason}</Alert>}
+          {showWarning && reason && <Alert severity="warning">{reason}</Alert>}
+          {showError && reason && <Alert severity="error">{reason}</Alert>}
           <Typography variant="body1"><strong>{plug.displayProperties.name}</strong></Typography>
           <Caption fade>{plug.itemTypeDisplayName}</Caption>
           {perks && perks.map(p => <Caption key={uuid()}>{p}</Caption>)}

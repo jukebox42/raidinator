@@ -9,10 +9,11 @@ type TooltipProps = {
   title: React.ReactElement<any, any> | string;
   flow?: boolean;
   warning?: boolean;
+  error?: boolean;
   children: React.ReactElement<any, any>;
 }
 
-const DetailTooltip = ( {title, children, flow = true, warning = false}: TooltipProps ) => {
+const DetailTooltip = ( {title, children, flow = true, warning = false, error = false}: TooltipProps ) => {
   const [open, setOpen] = React.useState(false);
   
   const handleTooltipClose = () => setOpen(false);
@@ -21,13 +22,21 @@ const DetailTooltip = ( {title, children, flow = true, warning = false}: Tooltip
 
   const sx = { display: "flex", m: 1, mb: 0, ml: 0, position: "relative", background: "none" };
 
+  const classNames = [];
+  if (warning || error) {
+    classNames.push("warning");
+  }
+  if (error) {
+    classNames.push("error");
+  }
+
   return (
     <ClickAwayListener onClickAway={handleTooltipClose}>
       <Paper
         elevation={0}
         sx={flow ? sx : {}}
         onClick={handleTooltipOpen}
-        className={warning ? "warning" : ""}
+        className={classNames.join(" ")}
       >
         <Tooltip
           onClose={handleTooltipClose}
