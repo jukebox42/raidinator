@@ -30,7 +30,7 @@ import {
 // Interfaces
 import { GuardianData, PlayerData } from "../../utils/interfaces";
 import * as BI from "../../bungie/interfaces/";
-import { DestinyInventoryItemDefinition } from "../../bungie/interfaces/Destiny/Definitions";
+import * as Definitions from "../../bungie/interfaces/Destiny/Definitions";
 
 interface DisplayGuardianProps {
   player: PlayerData;
@@ -41,11 +41,11 @@ interface DisplayGuardianProps {
 
 const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam }: DisplayGuardianProps ) => {
   const [loaded, setLoaded] = useState(false);
-  const damageTypes =  useRef<BI.Destiny.Definitions.DestinyDamageTypeDefinition[]>([]);
-  const energyTypes = useRef<BI.Manifest.DestinyEnergyType[]>([]);
-  const statTypes = useRef<BI.Manifest.DestinyStatType[]>([]);
-  const plugTypes = useRef<BI.Manifest.DestinyStatType[]>([]);
-  const itemDefinitions = useRef<DestinyInventoryItemDefinition[]>([]);
+  const damageTypes =  useRef<Definitions.DestinyDamageTypeDefinition[]>([]);
+  const energyTypes = useRef<Definitions.EnergyTypes.DestinyEnergyTypeDefinition[]>([]);
+  const statTypes = useRef<Definitions.DestinyStatDefinition[]>([]);
+  const plugTypes = useRef<Definitions.Sockets.DestinyPlugSetDefinition[]>([]);
+  const itemDefinitions = useRef<Definitions.DestinyInventoryItemDefinition[]>([]);
 
   // Load character dbs
   useLiveQuery(async () => {
@@ -57,7 +57,7 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
     // push items into a map so they are easier to index
     itemDefinitions.current = await db.DestinyInventoryItemDefinition.bulkGet(
       guardian.inventory.items.map(item => item.itemHash.toString())
-    ) as DestinyInventoryItemDefinition[];
+    ) as Definitions.DestinyInventoryItemDefinition[];
     setLoaded(true);
   });
 
@@ -68,9 +68,17 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
 
   // Get the light stat type
   const lightStatType = statTypes.current.find(t => t.hash.toString() === LIGHT_STAT_HASH);
+  if (!lightStatType) {
+    console.error("Error Could Not Find Stat Type", LIGHT_STAT_HASH);
+    return <>Error Could Not Find Stat Type</>;
+  }
 
   // get subclass
   const subclassDefinition = itemDefinitions.current.find(idef => isSubClass(idef));
+  if (!subclassDefinition) {
+    console.error("Error Could Not Find Subclass Definition");
+    return <>Error Could Not Find Subclass Definition</>;
+  }
   const subclassInstance = guardian.inventory.items.find(
     gi => gi.itemHash === subclassDefinition?.hash);
 
@@ -95,7 +103,7 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
         </Box>
         <Box sx={{ display: "flex", m: 1, mb: 0 }}>
           <img
-            src={getAssetUrl((lightStatType as BI.Manifest.DestinyStatType).displayProperties.icon)}
+            src={getAssetUrl(lightStatType.displayProperties.icon)}
             className="icon-light invert"
           />
           <Typography variant="subtitle1" sx={{ mt: "-3px" }}>
@@ -116,8 +124,12 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
           }
           const itemInstance = guardian.inventory.items.find(
             gi => gi.itemHash === itemDefinition.hash);
+          if (!itemInstance) {
+            console.error("Could not find item instance for", itemDefinition.hash);
+            return <>Error: Could not find item instance for {itemDefinition.hash}.</>
+          }
           const itemInstanceDetails =
-            guardian.itemComponents.instances.data[(itemInstance as any).itemInstanceId];
+            guardian.itemComponents.instances.data[itemInstance.itemInstanceId];
           return (
             <EquipmentItem
               key={(itemInstance as BI.Destiny.Entities.Items.DestinyItemComponent).itemInstanceId}
@@ -142,10 +154,6 @@ const DisplayGuardian = ( { player, guardian, onChangeCharacter, onLoadFireteam 
           weaponEnergyTypes={weaponEnergyTypes}
           subclassEnergyType={getSubclassEnergyType(subclassDefinition)}
         />
-        {/*<Mods
-          characterId={guardian.character.characterId.toString()}
-          characterPlugSets={guardian.characterPlugSets}
-        />*/}
       </Box>
     </>
   )

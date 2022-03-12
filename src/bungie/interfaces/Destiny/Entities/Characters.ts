@@ -1,6 +1,8 @@
 import { membershipType } from "./../../../enums";
 
-// https://bungie-net.github.io/multi/schema_Destiny-Entities-Characters-DestinyCharacterComponent.html#schema_Destiny-Entities-Characters-DestinyCharacterComponent
+/**
+ * https://bungie-net.github.io/multi/schema_Destiny-Entities-Characters-DestinyCharacterComponent.html#schema_Destiny-Entities-Characters-DestinyCharacterComponent
+ */
 export interface DestinyCharacterComponent {
   membershipId: number;
   membershipType: membershipType;

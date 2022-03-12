@@ -30,7 +30,7 @@ export const getManifest = async () => {
   return handleResponse<BI.Destiny.Config.DestinyManifest>(await ret.json());
 }
 
-export const getManifestContent = async (path: string): Promise<BI.Manifest.Data> => {
+export const getManifestContent = async (path: string): Promise<BI.Data> => {
   const ret = await fetch(
     `${ASSET_URL}/${path}`,
     {

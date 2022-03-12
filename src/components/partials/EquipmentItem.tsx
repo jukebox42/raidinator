@@ -5,6 +5,12 @@ import { getAssetUrl } from "../../utils/functions";
 
 // Interfaces
 import * as BI from "../../bungie/interfaces";
+import {
+  DestinyDamageTypeDefinition as DamageType,
+} from "../../bungie/interfaces/Destiny/Definitions";
+import {
+  DestinyEnergyTypeDefinition as EnergyType,
+} from "../../bungie/interfaces/Destiny/Definitions/EnergyTypes";
 import { LIGHT_GG_URL } from "../../utils/constants";
 
 type EquipmentItemProps = {
@@ -12,7 +18,7 @@ type EquipmentItemProps = {
   itemInstance: BI.Destiny.Entities.Items.DestinyItemComponent;
   itemInstanceDetails: BI.Destiny.Entities.Items.DestinyItemInstanceComponent;
   damageTypes: BI.Destiny.Definitions.DestinyDamageTypeDefinition[];
-  energyTypes: BI.Manifest.DestinyEnergyType[];
+  energyTypes: BI.Destiny.Definitions.EnergyTypes.DestinyEnergyTypeDefinition[];
 }
 
 /**
@@ -34,7 +40,7 @@ const EquipmentItem = ( {itemDefinition, itemInstance, itemInstanceDetails, dama
   const elementTypes = isWeapon ? damageTypes : energyTypes;
 
   // find element type
-  const elementType = elementTypes?.find(et => {
+  const elementType = (elementTypes as any).find((et: DamageType | EnergyType) => {
     // ignore kinetic
     if (et.hash === 3373582085) {
       return;

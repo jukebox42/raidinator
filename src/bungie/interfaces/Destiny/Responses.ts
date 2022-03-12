@@ -6,7 +6,9 @@ import { DestinyProfileTransitoryComponent } from "./Components/Profiles";
 import { DestinyPlugSetsComponent } from "./Components/PlugSets";
 
 
-// https://bungie-net.github.io/multi/schema_Destiny-Responses-DestinyProfileResponse.html#schema_Destiny-Responses-DestinyProfileResponse
+/**
+ * https://bungie-net.github.io/multi/schema_Destiny-Responses-DestinyProfileResponse.html#schema_Destiny-Responses-DestinyProfileResponse
+ */
 export interface DestinyProfileResponse {
   characters: DataCollection<DestinyCharacterComponent>;
   characterEquipment: DataCollection<DestinyInventoryComponent>;
@@ -15,7 +17,9 @@ export interface DestinyProfileResponse {
   profileTransitoryData: DataSingle<DestinyProfileTransitoryComponent>;
 };
 
-// https://bungie-net.github.io/multi/schema_Destiny-Responses-DestinyItemResponse.html#schema_Destiny-Responses-DestinyItemResponse
+/**
+ * https://bungie-net.github.io/multi/schema_Destiny-Responses-DestinyItemResponse.html#schema_Destiny-Responses-DestinyItemResponse
+ */
 export interface DestinyItemResponse {
   characterId: number;
   item: DataCollection<DestinyItemComponent>;

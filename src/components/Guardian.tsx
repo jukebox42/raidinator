@@ -40,7 +40,7 @@ const Guardian = ( { playerId, cardKey, onDelete, onLoadFireteam }: GuardianProp
     }
 
     setLoading(true);
-    db.AppPlayers.get(playerId as any).then(cachedPlayer => {
+    db.AppPlayers.get(playerId).then(cachedPlayer => {
       if (cachedPlayer) {
         setPlayer(cachedPlayer);
         return db.AppPlayersSelectedCharacter.get(playerId).then(characterId => {
@@ -79,7 +79,7 @@ const Guardian = ( { playerId, cardKey, onDelete, onLoadFireteam }: GuardianProp
   }, [loadedCachedPlayer]);
 
   const pickedGuardian = (
-      character: BI.Destiny.Entities.Characrers.DestinyCharacterComponent,
+      character: BI.Destiny.Entities.Characters.DestinyCharacterComponent,
       inventory: BI.Destiny.Entities.Inventory.DestinyInventoryComponent,
       itemComponents: BI.Destiny.Entities.Items.DestinyItemComponentSet,
       characterPlugSets: BI.Destiny.Components.PlugSets.DestinyPlugSetsComponent,

@@ -3,7 +3,9 @@ export interface JsonWorldContentPaths {
   [definition: string]: string;
 }
 
-// https://bungie-net.github.io/multi/schema_Destiny-Config-DestinyManifest.html#schema_Destiny-Config-DestinyManifest
+/**
+ * https://bungie-net.github.io/multi/schema_Destiny-Config-DestinyManifest.html#schema_Destiny-Config-DestinyManifest
+ */
 export interface DestinyManifest {
   version: string;
   mobileAssetContentPath: string;

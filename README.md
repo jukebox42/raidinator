@@ -6,7 +6,7 @@ A Destiny 2 fireteam inspection tool to help catch configuration errors.
 
 Depends on the [Bungie API](https://bungie-net.github.io/multi/index.html).
 
-# Setup
+## Setup
 
 To set up this app you first need to register. You can do that on Bungie's
 [Application](https://www.bungie.net/en/Application) page.

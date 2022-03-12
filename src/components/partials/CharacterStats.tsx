@@ -14,7 +14,7 @@ type CharacterStatsProps = {
   stats: {
     [key: number]: number;
   };
-  statTypes: BI.Manifest.DestinyStatType[];
+  statTypes: BI.Destiny.Definitions.DestinyStatDefinition[];
 }
 
 const CharacterStats = ( { stats, statTypes }: CharacterStatsProps ) => {

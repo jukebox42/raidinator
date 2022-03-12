@@ -7,6 +7,7 @@ import {
   InputAdornment,
   TextField,
   Typography,
+  AutocompleteRenderInputParams,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import throttle from "lodash/throttle";
@@ -101,7 +102,7 @@ const FindPlayer = ({ onFoundPlayer, cardKey, onDelete }: FindPlayerProps) => {
     }
   }, [value, inputValue, search, context]);
 
-  const renderOption = (props: any, option: PlayerData) => {
+  const renderOption = (props: React.HTMLAttributes<HTMLLIElement>, option: PlayerData) => {
     return (
       <li {...props}>
         <img src={getAssetUrl(option.iconPath)} className="icon-platform" />
@@ -112,7 +113,7 @@ const FindPlayer = ({ onFoundPlayer, cardKey, onDelete }: FindPlayerProps) => {
     )
   };
 
-  const renderInput = (params: any) => {
+  const renderInput = (params: AutocompleteRenderInputParams) => {
     return (
       <TextField
         {...params}
@@ -144,8 +145,8 @@ const FindPlayer = ({ onFoundPlayer, cardKey, onDelete }: FindPlayerProps) => {
             filterSelectedOptions
             value={value}
             options={options}
-            onInputChange={(event: any, newValue: string) => setInputValue(newValue)}
-            onChange={async (event: any, newValue: PlayerData | null) => {
+            onInputChange={(event: React.SyntheticEvent<Element, Event>, newValue: string) => setInputValue(newValue)}
+            onChange={async (event: React.SyntheticEvent<Element, Event>, newValue: PlayerData | null) => {
               if (newValue) {
                 await db.putSearchResult(newValue); // store player in search table.
                 onFoundPlayer(newValue, cardKey); // pass the found player back to the app

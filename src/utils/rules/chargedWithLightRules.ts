@@ -1,12 +1,7 @@
 import intersection from "lodash/intersection";
 
-// TODO: Pull this from another place. subclass component maybe?
-enum EnergyType {
-  VOID = 3,
-  SOLAR = 2,
-  ARC = 1,
-  STASIS = 6,
-};
+import { DestinyEnergyType } from "../../bungie/interfaces/Destiny";
+import { DestinyInventoryItemDefinition } from "../../bungie/interfaces/Destiny/Definitions";
 
 interface Chargers {
   name: string;
@@ -19,7 +14,7 @@ interface Spenders {
   name: string;
   hash: number; // the mod type hash
   useTraitIds?: string[]; // what spends it, trait ids
-  useEnergy?: EnergyType; // what spends it energy
+  useEnergy?: DestinyEnergyType; // what spends it energy
   alwaysTrue?: boolean; // if the mod has no unique spend(like requiring a weapon ect)
 }
 
@@ -45,7 +40,7 @@ const spenders: Spenders[] = [
   // === Rest ===
   { name: "Argent Ordnance", hash: 4272180932, useTraitIds: ["weapon_type.rocket_launcher"], },
   { name: "Energy Converter", hash: 2263321586, alwaysTrue: true },
-  { name: "Extra Reserves", hash: 3523075121, useEnergy: EnergyType.VOID },
+  { name: "Extra Reserves", hash: 3523075121, useEnergy: DestinyEnergyType.Void },
   { name: "Firepower", hash: 3185435908, alwaysTrue: true },
   { name: "Heal Thyself", hash: 3185435909, alwaysTrue: true },
   { name: "Heavy Handed", hash: 1484685886, alwaysTrue: true },
@@ -59,12 +54,12 @@ const spenders: Spenders[] = [
 ];
 
 const itemTypeDisplayName = "Charged with Light Mod";
-const isChargedWithLightMod = (mod: any) => mod.itemTypeDisplayName === itemTypeDisplayName;
+const isChargedWithLightMod = (mod: DestinyInventoryItemDefinition) => mod.itemTypeDisplayName === itemTypeDisplayName;
 
 /**
  * Filter mods array down to mods that generate charged with light.
  */
-export const getChargedWithLightChargerMods = (mods: any[]) => {
+export const getChargedWithLightChargerMods = (mods: DestinyInventoryItemDefinition[]) => {
   return mods.filter(m => {
     return isChargedWithLightMod(m) && chargers.find(c => c.hash === m.hash);
   });
@@ -73,7 +68,7 @@ export const getChargedWithLightChargerMods = (mods: any[]) => {
 /**
  * Filter mods array down to mods that spend charged with light.
  */
-export const getChargedWithLightSpenderMods = (mods: any[]) => {
+export const getChargedWithLightSpenderMods = (mods: DestinyInventoryItemDefinition[]) => {
   return mods.filter(m => {
     return isChargedWithLightMod(m) && spenders.find(c => c.hash === m.hash);
   });
@@ -82,7 +77,12 @@ export const getChargedWithLightSpenderMods = (mods: any[]) => {
 /**
  * Check if a charged with light mod's criteria is met.
  */
-export const checkChargedWithLightMod = (mod: any, weaponTypes: string[], weaponEnergies: EnergyType[], subclassEnergy: EnergyType): boolean | null => {
+export const checkChargedWithLightMod = (
+  mod: DestinyInventoryItemDefinition,
+  weaponTypes: string[],
+  weaponEnergies: DestinyEnergyType[],
+  subclassEnergy: DestinyEnergyType
+): boolean | null => {
   // this function only cares about charged with light
   if (!isChargedWithLightMod(mod)) {
     return null;

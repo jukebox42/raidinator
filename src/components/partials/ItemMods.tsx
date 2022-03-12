@@ -30,13 +30,15 @@ import {
 import Mod from "./Mod";
 
 // Interfaces
+import { GuardianData } from "../../utils/interfaces";
+import * as BI from "../../bungie/interfaces/";
 import { DestinyItemSocketState } from "../../bungie/interfaces/Destiny/Entities/Items";
 
 type ItemModsProps = {
-  guardian: any;
+  guardian: GuardianData;
   weaponTypes: string[]; // TODO this could be better yeah?
-  weaponEnergyTypes: any[]; // TODO same here
-  subclassEnergyType: any;
+  weaponEnergyTypes: BI.Destiny.DestinyEnergyType[];
+  subclassEnergyType: BI.Destiny.DestinyEnergyType;
 }
 
 const ItemMods = ( {guardian, weaponTypes, weaponEnergyTypes, subclassEnergyType}: ItemModsProps ) => {
@@ -65,9 +67,9 @@ const ItemMods = ( {guardian, weaponTypes, weaponEnergyTypes, subclassEnergyType
     return await db.DestinyInventoryItemDefinition.bulkGet(
       flatPlugs.filter(i => !!i.plugHash).map(i => i.plugHash.toString())
     );
-  });
+  }) as BI.Destiny.Definitions.DestinyInventoryItemDefinition[];
 
-  if (!plugs) {
+  if (!plugs || plugs.length === 0) {
     return <></>;
   }
 
@@ -111,7 +113,7 @@ const ItemMods = ( {guardian, weaponTypes, weaponEnergyTypes, subclassEnergyType
         const wellType = checkWellMod(plug, weaponEnergyTypes, subclassEnergyType);
         const good = Number.isInteger(wellType);
         if (good) {
-          wellEnergies.push(wellType as any);
+          wellEnergies.push(wellType as BI.Destiny.DestinyEnergyType);
         }
         const canUse = wellSpenderMods.length > 0;
         const reason = !canUse ? "Missing mods to use wells." : "Missing requirements to activate this mod.";

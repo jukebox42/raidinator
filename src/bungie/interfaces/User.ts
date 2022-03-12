@@ -1,6 +1,8 @@
 import * as GroupsV2 from "./GroupsV2"
 
-// https://bungie-net.github.io/multi/schema_User-UserToUserContext.html#schema_User-UserToUserContext
+/**
+ * https://bungie-net.github.io/multi/schema_User-UserToUserContext.html#schema_User-UserToUserContext
+ */
 export interface UserToUserContext {
   isFollowing: boolean;
   ignoreStatus: {
@@ -10,7 +12,9 @@ export interface UserToUserContext {
   globalIgnoreEndDate: string;
 }
 
-// https://bungie-net.github.io/multi/schema_User-GeneralUser.html#schema_User-GeneralUser
+/**
+ * https://bungie-net.github.io/multi/schema_User-GeneralUser.html#schema_User-GeneralUser
+ */
 export interface GeneralUser {
   membershipId:  number;
   uniqueName:  string
@@ -49,14 +53,18 @@ export interface GeneralUser {
   cachedBungieGlobalDisplayNameCode: number | null;
 }
 
-// https://bungie-net.github.io/multi/schema_User-UserMembershipData.html#schema_User-UserMembershipData
+/**
+ * https://bungie-net.github.io/multi/schema_User-UserMembershipData.html#schema_User-UserMembershipData
+ */
 export interface UserMembershipData {
   destinyMemberships: GroupsV2.GroupUserInfoCard[];
   primaryMembershipId: number;
   bungieNetUser: GeneralUser;
 }
 
-// https://bungie-net.github.io/multi/schema_User-UserInfoCard.html#schema_User-UserInfoCard
+/**
+ * https://bungie-net.github.io/multi/schema_User-UserInfoCard.html#schema_User-UserInfoCard
+ */
 export interface UserInfoCard {
   supplementalDisplayName: string;
   iconPath: string;
@@ -70,7 +78,9 @@ export interface UserInfoCard {
   bungieGlobalDisplayNameCode: number;
 };
 
-// https://bungie-net.github.io/multi/schema_User-UserSearchResponseDetail.html#schema_User-UserSearchResponseDetail
+/**
+ * https://bungie-net.github.io/multi/schema_User-UserSearchResponseDetail.html#schema_User-UserSearchResponseDetail
+ */
 export interface UserSearchResponseDetail {
   bungieGlobalDisplayName: string;
   bungieGlobalDisplayNameCode: number;
@@ -78,14 +88,18 @@ export interface UserSearchResponseDetail {
   destinyMemberships: UserInfoCard[];
 };
 
-// https://bungie-net.github.io/multi/schema_User-UserSearchResponse.html#schema_User-UserSearchResponse
+/**
+ * https://bungie-net.github.io/multi/schema_User-UserSearchResponse.html#schema_User-UserSearchResponse
+ */
 export interface UserSearchResponse {
   searchResults: UserSearchResponseDetail[];
   page: number;
   hasMore: boolean;
 };
 
-// https://bungie-net.github.io/multi/schema_User-UserSearchPrefixRequest.html#schema_User-UserSearchPrefixRequest
+/**
+ * https://bungie-net.github.io/multi/schema_User-UserSearchPrefixRequest.html#schema_User-UserSearchPrefixRequest
+ */
 export interface UserSearchPrefixRequest {
   displayNamePrefix: string;
 }

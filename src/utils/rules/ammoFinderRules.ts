@@ -1,5 +1,7 @@
 import intersection from "lodash/intersection";
 
+import { DestinyInventoryItemDefinition } from "../../bungie/interfaces/Destiny/Definitions";
+
 // TODO: can I get this from somewhere?
 interface WeaponMap {
   [key: string]: string;
@@ -24,18 +26,18 @@ const weaponMap: WeaponMap = {
   "weapon_type.trace_rifle": "Trace Rifle",
 };
 
-const isAmmoFinderMod = (mod: any) => mod.displayProperties &&
+const isAmmoFinderMod = (mod: DestinyInventoryItemDefinition) => mod.displayProperties &&
                                       /Ammo Finder$/.test(mod.displayProperties.name);
 
 /**
  * Filter mods array down to mods that are ammo finder mods
  */
-export const getAmmoFinderMods = (mods: any[]) => mods.filter(m => isAmmoFinderMod(m));
+export const getAmmoFinderMods = (mods: DestinyInventoryItemDefinition[]) => mods.filter(m => isAmmoFinderMod(m));
 
 /**
  * Check if an ammo finder mod's criteria is met.
  */
- export const checkAmmoFinderMod = (mod: any, weaponTypes: string[]): boolean | null => {
+ export const checkAmmoFinderMod = (mod: DestinyInventoryItemDefinition, weaponTypes: string[]): boolean | null => {
   // this function only cares about champion mods
   if (!isAmmoFinderMod(mod)) {
     return null;
@@ -44,7 +46,4 @@ export const getAmmoFinderMods = (mods: any[]) => mods.filter(m => isAmmoFinderM
   const weaponNames = intersection(Object.keys(weaponMap), weaponTypes).map((w: string) => weaponMap[w]);
 
   return !!weaponNames.find(w => mod.displayProperties.name.indexOf(w) === 0);
-
-  // we should never make it here but just in case
-  return null;
 }

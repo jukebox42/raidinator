@@ -15,6 +15,7 @@ import { PlayerName, getClassSvg } from "../partials";
 
 // Interfaces
 import * as BI from "../../bungie/interfaces";
+import { DataCollection } from "../../bungie/interfaces/Dictionaries";
 import * as Entities from "../../bungie/interfaces/Destiny/Entities";
 import * as Components from "../../bungie/interfaces/Destiny/Components";
 import { PlayerData } from "../../utils/interfaces";
@@ -22,17 +23,17 @@ import { PlayerData } from "../../utils/interfaces";
 // TODO: WTF is this? why doesn't it match the other one in interfaces?
 interface GuardiansData {
   characterId: number | undefined;
-  characters: BI.Dictionaries.DataCollection<Entities.Characrers.DestinyCharacterComponent>;
-  characterEquipment: BI.Dictionaries.DataCollection<Entities.Inventory.DestinyInventoryComponent>;
+  characters: DataCollection<Entities.Characters.DestinyCharacterComponent>;
+  characterEquipment: DataCollection<Entities.Inventory.DestinyInventoryComponent>;
   itemComponents: Entities.Items.DestinyItemComponentSet;
-  characterPlugSets: Components.PlugSets.DestinyPlugSetsComponent;
+  characterPlugSets: DataCollection<Components.PlugSets.DestinyPlugSetsComponent>;
 };
 
 type PickGuardianProps = {
   player: PlayerData;
   guardianId: string;
   pickedGuardian: (
-    guardian: Entities.Characrers.DestinyCharacterComponent,
+    guardian: Entities.Characters.DestinyCharacterComponent,
     inventory: Entities.Inventory.DestinyInventoryComponent,
     itemComponents: Entities.Items.DestinyItemComponentSet,
     characterPlugSets: Components.PlugSets.DestinyPlugSetsComponent,
@@ -41,16 +42,16 @@ type PickGuardianProps = {
 
 const loadGuardianFromDb = async (playerId: number): Promise<GuardiansData> => {
   let characterId!: number | undefined;
-  let characters!: BI.Dictionaries.DataCollection<Entities.Characrers.DestinyCharacterComponent>;
-  let characterEquipment!: BI.Dictionaries.DataCollection<Entities.Inventory.DestinyInventoryComponent>;
+  let characters!: DataCollection<Entities.Characters.DestinyCharacterComponent>;
+  let characterEquipment!: DataCollection<Entities.Inventory.DestinyInventoryComponent>;
   let itemComponents!: Entities.Items.DestinyItemComponentSet;
-  let characterPlugSets!: Components.PlugSets.DestinyPlugSetsComponent;
+  let characterPlugSets!: DataCollection<Components.PlugSets.DestinyPlugSetsComponent>;
 
   characterId = await db.AppPlayersSelectedCharacter.get(playerId);
   characters = await db.AppCharacters.get(playerId);
   characterEquipment = await db.AppCharacterEquipment.get(playerId);
   itemComponents = await db.AppItemComponents.get(playerId);
-  characterPlugSets = await db.AppCharacterPlugSets.get(playerId)
+  characterPlugSets = (await db.AppCharacterPlugSets.get(playerId)).data;
 
   return {
     characterId,
@@ -64,10 +65,10 @@ const loadGuardianFromDb = async (playerId: number): Promise<GuardiansData> => {
 const PickGuardian = ({ player, guardianId, pickedGuardian }: PickGuardianProps) => {
   const [activeGuardianId, setActiveGuardianId] = useState(0);
   const [characterId, setCharacterId] = useState(0);
-  const [characters, setCharacters] = useState<BI.Dictionaries.DataCollection<Entities.Characrers.DestinyCharacterComponent> | null>(null);
-  const [inventories, setInventories] = useState<BI.Dictionaries.DataCollection<Entities.Inventory.DestinyInventoryComponent> | null>(null);
+  const [characters, setCharacters] = useState<DataCollection<Entities.Characters.DestinyCharacterComponent> | null>(null);
+  const [inventories, setInventories] = useState<DataCollection<Entities.Inventory.DestinyInventoryComponent> | null>(null);
   const [items, setItems] = useState<Entities.Items.DestinyItemComponentSet | null>(null);
-  const [characterPlugSets, setCharacterPlugSets] = useState<any | null>(null);
+  const [characterPlugSets, setCharacterPlugSets] = useState<DataCollection<Components.PlugSets.DestinyPlugSetsComponent> | null>(null);
 
   const [loadedCachedCharacter, setLoadedCachedCharacter] = useState(false);
 
@@ -163,8 +164,8 @@ const PickGuardian = ({ player, guardianId, pickedGuardian }: PickGuardianProps)
     pickedGuardian(
       character,
       inventories.data[character.characterId],
-      items as Entities.Items.DestinyItemComponentSet,
-      characterPlugSets as any,
+      items,
+      characterPlugSets.data[character.characterId],
     );
 
     return () => {
@@ -193,8 +194,8 @@ const PickGuardian = ({ player, guardianId, pickedGuardian }: PickGuardianProps)
               pickedGuardian(
                 character,
                 inventories.data[character.characterId],
-                items as Entities.Items.DestinyItemComponentSet,
-                characterPlugSets as any,
+                items,
+                characterPlugSets.data[character.characterId],
               );
             }}
           >

@@ -6,10 +6,10 @@ export * as Destiny from "./Destiny";
 export * as Dictionaries from "./Dictionaries";
 export * as GroupsV2 from "./GroupsV2";
 export * as User from "./User";
-// TODO: refactor this
-export * as Manifest from "./manifest";
 
-// I made this up
+/**
+ * A Response object. I made this up
+ */
 export interface Response<T> {
   Response: T;
   ErrorCode: number;
@@ -18,4 +18,18 @@ export interface Response<T> {
   Message: string;
   MessageData: { [key: string]: string; }
   DetailedErrorTrace: string;
+}
+
+/**
+ * Table used by the manifest response. I made this up.
+ */
+export interface Table {
+  [hash: number]: any
+}
+
+/**
+ * Data object to handle manifest response. I made this up.
+ */
+export interface Data {
+  [table: number]: Table;
 }

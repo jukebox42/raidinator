@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   Paper,
@@ -15,23 +14,9 @@ import { ReactComponent as TitanSymbol } from '../../assets/titan_emblem.svg';
 
 // Interfaces
 import * as BI from "../../bungie/interfaces";
+import { DestinyInventoryItemDefinition } from "../../bungie/interfaces/Destiny/Definitions";
 import { GuardianData } from "../../utils/interfaces";
 import db from "../../store/db";
-
-// so I dont need to get them from the DB
-enum ClassType {
-  WARLOCK = 2,
-  TITAN = 0,
-  HUNTER = 1,
-};
-
-enum EnergyType {
-  KINETIC = 0,
-  VOID = 3,
-  SOLAR = 2,
-  ARC = 1,
-  STASIS = 6,
-};
 
 type CharacterSubclassProps = {
   guardian: GuardianData;
@@ -43,19 +28,19 @@ type CharacterSubclassProps = {
  * Conver an array of damage types to energy types. I dunno why these arent the same but they arent.
  * see DestinySamageTypeDefinition and DestinyEnergyTypeDefinition for proof.
  */
-export const convertDamageTypeToEnergyType = (damageTypes: number[]): EnergyType[] => {
+export const convertDamageTypeToEnergyType = (damageTypes: number[]): BI.Destiny.DestinyEnergyType[] => {
   return damageTypes.map(dt => {
     switch(dt) {
       case 2:
-        return EnergyType.ARC;
+        return BI.Destiny.DestinyEnergyType.Arc;
       case 3:
-        return EnergyType.SOLAR;
+        return BI.Destiny.DestinyEnergyType.Thermal;
       case 4:
-        return EnergyType.VOID;
+        return BI.Destiny.DestinyEnergyType.Void;
       case 6:
-        return EnergyType.STASIS;
+        return BI.Destiny.DestinyEnergyType.Stasis;
       default:
-        return EnergyType.KINETIC;
+        return BI.Destiny.DestinyEnergyType.Any;
     }
   });
 }
@@ -63,11 +48,11 @@ export const convertDamageTypeToEnergyType = (damageTypes: number[]): EnergyType
 /**
  * Returns the svg of the characters class
  */
-export const getClassSvg = (classType: ClassType) => {
-  if (classType === ClassType.HUNTER) {
+export const getClassSvg = (classType: BI.Destiny.DestinyClass) => {
+  if (classType === BI.Destiny.DestinyClass.Hunter) {
     return <HunterSymbol />;
   }
-  if (classType === ClassType.TITAN) {
+  if (classType === BI.Destiny.DestinyClass.Titan) {
     return <TitanSymbol />;
   }
 
@@ -79,23 +64,23 @@ export const getClassSvg = (classType: ClassType) => {
  *
  * TODO: this is silly, there has to be a better way(and a better spot)
  */
-export const getSubclassEnergyType = (subclassDefinition: any) => {
+export const getSubclassEnergyType = (subclassDefinition: DestinyInventoryItemDefinition) => {
   if (/^void/.test(subclassDefinition.talentGrid.buildName)) {
-    return EnergyType.VOID;
+    return BI.Destiny.DestinyEnergyType.Void;
   }
   if (/^thermal/.test(subclassDefinition.talentGrid.buildName)) {
-    return EnergyType.SOLAR;
+    return BI.Destiny.DestinyEnergyType.Thermal;
   }
   if (/^arc/.test(subclassDefinition.talentGrid.buildName)) {
-    return EnergyType.ARC;
+    return BI.Destiny.DestinyEnergyType.Arc;
   }
   if (/^stasis/.test(subclassDefinition.talentGrid.buildName)) {
-    return EnergyType.STASIS;
+    return BI.Destiny.DestinyEnergyType.Stasis;
   }
 
   // fallthrough
   console.error("ENERGY TYPE NOT MATCHED", subclassDefinition);
-  return EnergyType.SOLAR;
+  return BI.Destiny.DestinyEnergyType.Any;
 }
 
 /**

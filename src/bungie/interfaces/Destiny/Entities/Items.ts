@@ -1,7 +1,9 @@
 import { breakerType } from "../../../enums";
 import { DataCollection } from "../../Dictionaries";
 
-// https://bungie-net.github.io/multi/schema_Destiny-Entities-Items-DestinyItemComponent.html#schema_Destiny-Entities-Items-DestinyItemComponent
+/**
+ * https://bungie-net.github.io/multi/schema_Destiny-Entities-Items-DestinyItemComponent.html#schema_Destiny-Entities-Items-DestinyItemComponent
+ */
 export interface DestinyItemComponent {
   itemHash: number;
   itemInstanceId: number;
@@ -22,14 +24,18 @@ export interface DestinyItemComponent {
   itemValueVisibility: boolean[];
 }
 
-// https://bungie-net.github.io/multi/schema_Destiny-Entities-Items-DestinyItemStatsComponent.html#schema_Destiny-Entities-Items-DestinyItemStatsComponent
+/**
+ * https://bungie-net.github.io/multi/schema_Destiny-Entities-Items-DestinyItemStatsComponent.html#schema_Destiny-Entities-Items-DestinyItemStatsComponent
+ */
 export interface DestinyItemStatsComponent {
   stats: {
     [key: number]: {statHash: number; value: number; }
   }
 }
 
-// https://bungie-net.github.io/multi/schema_Destiny-Entities-Items-DestinyItemSocketState.html#schema_Destiny-Entities-Items-DestinyItemSocketState
+/**
+ * https://bungie-net.github.io/multi/schema_Destiny-Entities-Items-DestinyItemSocketState.html#schema_Destiny-Entities-Items-DestinyItemSocketState
+ */
 export interface DestinyItemSocketState {
   plugHash: number;
   isEnabled: boolean;
@@ -37,12 +43,16 @@ export interface DestinyItemSocketState {
   enableFailIndexes: number[];
 }
 
-// https://bungie-net.github.io/multi/schema_Destiny-Entities-Items-DestinyItemSocketsComponent.html#schema_Destiny-Entities-Items-DestinyItemSocketsComponent
+/**
+ * https://bungie-net.github.io/multi/schema_Destiny-Entities-Items-DestinyItemSocketsComponent.html#schema_Destiny-Entities-Items-DestinyItemSocketsComponent
+ */
 export interface DestinyItemSocketsComponent {
   sockets: DestinyItemSocketState[];
 }
 
-// https://bungie-net.github.io/multi/schema_Destiny-Entities-Items-DestinyItemInstanceComponent.html#schema_Destiny-Entities-Items-DestinyItemInstanceComponent
+/**
+ * https://bungie-net.github.io/multi/schema_Destiny-Entities-Items-DestinyItemInstanceComponent.html#schema_Destiny-Entities-Items-DestinyItemInstanceComponent
+ */
 export interface DestinyItemInstanceComponent {
   damageType: number;
   damageTypeHash?: number;
@@ -68,12 +78,16 @@ export interface DestinyItemInstanceComponent {
   cannotEquipReason: number;
 }
 
-// https://bungie-net.github.io/multi/schema_Destiny-Entities-Items-DestinyItemSocketsComponent.html#schema_Destiny-Entities-Items-DestinyItemSocketsComponent
+/**
+ * https://bungie-net.github.io/multi/schema_Destiny-Entities-Items-DestinyItemSocketsComponent.html#schema_Destiny-Entities-Items-DestinyItemSocketsComponent
+ */
 export interface DestinyItemSocketsComponent {
   sockets: DestinyItemSocketState[]
 }
 
-// https://bungie-net.github.io/multi/schema_DestinyItemComponentSetOfint64.html#schema_DestinyItemComponentSetOfint64
+/**
+ * https://bungie-net.github.io/multi/schema_DestinyItemComponentSetOfint64.html#schema_DestinyItemComponentSetOfint64
+ */
 export interface DestinyItemComponentSet {
   instances: DataCollection<DestinyItemInstanceComponent>;
   sockets: DataCollection<DestinyItemSocketsComponent>;

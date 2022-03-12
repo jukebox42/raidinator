@@ -4,7 +4,8 @@ import { PlayerData } from "../utils/interfaces";
 
 import * as BI from "../bungie/interfaces";
 
-export type ManifestTables = "DestinyNodeStepSummaryDefinition" | "DestinyArtDyeChannelDefinition" | "DestinyArtDyeReferenceDefinition" | "DestinyPlaceDefinition" |
+export type ManifestTables = "DestinyNodeStepSummaryDefinition" | "DestinyArtDyeChannelDefinition" | 
+                             "DestinyArtDyeReferenceDefinition" | "DestinyPlaceDefinition" |
                              "DestinyActivityDefinition" | "DestinyActivityTypeDefinition" | "DestinyClassDefinition" | "DestinyGenderDefinition" |
                              "DestinyInventoryBucketDefinition" | "DestinyRaceDefinition" | "DestinyTalentGridDefinition" | "DestinyUnlockDefinition" |
                              "DestinyMaterialRequirementSetDefinition" | "DestinySandboxPerkDefinition" | "DestinyStatGroupDefinition" |
@@ -42,11 +43,11 @@ class Db extends Dexie {
   DestinyPlaceDefinition!: Table<any>;
   DestinyActivityDefinition!: Table<any>;
   DestinyActivityTypeDefinition!: Table<any>;
-  DestinyClassDefinition!: Table<any>;
+  DestinyClassDefinition!: Table<BI.Destiny.Definitions.DestinyClassDefinition>;
   DestinyGenderDefinition!: Table<any>;
-  DestinyInventoryBucketDefinition!: Table<any>;
+  DestinyInventoryBucketDefinition!: Table<BI.Destiny.Definitions.DestinyInventoryBucketDefinition>;
   DestinyRaceDefinition!: Table<any>;
-  DestinyTalentGridDefinition!: Table<any>;
+  DestinyTalentGridDefinition!: Table<BI.Destiny.Definitions.DestinyTalentGridDefinition>;
   DestinyUnlockDefinition!: Table<any>;
   DestinyMaterialRequirementSetDefinition!: Table<any>;
   DestinySandboxPerkDefinition!: Table<any>;
@@ -58,7 +59,7 @@ class Db extends Dexie {
   DestinyUnlockValueDefinition!: Table<any>;
   DestinyRewardMappingDefinition!: Table<any>;
   DestinyRewardSheetDefinition!: Table<any>;
-  DestinyItemCategoryDefinition!: Table<any>;
+  DestinyItemCategoryDefinition!: Table<BI.Destiny.Definitions.DestinyItemCategoryDefinition>;
   DestinyDamageTypeDefinition!: Table<BI.Destiny.Definitions.DestinyDamageTypeDefinition>;
   DestinyActivityModeDefinition!: Table<any>;
   DestinyMedalTierDefinition!: Table<any>;
@@ -72,7 +73,7 @@ class Db extends Dexie {
   DestinyDestinationDefinition!: Table<any>;
   DestinyEntitlementOfferDefinition!: Table<any>;
   DestinyEquipmentSlotDefinition!: Table<any>;
-  DestinyStatDefinition!: Table<BI.Manifest.DestinyStatType>;
+  DestinyStatDefinition!: Table<BI.Destiny.Definitions.DestinyStatDefinition>;
   DestinyInventoryItemDefinition!: Table<BI.Destiny.Definitions.DestinyInventoryItemDefinition>;
   DestinyInventoryItemLiteDefinition!: Table<any>;
   DestinyItemTierTypeDefinition!: Table<any>;
@@ -81,7 +82,7 @@ class Db extends Dexie {
   DestinyMetricDefinition!: Table<any>;
   DestinyObjectiveDefinition!: Table<any>;
   DestinyPlatformBucketMappingDefinition!: Table<any>;
-  DestinyPlugSetDefinition!: Table<any>;
+  DestinyPlugSetDefinition!: Table<BI.Destiny.Definitions.Sockets.DestinyPlugSetDefinition>;
   DestinyPowerCapDefinition!: Table<any>;
   DestinyPresentationNodeDefinition!: Table<any>;
   DestinyProgressionDefinition!: Table<any>;
@@ -94,8 +95,8 @@ class Db extends Dexie {
   DestinySandboxPatternDefinition!: Table<any>;
   DestinySeasonDefinition!: Table<any>;
   DestinySeasonPassDefinition!: Table<any>;
-  DestinySocketCategoryDefinition!: Table<any>;
-  DestinySocketTypeDefinition!: Table<any>;
+  DestinySocketCategoryDefinition!: Table<BI.Destiny.Definitions.Sockets.DestinySocketCategoryDefinition>;
+  DestinySocketTypeDefinition!: Table<BI.Destiny.Definitions.Sockets.DestinySocketTypeDefinition>;
   DestinyTraitDefinition!: Table<any>;
   DestinyTraitCategoryDefinition!: Table<any>;
   DestinyUnlockCountMappingDefinition!: Table<any>;
@@ -106,9 +107,9 @@ class Db extends Dexie {
   DestinyActivityModifierDefinition!: Table<any>;
   DestinyReportReasonCategoryDefinition!: Table<any>;
   DestinyArtifactDefinition!: Table<any>;
-  DestinyBreakerTypeDefinition!: Table<any>;
+  DestinyBreakerTypeDefinition!: Table<BI.Destiny.Definitions.BreakerTypes.DestinyBreakerTypeDefinition>;
   DestinyChecklistDefinition!: Table<any>;
-  DestinyEnergyTypeDefinition!: Table<BI.Manifest.DestinyEnergyType>;
+  DestinyEnergyTypeDefinition!: Table<BI.Destiny.Definitions.EnergyTypes.DestinyEnergyTypeDefinition>;
 
   constructor() {
     super("Manifest");

@@ -1,4 +1,6 @@
-// https://bungie-net.github.io/multi/schema_GroupsV2-GroupUserInfoCard.html#schema_GroupsV2-GroupUserInfoCard
+/**
+ * https://bungie-net.github.io/multi/schema_GroupsV2-GroupUserInfoCard.html#schema_GroupsV2-GroupUserInfoCard
+ */
 export interface GroupUserInfoCard {
   LastSeenDisplayName: string;
   LastSeenDisplayNameType: number;
