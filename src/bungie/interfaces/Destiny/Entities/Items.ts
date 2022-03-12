@@ -1,4 +1,4 @@
-import { breakerType } from "../../../enums";
+import { DestinyBreakerType } from "../index";
 import { DataCollection } from "../../Dictionaries";
 
 /**
@@ -56,7 +56,7 @@ export interface DestinyItemSocketsComponent {
 export interface DestinyItemInstanceComponent {
   damageType: number;
   damageTypeHash?: number;
-  breakerType?: breakerType;
+  breakerType?: DestinyBreakerType;
   breakerTypeHash?: number;
   primaryStat: {
       statHash: number;

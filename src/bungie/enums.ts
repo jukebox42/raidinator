@@ -9,10 +9,3 @@ export enum membershipType {
   BungieNext = 254,
   All = -1,
 };
-
-export enum breakerType {
-  None = 0,
-  ShieldPiercing, // barrier
-  Disruption, // overload
-  Stagger, // unstop
-}
