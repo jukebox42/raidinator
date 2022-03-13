@@ -120,22 +120,20 @@ const CharacterSubclass = ( {itemDefinition, itemInstance, guardian}: CharacterS
     return <></>;
   }
 
-  // console.log("Subclass Socket", superAbility);
+  console.log("Subclass Socket", superAbility);
 
   return (
-    <Paper key={itemInstance.itemInstanceId} elevation={0} className="icon-item" sx={{ background: "none" }}>
-      <DetailTooltip title={
-        <>
-          <Typography variant="body1"><strong>{itemDefinition.displayProperties.name}</strong></Typography>
-          <Caption>{superAbility.displayProperties.name}</Caption>
-        </>
-      } flow={false}>
-        <img
-          src={getAssetUrl(superAbility.displayProperties.icon)}
-          className="icon"
-        />
-      </DetailTooltip>
+    <DetailTooltip title={
+      <>
+        <Typography variant="body1"><strong>{superAbility.displayProperties.name}</strong></Typography>
+        <Caption fade>{itemDefinition.flavorText}</Caption>
+        <Caption>{superAbility.displayProperties.description}</Caption>
+      </>
+    } flow={false}>
+    <Paper key={itemInstance.itemInstanceId} elevation={0} className="icon-item subclass" sx={{ background: "none" }}>
+      <img src={getAssetUrl(superAbility.displayProperties.icon)} className="icon" />
     </Paper>
+    </DetailTooltip>
   )
 }
 

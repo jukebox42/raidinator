@@ -34,7 +34,7 @@ const DetailTooltip = ( {title, children, flow = true, warning = false, error = 
     <ClickAwayListener onClickAway={handleTooltipClose}>
       <Paper
         elevation={0}
-        sx={flow ? sx : {}}
+        sx={flow ? sx : { background: "none" }}
         onClick={handleTooltipOpen}
         className={classNames.join(" ")}
       >

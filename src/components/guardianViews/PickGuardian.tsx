@@ -167,7 +167,6 @@ const PickGuardian = ({ player, guardianId, pickedGuardian }: PickGuardianProps)
         const character = characters.data[i as any];
         // TODO: we can do better if we had player trajectory data so we knew if they were online now
         const isLastOnline = sortedCharacterKeys[0].toString() === character.characterId.toString();
-        console.log("IS ONLINE", isLastOnline);
         return (
           <Button
             className="icon-character-button"
