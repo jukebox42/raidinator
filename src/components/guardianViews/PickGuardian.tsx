@@ -18,16 +18,8 @@ import * as BI from "../../bungie/interfaces";
 import { DataCollection } from "../../bungie/interfaces/Dictionaries";
 import * as Entities from "../../bungie/interfaces/Destiny/Entities";
 import * as Components from "../../bungie/interfaces/Destiny/Components";
-import { PlayerData } from "../../utils/interfaces";
-
-// TODO: WTF is this? why doesn't it match the other one in interfaces?
-interface GuardiansData {
-  characterId: number | undefined;
-  characters: DataCollection<Entities.Characters.DestinyCharacterComponent>;
-  characterEquipment: DataCollection<Entities.Inventory.DestinyInventoryComponent>;
-  itemComponents: Entities.Items.DestinyItemComponentSet;
-  characterPlugSets: DataCollection<Components.PlugSets.DestinyPlugSetsComponent>;
-};
+import { GuardiansData, PlayerData } from "../../utils/interfaces";
+import { toInteger } from "lodash";
 
 type PickGuardianProps = {
   player: PlayerData;
@@ -51,7 +43,7 @@ const loadGuardianFromDb = async (playerId: number): Promise<GuardiansData> => {
   characters = await db.AppCharacters.get(playerId);
   characterEquipment = await db.AppCharacterEquipment.get(playerId);
   itemComponents = await db.AppItemComponents.get(playerId);
-  characterPlugSets = (await db.AppCharacterPlugSets.get(playerId)).data;
+  characterPlugSets = await db.AppCharacterPlugSets.get(playerId);
 
   return {
     characterId,
@@ -65,10 +57,13 @@ const loadGuardianFromDb = async (playerId: number): Promise<GuardiansData> => {
 const PickGuardian = ({ player, guardianId, pickedGuardian }: PickGuardianProps) => {
   const [activeGuardianId, setActiveGuardianId] = useState(0);
   const [characterId, setCharacterId] = useState(0);
-  const [characters, setCharacters] = useState<DataCollection<Entities.Characters.DestinyCharacterComponent> | null>(null);
-  const [inventories, setInventories] = useState<DataCollection<Entities.Inventory.DestinyInventoryComponent> | null>(null);
+  const [characters, setCharacters] =
+    useState<DataCollection<Entities.Characters.DestinyCharacterComponent> | null>(null);
+  const [inventories, setInventories] =
+    useState<DataCollection<Entities.Inventory.DestinyInventoryComponent> | null>(null);
   const [items, setItems] = useState<Entities.Items.DestinyItemComponentSet | null>(null);
-  const [characterPlugSets, setCharacterPlugSets] = useState<DataCollection<Components.PlugSets.DestinyPlugSetsComponent> | null>(null);
+  const [characterPlugSets, setCharacterPlugSets] =
+    useState<DataCollection<Components.PlugSets.DestinyPlugSetsComponent> | null>(null);
 
   const [loadedCachedCharacter, setLoadedCachedCharacter] = useState(false);
 
@@ -83,8 +78,6 @@ const PickGuardian = ({ player, guardianId, pickedGuardian }: PickGuardianProps)
 
   // Effect to load character from the DB
   useEffect(() => {
-    let active = true;
-
     loadGuardianFromDb(player.membershipId).then(result => {
       console.log("loaded...", result);
       setCharacters(result.characters);
@@ -97,23 +90,17 @@ const PickGuardian = ({ player, guardianId, pickedGuardian }: PickGuardianProps)
       setLoadedCachedCharacter(true);
     })
 
-    return () => {
-      active = false;
-    }
+    return;
   }, []);
 
   // load characters from the api
   useEffect(() => {
-    let active = true;
-
     if((characters && inventories && items && characterPlugSets) || !loadedCachedCharacter) {
-      return () => {
-        active = false;
-      }
+      return;
     }
 
     loadCharacters(player.membershipId, player.membershipType, (response) => {
-      if (active && !response.characters.disabled) {
+      if (!response.characters.disabled) {
         // Character
         setCharacters(response.characters);
         db.AppCharacters.put(response.characters, player.membershipId);
@@ -135,30 +122,22 @@ const PickGuardian = ({ player, guardianId, pickedGuardian }: PickGuardianProps)
       }
     });
 
-    return () => {
-      active = false;
-    }
+    return;
   }, [loadedCachedCharacter]);
 
   useEffect(() => {
-    let active = true;
-
     // if everything isn't loaded wait.
     if (
       (!guardianId && !activeGuardianId)
       || !characters || !inventories || !items || !characterPlugSets
     ) {
-      return () => {
-        active = false;
-      }
+      return;
     }
 
     const character = characters.data[guardianId ? guardianId as any : activeGuardianId];
     if(!character) {
       setCharacterId(0);
-      return () => {
-        active = false;
-      }
+      return;
     }
 
     pickedGuardian(
@@ -168,14 +147,17 @@ const PickGuardian = ({ player, guardianId, pickedGuardian }: PickGuardianProps)
       characterPlugSets.data[character.characterId],
     );
 
-    return () => {
-      active = false;
-    }
+    return;
   }, [characters, inventories, items, characterPlugSets, activeGuardianId]);
 
   if (!characters || !inventories || !items || !characterPlugSets) {
     return <Box sx={{ p: 0 }}><Loading marginTop="43px" /></Box>;
   }
+
+  const sortedCharacterKeys = Object.keys(characters.data).sort((a: any, b: any) => {
+    return (new Date(characters.data[a].dateLastPlayed) as any) +
+           (new Date(characters.data[b].dateLastPlayed) as any);
+  });
 
   return (
     <>
@@ -183,12 +165,15 @@ const PickGuardian = ({ player, guardianId, pickedGuardian }: PickGuardianProps)
       <Stack direction="row" justifyContent="center" alignItems="center">
       {characters && inventories && Object.keys(characters.data).map((i: string) => {
         const character = characters.data[i as any];
+        // TODO: we can do better if we had player trajectory data so we knew if they were online now
+        const isLastOnline = sortedCharacterKeys[0].toString() === character.characterId.toString();
+        console.log("IS ONLINE", isLastOnline);
         return (
           <Button
             className="icon-character-button"
             key={character.characterId}
             variant="text"
-            onClick={(_) => {
+            onClick={_ => {
               setCharacterId(character.characterId);
               db.AppPlayersSelectedCharacter.put(character.characterId, player.membershipId);
               pickedGuardian(
@@ -201,6 +186,7 @@ const PickGuardian = ({ player, guardianId, pickedGuardian }: PickGuardianProps)
           >
             <img src={getAssetUrl(character.emblemPath)} className="icon-character"/>
             {getClassSvg(character.classType)}
+            {isLastOnline && <div className="online" />}
           </Button>
         )
       })}

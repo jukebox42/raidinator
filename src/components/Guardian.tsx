@@ -30,13 +30,9 @@ const Guardian = ( { playerId, cardKey, onDelete, onLoadFireteam }: GuardianProp
 
   // TODO: This causes a memory leak, something to do with the loaded player
   useEffect(() => {
-    let active = true;
-
     if (!playerId || playerId === "0") {
       setLoadedCachedPlayer(true);
-      return () => {
-        active = false;
-      }
+      return;
     }
 
     setLoading(true);
@@ -59,23 +55,16 @@ const Guardian = ( { playerId, cardKey, onDelete, onLoadFireteam }: GuardianProp
       return Promise.resolve();
     });
 
-    return () => {
-      active = false;
-    }
+    return;
   }, []);
 
   useEffect(() => {
-    let active = true;
     if (!loadedCachedPlayer) {
-      return () => {
-        active = false;
-      }
+      return;
     }
 
     setLoading(false);
-    return () => {
-      active = false;
-    }
+    return;
   }, [loadedCachedPlayer]);
 
   const pickedGuardian = (

@@ -132,6 +132,17 @@ body {
   bottom: 2px;
 }
 
+.online {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  left: 4px;
+  top: 6px;
+  border: 1px solid #FFF;
+  background-color: green;
+  border-radius: 10px;
+}
+
 /* MUI really makes this hard... */
 a:visited {
   color:#FFF;

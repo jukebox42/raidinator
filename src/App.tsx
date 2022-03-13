@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { v4 as uuid } from "uuid";
 import {
   Fab,
@@ -103,23 +103,17 @@ function App() {
         return setLoaded(true);
       } catch (e) {
         console.error("ERROR", e);
-        setError("Failed to load Manifest.")
+        setError("Failed to load Manifest.");
       }
     });
 
-    return () => {
-      active = false;
-    }
+    return;
   }, []);
 
   // Effect to load players from cache
   useEffect(() => {
-    let active = true;
-
     if(!loaded) {
-      return () => {
-        active = false;
-      }
+      return;
     }
 
     console.log("Loading Players from DB...");
@@ -135,9 +129,7 @@ function App() {
       setPlayerCacheLoaded(true);
     })
 
-    return () => {
-      active = false;
-    }
+    return;
   }, [loaded]);
 
   /**
@@ -171,6 +163,7 @@ function App() {
    * Handle showing the fireteam loader dialog
    */
   const loadFireteam = (player: PlayerData) => {
+    console.log("Loading Fireteam", player);
     setFreteamDialogPlayer(player);
     setFireteamDialogOpen(true);
   }
@@ -179,8 +172,10 @@ function App() {
    * Handle the on load fireteam even from the dialog
    */
   const onLoadFireteam = (fireteamPlayers: IAppContext[]) => {
-    db.AppPlayersSelectedCharacter.clear();
-    setGuardians(fireteamPlayers);
+    db.AppPlayersSelectedCharacter.clear().then(() => {
+      console.log("FOUND PLAYERS", fireteamPlayers);
+      setGuardians(fireteamPlayers);
+    });
   }
 
   if (error) {

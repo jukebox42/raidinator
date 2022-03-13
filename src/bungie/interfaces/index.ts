@@ -8,6 +8,21 @@ export * as GroupsV2 from "./GroupsV2";
 export * as User from "./User";
 
 /**
+ * https://bungie-net.github.io/multi/schema_BungieMembershipType.html#schema_BungieMembershipType
+ */
+export enum BungieMembershipType {
+  None = 0,
+  TigerXbox = 1,
+  TigerPsn = 2,
+  TigerSteam = 3,
+  TigerBlizzard = 4,
+  TigerStadia = 5,
+  TigerDemon = 10,
+  BungieNext = 254,
+  All = -1,
+}
+
+/**
  * A Response object. I made this up
  */
 export interface Response<T> {

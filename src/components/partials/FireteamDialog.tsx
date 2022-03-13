@@ -61,19 +61,20 @@ const FireteamDialog = ({ onLoadFireteam, onClose, player, open = false }: Firet
     //       Also we could check if the player is already cached and not reload them.
     const promises = party.map(async (member) => {
       const resp = await getMemberById(member.membershipId);
-      const primaryMembership = resp.destinyMemberships.find(
+      let primaryMembership = resp.destinyMemberships.find(
         membership => membership.membershipId === resp.primaryMembershipId);
-      if (primaryMembership) {
-        const player = {
-          bungieGlobalDisplayName: primaryMembership.bungieGlobalDisplayName,
-          bungieGlobalDisplayNameCode: primaryMembership.bungieGlobalDisplayNameCode,
-          membershipId: primaryMembership.membershipId,
-          iconPath: primaryMembership.iconPath,
-          membershipType: primaryMembership.membershipType
-        };
-        db.AppPlayers.put(player, primaryMembership.membershipId);
+      if (!primaryMembership) {
+        primaryMembership = resp.destinyMemberships[0];
       }
-      return {id: member.membershipId, key: uuid()}
+      const player = {
+        bungieGlobalDisplayName: primaryMembership.bungieGlobalDisplayName,
+        bungieGlobalDisplayNameCode: primaryMembership.bungieGlobalDisplayNameCode,
+        membershipId: primaryMembership.membershipId,
+        iconPath: primaryMembership.iconPath,
+        membershipType: primaryMembership.membershipType
+      };
+      await db.AppPlayers.put(player, primaryMembership.membershipId);
+      return { id: member.membershipId, key: uuid() };
     });
     Promise.all(promises).then(guardianMap => {
       onLoadFireteam(guardianMap);
