@@ -120,7 +120,7 @@ const CharacterSubclass = ( {itemDefinition, itemInstance, guardian}: CharacterS
     return <></>;
   }
 
-  console.log("Subclass Socket", superAbility);
+  console.log("Subclass Socket", superAbility, itemInstance);
 
   return (
     <DetailTooltip title={

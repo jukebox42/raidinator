@@ -92,7 +92,9 @@ const ItemMods = ( {guardian, weaponTypes, weaponEnergyTypes, subclassEnergyType
       {ammoFinderMods.map(plug => {
         // Ammo Finder Mods
         const good = checkAmmoFinderMod(plug, weaponTypes);
-        return (<Mod key={uuid()} plug={plug} showError={!good} reason="Matching weapon is not equipped." />);
+        if (!good) {
+          return (<Mod key={uuid()} plug={plug} showError={!good} reason="Matching weapon is not equipped." />);
+        }
       })}
       {chargedWithLightChargerMods.map(plug => {
         // Charged With Light Mods
@@ -134,9 +136,9 @@ const ItemMods = ( {guardian, weaponTypes, weaponEnergyTypes, subclassEnergyType
         if (!plug) {
           return;
         }
-        if (plug.displayProperties) {
-          //console.log(plug.displayProperties.name, plug);
-        }
+        // if (plug.displayProperties) {
+        //   console.log(plug.displayProperties.name, plug);
+        // }
         // Additional Special Mods
         if (plug.displayProperties && specialDamageMods.includes(plug.displayProperties.name)) {
           return (<Mod key={uuid()} plug={plug} />);

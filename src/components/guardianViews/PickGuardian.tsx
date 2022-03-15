@@ -15,11 +15,10 @@ import { PlayerName, getClassSvg } from "../partials";
 
 // Interfaces
 import * as BI from "../../bungie/interfaces";
-import { DataCollection } from "../../bungie/interfaces/Dictionaries";
+import { DataCollection, DataSingle } from "../../bungie/interfaces/Dictionaries";
 import * as Entities from "../../bungie/interfaces/Destiny/Entities";
 import * as Components from "../../bungie/interfaces/Destiny/Components";
 import { GuardiansData, PlayerData } from "../../utils/interfaces";
-import { toInteger } from "lodash";
 
 type PickGuardianProps = {
   player: PlayerData;
@@ -64,7 +63,6 @@ const PickGuardian = ({ player, guardianId, pickedGuardian }: PickGuardianProps)
   const [items, setItems] = useState<Entities.Items.DestinyItemComponentSet | null>(null);
   const [characterPlugSets, setCharacterPlugSets] =
     useState<DataCollection<Components.PlugSets.DestinyPlugSetsComponent> | null>(null);
-
   const [loadedCachedCharacter, setLoadedCachedCharacter] = useState(false);
 
   const loadCharacters = useMemo(() =>
@@ -154,10 +152,24 @@ const PickGuardian = ({ player, guardianId, pickedGuardian }: PickGuardianProps)
     return <Box sx={{ p: 0 }}><Loading marginTop="43px" /></Box>;
   }
 
+  const handleEmblemClick = (character: BI.Destiny.Entities.Characters.DestinyCharacterComponent) => {
+    setCharacterId(character.characterId);
+    db.AppPlayersSelectedCharacter.put(character.characterId, player.membershipId);
+    pickedGuardian(
+      character,
+      inventories.data[character.characterId],
+      items,
+      characterPlugSets.data[character.characterId],
+    );
+  }
+
   const sortedCharacterKeys = Object.keys(characters.data).sort((a: any, b: any) => {
     return (new Date(characters.data[a].dateLastPlayed) as any) +
            (new Date(characters.data[b].dateLastPlayed) as any);
   });
+
+  // queue force selecting (dont publish this)
+  // setTimeout(() => handleEmblemClick(characters.data[sortedCharacterKeys[0] as any]), 0);
 
   return (
     <>
@@ -172,16 +184,7 @@ const PickGuardian = ({ player, guardianId, pickedGuardian }: PickGuardianProps)
             className="icon-character-button"
             key={character.characterId}
             variant="text"
-            onClick={_ => {
-              setCharacterId(character.characterId);
-              db.AppPlayersSelectedCharacter.put(character.characterId, player.membershipId);
-              pickedGuardian(
-                character,
-                inventories.data[character.characterId],
-                items,
-                characterPlugSets.data[character.characterId],
-              );
-            }}
+            onClick={_ => handleEmblemClick(character)}
           >
             <img src={getAssetUrl(character.emblemPath)} className="icon-character"/>
             {getClassSvg(character.classType)}

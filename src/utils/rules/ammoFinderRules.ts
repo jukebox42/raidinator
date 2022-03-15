@@ -22,6 +22,7 @@ const weaponMap: WeaponMap = {
   "weapon_type.shotgun": "Shotgun",
   "weapon_type.sidearm": "Sidearm",
   "weapon_type.sniper_rifle": "Sniper Rifle",
+  "weapon_type.sword": "Sword",
   "weapon_type.submachinegun": "Submachine Gun",
   "weapon_type.trace_rifle": "Trace Rifle",
 };
