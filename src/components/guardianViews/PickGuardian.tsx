@@ -27,14 +27,6 @@ type PickGuardianProps = {
   ) => void;
 }
 
-interface CharactersData {
-  characterId: number;
-  characters: DataCollection<Entities.Characters.DestinyCharacterComponent>;
-  characterEquipment: DataCollection<Entities.Inventory.DestinyInventoryComponent>;
-  itemComponents: Entities.Items.DestinyItemComponentSet;
-  characterPlugSets: DataCollection<Components.PlugSets.DestinyPlugSetsComponent>;
-}
-
 const loadGuardianFromDb = async (playerId: number): Promise<GuardiansData> => {
   let characterId: number | undefined = 0;
   let characters!: DataCollection<Entities.Characters.DestinyCharacterComponent>;
@@ -62,7 +54,7 @@ const loadGuardianFromDb = async (playerId: number): Promise<GuardiansData> => {
 }
 
 const PickGuardian = ({ player, guardianId, pickedGuardian }: PickGuardianProps) => {
-  const data = useRef<CharactersData>({
+  const data = useRef<GuardiansData>({
     characterId: 0,
     characters: { data: {}, privacy: 0 },
     characterEquipment: { data: {}, privacy: 0 },
