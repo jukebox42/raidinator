@@ -54,8 +54,6 @@ const Guardian = ( { playerId, cardKey, onDelete, onLoadFireteam }: GuardianProp
 
       return Promise.resolve();
     });
-
-    return;
   }, []);
 
   useEffect(() => {
@@ -64,7 +62,6 @@ const Guardian = ( { playerId, cardKey, onDelete, onLoadFireteam }: GuardianProp
     }
 
     setLoading(false);
-    return;
   }, [loadedCachedPlayer]);
 
   const pickedGuardian = (

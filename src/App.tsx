@@ -106,8 +106,6 @@ function App() {
         setError("Failed to load Manifest.");
       }
     });
-
-    return;
   }, []);
 
   // Effect to load players from cache
@@ -127,9 +125,7 @@ function App() {
         setGuardians([{key: uuid()}]);
       }
       setPlayerCacheLoaded(true);
-    })
-
-    return;
+    });
   }, [loaded]);
 
   /**

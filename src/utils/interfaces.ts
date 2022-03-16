@@ -28,7 +28,7 @@ export interface GuardianData {
  * The Guardians one is used to put data in indexeddb
  */
 export interface GuardiansData {
-  characterId: number | undefined;
+  characterId: number;
   characters: DataCollection<Entities.Characters.DestinyCharacterComponent>;
   characterEquipment: DataCollection<Entities.Inventory.DestinyInventoryComponent>;
   itemComponents: Entities.Items.DestinyItemComponentSet;
