@@ -25,10 +25,22 @@ export interface GuardianData {
 }
 
 /**
- * The Guardians one is used to put data in indexeddb
+ * The Guardians one is used to put data in indexeddb.
+ * 
+ * TO BE DELETED ONCE THE CONTEXT MOVE IS COMPLETE
  */
 export interface GuardiansData {
   characterId: number;
+  characters: DataCollection<Entities.Characters.DestinyCharacterComponent>;
+  characterEquipment: DataCollection<Entities.Inventory.DestinyInventoryComponent>;
+  itemComponents: Entities.Items.DestinyItemComponentSet;
+  characterPlugSets: DataCollection<Components.PlugSets.DestinyPlugSetsComponent>;
+}
+
+/**
+ * Used to put/get characters into/from the indexeddb.
+ */
+export interface CharactersData {
   characters: DataCollection<Entities.Characters.DestinyCharacterComponent>;
   characterEquipment: DataCollection<Entities.Inventory.DestinyInventoryComponent>;
   itemComponents: Entities.Items.DestinyItemComponentSet;

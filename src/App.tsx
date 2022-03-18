@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useContext } from "react";
 import { v4 as uuid } from "uuid";
 import {
   Fab,
@@ -12,25 +12,27 @@ import clone from "lodash/clone";
 import db, { ManifestTables } from "./store/db";
 import { LANGUAGE, theme } from "./utils/constants";
 import { getManifest, getManifestContent } from "./bungie/api";
+import { CharacterContextProvider, CharacterContext } from "./context/CharacterContext";
 
 // Components
 import FindPlayer from "./components/FindPlayer";
-import Guardian from "./components/Guardian";
+import Character from "./components/Character";
 import { FireteamDialog } from "./components/partials"
 import { Loading, NavBar, ErrorBoundary } from "./components/generics";
 
-import { AppContext, IAppContext } from "./store/AppContext";
+// TODO: Rename
+import { IAppContext } from "./store/AppContext";
 
 // Interfaces
 import * as BI from "./bungie/interfaces";
 import { PlayerData } from "./utils/interfaces";
 
 function App() {
+  const context = useContext(CharacterContext);
   const [error, setError] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [playerCacheLoaded, setPlayerCacheLoaded] = useState(false)
-  const [guardians, setGuardians] = useState<IAppContext[]>([]);
   const [fireteamDialogOpen, setFireteamDialogOpen] = useState(false);
   const [fireteamDialogPlayer, setFreteamDialogPlayer] = useState<PlayerData | null>(null);
 
@@ -115,44 +117,23 @@ function App() {
     }
 
     console.log("Loading Players from DB...");
-
     db.AppPlayers.toArray().then(dbPlayers => {
       console.log("DB Players loaded", dbPlayers);
       if (dbPlayers.length) {
-        const ids = dbPlayers.map(p => { return {key: uuid(), id: p.membershipId.toString()} });
-        setGuardians(ids);
-      } else {
-        setGuardians([{key: uuid()}]);
+        const cards = dbPlayers.map(p => { return { membershipId: p.membershipId, player: p } });
+        console.log("CARDS TO REPLACE", cards);
+        context.replaceCards(cards);
       }
       setPlayerCacheLoaded(true);
     });
   }, [loaded]);
 
   /**
-   * Remove guardian card from the card list
+   * Create a new character card
    */
-  const deleteGuardian = (key: string) => {
-    const guardiansCopy = guardians.filter(g => {
-      if (g.key === key && g.id) {
-        db.deletePlayerCache(g.id);
-      }
-      return g.key !== key;
-    });
-    setGuardians(guardiansCopy);
-  }
-
-  /**
-   * Replace a guardian in the list so it'll be rendered as a player
-   */
-  const foundPlayer = async (player: PlayerData, cardKey: string) => {
+  const foundPlayer = async (player: PlayerData) => {
     await db.AppPlayers.put(player, player.membershipId); // store player in player database.
-    const guardiansCopy = clone(guardians).map(g => {
-      if (g.key === cardKey) {
-        g.id = player.membershipId as any;
-      }
-      return g;
-    });
-    setGuardians(guardiansCopy);
+    context.addCard(player.membershipId, player);
   }
 
   /**
@@ -170,7 +151,7 @@ function App() {
   const onLoadFireteam = (fireteamPlayers: IAppContext[]) => {
     db.AppPlayersSelectedCharacter.clear().then(() => {
       console.log("FOUND PLAYERS", fireteamPlayers);
-      setGuardians(fireteamPlayers);
+      //setGuardians(fireteamPlayers);
     });
   }
 
@@ -192,54 +173,37 @@ function App() {
     );
   }
 
-  const renderGuardian = (card: IAppContext) => {
-    return (
-      <Guardian
-        key={card.key}
-        playerId={card.id}
-        cardKey={card.key}
-        onDelete={deleteGuardian}
-        onLoadFireteam={loadFireteam}/>);
-  };
-
-  const renderFindPlayer = (card: IAppContext) => {
-    return (
-      <FindPlayer
-        key={card.key}
-        cardKey={card.key}
-        onDelete={deleteGuardian}
-        onFoundPlayer={foundPlayer}/>);
-  };
-
   return (
-    <AppContext.Provider value={guardians}>
+    <CharacterContextProvider>
       <ThemeProvider theme={theme}>
         <NavBar refreshCallback={refreshCallback} acting={!loaded || refreshing}/>
         <ErrorBoundary>
         <Stack sx={{ mx: "auto", pt: "56px", pb: "50px" }}>
-          {guardians.map((card) => {
-            // either render a search box or a guardian card if there's a player id
-            if (!card.id) {
-              return renderFindPlayer(card);
-            }
-            return renderGuardian(card); 
+          {context.cards.map(card => {
+            return (
+              <Character
+                membershipId={card.membershipId}
+                characterId={card.characterId}
+                data={card.data}
+                onLoadFireteam={loadFireteam}/>);
           })}
         </Stack>
         </ErrorBoundary>
-        {guardians.length < 6 && <Fab
+        {context.cards.length < 6 && <FindPlayer onFoundPlayer={foundPlayer} />}
+        {/*context.cards.length < 6 && <Fab
           aria-label="add"
           size="small"
           className="fab-style"
           onClick={() => {setGuardians([...guardians, {key: uuid()}])}}>
             <AddIcon />
-          </Fab>}
+        </Fab>*/}
         <FireteamDialog
           player={fireteamDialogPlayer}
           onClose={() => setFireteamDialogOpen(false)}
           open={fireteamDialogOpen}
           onLoadFireteam={(fireteamPlayers) => onLoadFireteam(fireteamPlayers)} />
       </ThemeProvider>
-    </AppContext.Provider>
+    </CharacterContextProvider>
   );
 }
 
