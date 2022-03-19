@@ -1,12 +1,11 @@
 import { useState, useEffect, useMemo, useContext } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
-  Box,
-  CardContent,
-  Autocomplete,
-  InputAdornment,
+  Paper,
   TextField,
   Typography,
+  Autocomplete,
+  InputAdornment,
   AutocompleteRenderInputParams,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -15,9 +14,6 @@ import throttle from "lodash/throttle";
 import db from "../store/db";
 import { CharacterContext } from "../context/CharacterContext";
 import { getAssetUrl } from "../utils/functions";
-
-// Components
-import { TouchCard } from "./generics";
 
 // Interfaces
 import { findPlayers } from "../bungie/api";
@@ -39,6 +35,7 @@ const FindPlayer = ({ onFoundPlayer }: FindPlayerProps) => {
 
   useLiveQuery(async () => {
     const ids = getMembershipIds();
+    console.log("IDS", ids);
     const previousSearches = (await db.AppSearches.toArray())
       .filter(item => !ids.includes(item.membershipId.toString()));
     setOptions([...options, ...previousSearches]);
@@ -119,7 +116,6 @@ const FindPlayer = ({ onFoundPlayer }: FindPlayerProps) => {
     return (
       <TextField
         {...params}
-        label="Search"
         InputProps={{
           ...params.InputProps,
           startAdornment: (<InputAdornment position="start"><SearchIcon /></InputAdornment>),
@@ -132,35 +128,28 @@ const FindPlayer = ({ onFoundPlayer }: FindPlayerProps) => {
   };
 
   return (
-    <TouchCard
-      className="guardianCard"
-      sx={{m: 1, mb: 0, p: 0, background: "rgb(16 19 28 / 0.65)" }}
-      onDelete={() => {}}
-    >
-      <CardContent sx={{ p: 0, pb: "0px !important" }}>
-        <Box sx={{m: 2, mt: "53px"}}>
-          <Autocomplete
-            id="findGuardian"
-            filterOptions={x => x}
-            autoComplete
-            includeInputInList
-            filterSelectedOptions
-            value={value}
-            options={options}
-            onInputChange={(_: React.SyntheticEvent<Element, Event>, newValue: string) => setInputValue(newValue)}
-            onChange={async (_: React.SyntheticEvent<Element, Event>, newValue: PlayerData | null) => {
-              if (newValue) {
-                await db.putSearchResult(newValue); // store player in search table.
-                onFoundPlayer(newValue); // pass the found player back to the app
-              }
-            }}
-            getOptionLabel={(option) => option.membershipId.toString()}
-            renderOption={renderOption}
-            renderInput={renderInput}
-          />
-        </Box>
-      </CardContent>
-    </TouchCard>
+    <Paper elevation={3} sx={{ m: 1, p: 1, borderRadius: 20, position: "fixed", bottom: 1, left: 1, right: 1 }}>
+      <Autocomplete
+        sx={{ p: 1, pr: 3, pl: 3 }}
+        id="findGuardian"
+        filterOptions={x => x}
+        autoComplete
+        includeInputInList
+        filterSelectedOptions
+        value={value}
+        options={options}
+        onInputChange={(_: React.SyntheticEvent<Element, Event>, newValue: string) => setInputValue(newValue)}
+        onChange={async (_: React.SyntheticEvent<Element, Event>, newValue: PlayerData | null) => {
+          if (newValue) {
+            await db.putSearchResult(newValue); // store player in search table.
+            onFoundPlayer(newValue); // pass the found player back to the app
+          }
+        }}
+        getOptionLabel={(option) => option.membershipId.toString()}
+        renderOption={renderOption}
+        renderInput={renderInput}
+      />
+    </Paper>
   );
 };
 

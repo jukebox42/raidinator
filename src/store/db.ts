@@ -232,13 +232,14 @@ class Db extends Dexie {
   /**
    * Remove a player from the db.
    */
-  async deletePlayerCache(playerId: string) {
-    await this.AppPlayers.delete(playerId);
-    await this.AppCharacters.delete(playerId);
-    await this.AppItemComponents.delete(playerId);
-    await this.AppCharacterPlugSets.delete(playerId);
-    await this.AppCharacterEquipment.delete(playerId);
-    await this.AppPlayersSelectedCharacter.delete(playerId);
+  async deletePlayerCache(playerId: number) {
+    const strPlayerId = playerId.toString(); // numbers are too long have to use a string
+    await this.AppPlayers.delete(strPlayerId);
+    await this.AppCharacters.delete(strPlayerId);
+    await this.AppItemComponents.delete(strPlayerId);
+    await this.AppCharacterPlugSets.delete(strPlayerId);
+    await this.AppCharacterEquipment.delete(strPlayerId);
+    await this.AppPlayersSelectedCharacter.delete(strPlayerId);
   }
 }
 

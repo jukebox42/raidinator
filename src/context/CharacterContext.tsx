@@ -36,23 +36,20 @@ interface ICharacterContext {
   setCardCharacterId: (membershipId: number, characterId: number) => Promise<void>;
 }
 
-const defaultContext = {
+export const CharacterContext = createContext<ICharacterContext>({
   cards: [],
   addCard: () => {},
-  replaceCards: () => {console.log("NOOOO")},
+  replaceCards: () => {},
   findCard: () => undefined,
   loadCardData: () => Promise.resolve(),
   deleteCard: () => Promise.resolve(),
   setCardCharacterId: () => Promise.resolve(),
-};
-
-export const CharacterContext = createContext<ICharacterContext>(defaultContext);
+});
 
 export const CharacterContextProvider = ({ children }: CharacterContextProviderProps) => {
   const [cards, setCards] = useState<Card[]>([]);
 
   const replaceCards = async (newCards: any[] ) => {
-    console.log("HERE");
     if(newCards.length > 6) {
       return;
     }
@@ -81,9 +78,8 @@ export const CharacterContextProvider = ({ children }: CharacterContextProviderP
     }
     
     // load from the API
-    const { data, characterId, error } = await getCharacters(membershipId,
-                                                             cards[cardIndex].player.membershipType,
-                                                             ignoreCache);
+    const membershipType = cards[cardIndex].player.membershipType;
+    const { data, characterId, error } = await getCharacters(membershipId, membershipType, ignoreCache);
 
     if (error.errorCode !== 1) {
       console.error("API Error", error.errorStatus);
@@ -101,8 +97,8 @@ export const CharacterContextProvider = ({ children }: CharacterContextProviderP
     if (!card) {
       return;
     }
-    setCards(cards.filter(c => c.membershipId === membershipId));
-    await db.AppPlayersSelectedCharacter.delete(card.membershipId);
+    db.deletePlayerCache(card.membershipId);
+    setCards(cards.filter(c => c.membershipId.toString() !== membershipId.toString()));
   };
 
   const setCardCharacterId = async (membershipId: number, characterId: number) => {

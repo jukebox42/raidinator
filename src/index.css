@@ -10,12 +10,6 @@ body {
   max-width: 450px;
 }
 
-.fab-style {
-  position: fixed !important;
-  bottom: 5px !important;
-  right: 5px !important;
-}
-
 .guardianCard {
   min-height: 155px;
 }
