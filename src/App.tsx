@@ -3,18 +3,18 @@ import {
 } from "@mui/material";
 
 import { theme } from "./utils/constants";
-import { CharacterContextProvider } from "./context/CharacterContext";
+import AppContextProvider from "./context/AppContext";
 
 // Components
 import CharacterList from "./components/CharacterList";
 
 function App() {
   return (
-    <CharacterContextProvider>
+    <AppContextProvider>
       <ThemeProvider theme={theme}>
         <CharacterList />
       </ThemeProvider>
-    </CharacterContextProvider>
+    </AppContextProvider>
   );
 }
 

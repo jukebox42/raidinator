@@ -1,10 +1,11 @@
-import { useState, useRef } from "react";
-import { useLiveQuery } from "dexie-react-hooks";
+import { useState, useRef, useEffect } from "react";
+import { v4 as uuid } from "uuid";
 import {
   Box,
   IconButton,
   Stack,
   Typography,
+  Skeleton,
 } from "@mui/material";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import uniq from "lodash/uniq";
@@ -29,7 +30,6 @@ import {
 
 // Interfaces
 import { CharactersData, PlayerData } from "../../utils/interfaces";
-import * as BI from "../../bungie/interfaces/";
 import * as Definitions from "../../bungie/interfaces/Destiny/Definitions";
 
 interface Props {
@@ -54,8 +54,8 @@ const DisplayCharacter = ( { player, data, characterId, onChangeCharacter, onLoa
   const itemComponents = data.itemComponents.instances.data;
   const sockets = data.itemComponents.sockets;
 
-  // Load character dbs
-  useLiveQuery(async () => {
+  const loadManifestDetails = async () => {
+    //setLoaded(false);
     damageTypes.current = await db.DestinyDamageTypeDefinition.toArray();
     energyTypes.current = await db.DestinyEnergyTypeDefinition.toArray();
     statTypes.current = await db.DestinyStatDefinition.toArray();
@@ -66,7 +66,12 @@ const DisplayCharacter = ( { player, data, characterId, onChangeCharacter, onLoa
       items.map(item => item.itemHash.toString())
     ) as Definitions.DestinyInventoryItemDefinition[];
     setLoaded(true);
-  });
+  }
+
+  // Load character dbs
+  useEffect(() => {
+    loadManifestDetails();
+  }, [data]);
 
   // Wait for all the dbs to load
   if(!loaded) {
@@ -132,13 +137,13 @@ const DisplayCharacter = ( { player, data, characterId, onChangeCharacter, onLoa
             gi => gi.itemHash === itemDefinition.hash);
           if (!itemInstance) {
             console.error("Could not find item instance for", itemDefinition.hash);
-            return <>Error: Could not find item instance for {itemDefinition.hash}.</>
+            return <Skeleton key={uuid()} variant="rectangular" width={55} height={55} sx={{mt:1, mr: 1}} />
           }
           const itemInstanceDetails = itemComponents[itemInstance.itemInstanceId];
           return (
             <EquipmentItem
-              key={(itemInstance as BI.Destiny.Entities.Items.DestinyItemComponent).itemInstanceId}
-              itemInstance={itemInstance as BI.Destiny.Entities.Items.DestinyItemComponent}
+              key={uuid()}
+              itemInstance={itemInstance}
               itemDefinition={itemDefinition}
               itemInstanceDetails={itemInstanceDetails}
               damageTypes={damageTypes.current}

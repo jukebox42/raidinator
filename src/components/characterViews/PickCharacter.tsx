@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { Button, Stack } from "@mui/material";
+import StarIcon from '@mui/icons-material/Star';
 
 import { getAssetUrl } from "../../utils/functions";
 import { CharacterContext } from "../../context/CharacterContext";
@@ -38,11 +39,11 @@ const PickCharacter = ({ player, data }: Props) => {
               className="icon-character-button"
               key={character.characterId}
               variant="text"
-              onClick={_ => context.setCardCharacterId(player.membershipId, character.characterId)}
+              onClick={_ => context.setCharacterId(character.characterId)}
             >
               <img src={getAssetUrl(character.emblemPath)} className="icon-character"/>
               {getClassSvg(character.classType)}
-              {isLastOnline && <div className="online" />}
+              {isLastOnline && <StarIcon color="success" sx={{ position: "absolute", left: 0, top: 0 }} />}
             </Button>
           )
         })}

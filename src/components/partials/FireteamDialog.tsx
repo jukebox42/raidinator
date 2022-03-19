@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState, useContext } from "react";
 import {
   Button,
   Dialog,
@@ -7,10 +7,10 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import { v4 as uuid } from "uuid";
 
 import db from "../../store/db";
 import { getMemberById, getProfile } from "../../bungie/api";
+import { AppContext } from "../../context/AppContext";
 
 // Components
 import { Loading } from "../generics";
@@ -27,11 +27,11 @@ interface CardData {
 type FireteamDialogProps = {
   open: boolean;
   player: PlayerData | null;
-  onLoadFireteam: (guardians: CardData[]) => void;
   onClose: () => void;
 }
 
-const FireteamDialog = ({ onLoadFireteam, onClose, player, open = false }: FireteamDialogProps) => {
+const FireteamDialog = ({ onClose, player, open = false }: FireteamDialogProps) => {
+  const context = useContext(AppContext);
   const [fetchingFireteam, setFetchingFireteam] = useState(false);
 
   const fetchFireteam = async () => {
@@ -56,15 +56,14 @@ const FireteamDialog = ({ onLoadFireteam, onClose, player, open = false }: Firet
     loadFireteam(party);
   };
 
-  const loadFireteam = (party: Components.Profiles.DestinyProfileTransitoryPartyMember[]) => {
+  const loadFireteam = async (party: Components.Profiles.DestinyProfileTransitoryPartyMember[]) => {
     // TODO: refactor this and maybe the player selector?
     //       Also we could check if the player is already cached and not reload them.
     const promises = party.map(async (member) => {
       const resp = await getMemberById(member.membershipId);
-      let primaryMembership = resp.destinyMemberships.find(
-        membership => membership.membershipId === resp.primaryMembershipId);
+      let primaryMembership = resp.destinyMemberships.find(m => m.membershipId === resp.primaryMembershipId);
       if (!primaryMembership) {
-        primaryMembership = resp.destinyMemberships[0];
+        primaryMembership = resp.destinyMemberships[0]; // somehow it's possible to not have a primary membership?
       }
       const player = {
         bungieGlobalDisplayName: primaryMembership.bungieGlobalDisplayName,
@@ -74,13 +73,11 @@ const FireteamDialog = ({ onLoadFireteam, onClose, player, open = false }: Firet
         membershipType: primaryMembership.membershipType
       };
       await db.AppPlayers.put(player, primaryMembership.membershipId);
-      return { id: member.membershipId, key: uuid() };
+      return { membershipId: player.membershipId, player };
     });
-    Promise.all(promises).then(guardianMap => {
-      onLoadFireteam(guardianMap);
-      onClose();
-    })
-
+    const characterMap = await Promise.all(promises)
+    await db.AppPlayersSelectedCharacter.clear();
+    context.replaceCards(characterMap);
   }
 
   const handleCloseWithCallback = () => {

@@ -27,7 +27,7 @@ import InstructionsDialog from "./InstructionsDialog";
 
 type NavBarProps = {
   acting: boolean;
-  refreshCallback: (refresh: () => Promise<void>) => void;
+  refreshCallback: () => void;
 }
 
 const NavBar = ( { acting, refreshCallback }: NavBarProps) => {
@@ -41,13 +41,6 @@ const NavBar = ( { acting, refreshCallback }: NavBarProps) => {
     return db.clearAllCache().then(() => {
       window.location.reload();
     });
-  }
-
-  const refresh = () => {
-    if (acting) {
-      return Promise.resolve();
-    }
-    return db.clearAppCharacterCache();
   }
 
   return (
@@ -66,12 +59,12 @@ const NavBar = ( { acting, refreshCallback }: NavBarProps) => {
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>Raid Watch</Typography>
           <IconButton
-            disabled={acting}
+            
             size="large"
             aria-label="account of current user"
             aria-controls="menu-appbar"
             color="inherit"
-            onClick={() => refreshCallback(refresh)}
+            onClick={() => refreshCallback()}
           >
             <CachedIcon />
           </IconButton>

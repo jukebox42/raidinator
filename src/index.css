@@ -56,7 +56,7 @@ body {
 .icon-character-button {
   position: relative;
 }
-.icon-character-button svg {
+.icon-character-button svg:first-of-type {
   width: 50px;
   height: 50px;
   position: absolute;
@@ -135,17 +135,6 @@ body {
   position: absolute;
   right: 2px;
   bottom: 2px;
-}
-
-.online {
-  width: 10px;
-  height: 10px;
-  position: absolute;
-  left: 4px;
-  top: 6px;
-  border: 1px solid #FFF;
-  background-color: green;
-  border-radius: 10px;
 }
 
 /* MUI really makes this hard... */

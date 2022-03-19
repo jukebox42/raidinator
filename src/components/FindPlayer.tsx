@@ -21,23 +21,19 @@ import * as BI from "../bungie/interfaces";
 import { PlayerData } from "../utils/interfaces";
 
 type FindPlayerProps = {
+  memberIds: string[];
   onFoundPlayer: (player: PlayerData) => void;
 }
 
-const FindPlayer = ({ onFoundPlayer }: FindPlayerProps) => {
-  const context = useContext(CharacterContext);
+const FindPlayer = ({ onFoundPlayer, memberIds }: FindPlayerProps) => {
   const [value, setValue] = useState<PlayerData | null>(null); //todo: do i need this?
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState<PlayerData[]>([]);
   const [dbOptions, setdbOptions] = useState<PlayerData[]>([]);
 
-  const getMembershipIds = () => context.cards.map(c => c.membershipId.toString());
-
   useLiveQuery(async () => {
-    const ids = getMembershipIds();
-    console.log("IDS", ids);
     const previousSearches = (await db.AppSearches.toArray())
-      .filter(item => !ids.includes(item.membershipId.toString()));
+      .filter(item => !memberIds.includes(item.membershipId.toString()));
     setOptions([...options, ...previousSearches]);
     setdbOptions([...previousSearches]);
   });
@@ -64,10 +60,9 @@ const FindPlayer = ({ onFoundPlayer }: FindPlayerProps) => {
         return
       }
 
-      const ids = getMembershipIds();
       // if no results (or error)
       if (!response.searchResults) {
-        setOptions([...dbOptions.filter(item => !ids.includes(item.membershipId.toString()))]);
+        setOptions([...dbOptions.filter(item => !memberIds.includes(item.membershipId.toString()))]);
         return;
       }
 
@@ -80,7 +75,7 @@ const FindPlayer = ({ onFoundPlayer }: FindPlayerProps) => {
       // filter out the players without memberships then map them to player objects
       const searchOptions = response.searchResults
         .filter(item => item.destinyMemberships.length > 0)
-        .filter(item => !ids.includes(item.destinyMemberships[0].membershipId.toString()))
+        .filter(item => !memberIds.includes(item.destinyMemberships[0].membershipId.toString()))
         .map(item => {
           return {
             bungieGlobalDisplayName: item.bungieGlobalDisplayName,
@@ -99,7 +94,7 @@ const FindPlayer = ({ onFoundPlayer }: FindPlayerProps) => {
     return () => {
       active = false;
     }
-  }, [value, inputValue, search, context]);
+  }, [value, inputValue, search]);
 
   const renderOption = (props: React.HTMLAttributes<HTMLLIElement>, option: PlayerData) => {
     return (
@@ -133,9 +128,8 @@ const FindPlayer = ({ onFoundPlayer }: FindPlayerProps) => {
         sx={{ p: 1, pr: 3, pl: 3 }}
         id="findGuardian"
         filterOptions={x => x}
-        autoComplete
         includeInputInList
-        filterSelectedOptions
+        inputValue={inputValue}
         value={value}
         options={options}
         onInputChange={(_: React.SyntheticEvent<Element, Event>, newValue: string) => setInputValue(newValue)}
@@ -143,6 +137,8 @@ const FindPlayer = ({ onFoundPlayer }: FindPlayerProps) => {
           if (newValue) {
             await db.putSearchResult(newValue); // store player in search table.
             onFoundPlayer(newValue); // pass the found player back to the app
+            setValue(null);
+            setInputValue("");
           }
         }}
         getOptionLabel={(option) => option.membershipId.toString()}

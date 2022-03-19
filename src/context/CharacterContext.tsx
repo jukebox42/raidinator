@@ -1,84 +1,34 @@
 import { useState, createContext } from "react";
-import { v4 as uuid } from "uuid";
-import clone from "lodash/clone";
 
-import db from "../store/db";
 import { getCharacters } from "../store/api";
 
-import { CharactersData, PlayerData } from "../utils/interfaces";
-import { Card } from "@mui/material";
-
-// John you made this file to make a global context. where does player load? another context maybe? Guardian is loading the player today and that seems strange but maybe that's fine it doesn't matter if that still happens maybe?
+import { CharactersData } from "../utils/interfaces";
 
 interface CharacterContextProviderProps {
   children?: JSX.Element;
+  membershipId: number;
+  membershipType: number;
 }
 
-interface Card {
-  membershipId: number;
+type ICharacterContextType = {
   characterId: number;
-  player: PlayerData;
-  data?: CharactersData,
+  data?: CharactersData;
+  loadData: (ignoreCache?: boolean) => Promise<void>;
+  setCharacterId: (characterId: number) => void;
 }
 
-interface NewCard {
-  membershipId: number;
-  player: PlayerData;
-}
-
-interface ICharacterContext {
-  cards: Card[],
-  addCard: (membershipId: number, player: PlayerData) => void;
-  replaceCards: (newCards: NewCard[]) => void;
-  findCard: (membershipId: number) => Card | undefined;
-  loadCardData: (membershipId: number, loadCardData?: boolean) => Promise<void>;
-  deleteCard: (membershipId: number) => Promise<void>;
-  setCardCharacterId: (membershipId: number, characterId: number) => Promise<void>;
-}
-
-export const CharacterContext = createContext<ICharacterContext>({
-  cards: [],
-  addCard: () => {},
-  replaceCards: () => {},
-  findCard: () => undefined,
-  loadCardData: () => Promise.resolve(),
-  deleteCard: () => Promise.resolve(),
-  setCardCharacterId: () => Promise.resolve(),
+export const CharacterContext = createContext<ICharacterContextType>({
+  characterId: 0,
+  loadData: () => Promise.resolve(),
+  setCharacterId: () => Promise.resolve(),
 });
 
-export const CharacterContextProvider = ({ children }: CharacterContextProviderProps) => {
-  const [cards, setCards] = useState<Card[]>([]);
+const CharacterContextProvider = ({ children, membershipId, membershipType }: CharacterContextProviderProps) => {
+  const [characterId, setCharacterId] = useState(0);
+  const [data, setData] = useState<CharactersData | undefined>(undefined);
 
-  const replaceCards = async (newCards: any[] ) => {
-    if(newCards.length > 6) {
-      return;
-    }
-
-    const tempCards = newCards.map(c => { return {membershipId: c.membershipId, player: c.player, characterId: 0}});
-    console.log("REPLACE CARDS", tempCards);
-    setCards([...tempCards]);
-  }
-
-  const addCard = async (membershipId: number, player: PlayerData) => {
-    if (cards.length === 6 || cards.find(c => c.membershipId === membershipId)) {
-      return;
-    }
-    const characterId = 0;
-    setCards([...cards, { membershipId, characterId, player }]);
-  };
-
-  const findCard = (membershipId: number) => {
-    return cards.find(c => c.membershipId.toString() === membershipId.toString());
-  }
-
-  const loadCardData = async (membershipId: number, ignoreCache: boolean = false) => {
-    const cardIndex = cards.findIndex(c => c.membershipId.toString() === membershipId.toString());
-    if (cardIndex < 0) {
-      return;
-    }
-    
+  const loadData = async (ignoreCache: boolean = false) => {
     // load from the API
-    const membershipType = cards[cardIndex].player.membershipType;
     const { data, characterId, error } = await getCharacters(membershipId, membershipType, ignoreCache);
 
     if (error.errorCode !== 1) {
@@ -86,41 +36,21 @@ export const CharacterContextProvider = ({ children }: CharacterContextProviderP
       return;
     }
 
-    const tempCards = clone(cards);
-    tempCards[cardIndex].data = data;
-
-    setCards(tempCards);
-  };
-
-  const deleteCard = async (membershipId: number) => {
-    const card = cards.find(c => c.membershipId.toString() === membershipId.toString());
-    if (!card) {
-      return;
-    }
-    db.deletePlayerCache(card.membershipId);
-    setCards(cards.filter(c => c.membershipId.toString() !== membershipId.toString()));
-  };
-
-  const setCardCharacterId = async (membershipId: number, characterId: number) => {
-    const cardIndex = cards.findIndex(c => c.membershipId.toString() === membershipId.toString());
-    await db.AppPlayersSelectedCharacter.put(cards[cardIndex].membershipId, characterId);
-    const tempCards = clone(cards);
-    tempCards[cardIndex].characterId = characterId;
-    setCards(tempCards);
+    setData(data);
+    setCharacterId(characterId);
   };
 
   return (
     <CharacterContext.Provider
       value={{
-        cards,
-        addCard,
-        replaceCards,
-        findCard,
-        loadCardData,
-        deleteCard,
-        setCardCharacterId,
+        data,
+        loadData,
+        characterId,
+        setCharacterId,
       }}>
       {children}
     </CharacterContext.Provider>
   );
 }
+
+export default CharacterContextProvider;
