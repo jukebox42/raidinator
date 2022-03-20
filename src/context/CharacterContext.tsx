@@ -53,7 +53,6 @@ const CharacterContextProvider = ({ children, membershipId, membershipType }: Ch
     } else {
       await db.AppPlayersSelectedCharacter.put(membershipId, characterId);
     }
-    console.log("SETTING CGAR ID", characterId);
     internalSetCharacterId(characterId);
   } 
 
