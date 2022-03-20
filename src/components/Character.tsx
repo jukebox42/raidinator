@@ -1,15 +1,13 @@
-import { useState, useRef, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
-  Box,
   CardContent,
 } from "@mui/material";
 
-import db from "../store/db";
 import { CharacterContext } from "../context/CharacterContext";
 import { AppContext } from "../context/AppContext";
 
 // Components
-import { Loading, TouchCard } from "./generics";
+import { TouchCard } from "./generics";
 import LoadingCharacter from "./characterViews/LoadingCharacter";
 import PickCharacter from "./characterViews/PickCharacter";
 import DisplayCharacter from "./characterViews/DisplayCharacter";

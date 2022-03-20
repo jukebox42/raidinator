@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo, useContext } from "react";
-import { useLiveQuery } from "dexie-react-hooks";
+import { useState, useEffect, useMemo } from "react";
+import uniqBy from "lodash/uniqBy";
 import {
   Paper,
   TextField,
@@ -12,7 +12,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import throttle from "lodash/throttle";
 
 import db from "../store/db";
-import { CharacterContext } from "../context/CharacterContext";
 import { getAssetUrl } from "../utils/functions";
 
 // Interfaces
@@ -29,14 +28,6 @@ const FindPlayer = ({ onFoundPlayer, memberIds }: FindPlayerProps) => {
   const [value, setValue] = useState<PlayerData | null>(null); //todo: do i need this?
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState<PlayerData[]>([]);
-  const [dbOptions, setdbOptions] = useState<PlayerData[]>([]);
-
-  useLiveQuery(async () => {
-    const previousSearches = (await db.AppSearches.toArray())
-      .filter(item => !memberIds.includes(item.membershipId.toString()));
-    setOptions([...options, ...previousSearches]);
-    setdbOptions([...previousSearches]);
-  });
 
   const search = useMemo(() =>
     throttle(
@@ -51,18 +42,29 @@ const FindPlayer = ({ onFoundPlayer, memberIds }: FindPlayerProps) => {
     let active = true;
 
     if (inputValue === "") {
-      setOptions(value ? [value] : [...dbOptions]);
+      db.AppSearches.toArray().then(previousSearch => {
+        const newOptions = [
+          ...previousSearch
+        ].filter(item => !memberIds.includes(item.membershipId.toString()));
+
+        setOptions(value ? [value] : newOptions);
+      });
       return;
     }
 
-    search(inputValue, (response: BI.User.UserSearchResponse) => {
+    search(inputValue, async (response: BI.User.UserSearchResponse) => {
       if (!active) {
         return
       }
 
+      const previousSearches = await db.AppSearches.toArray();
+
       // if no results (or error)
       if (!response.searchResults) {
-        setOptions([...dbOptions.filter(item => !memberIds.includes(item.membershipId.toString()))]);
+        const opts = [
+          ...previousSearches
+        ].filter(item => !memberIds.includes(item.membershipId.toString()));
+        setOptions(uniqBy(opts, "memberId"));
         return;
       }
 
@@ -75,7 +77,6 @@ const FindPlayer = ({ onFoundPlayer, memberIds }: FindPlayerProps) => {
       // filter out the players without memberships then map them to player objects
       const searchOptions = response.searchResults
         .filter(item => item.destinyMemberships.length > 0)
-        .filter(item => !memberIds.includes(item.destinyMemberships[0].membershipId.toString()))
         .map(item => {
           return {
             bungieGlobalDisplayName: item.bungieGlobalDisplayName,
@@ -87,14 +88,18 @@ const FindPlayer = ({ onFoundPlayer, memberIds }: FindPlayerProps) => {
         });
 
       // map results
-      newOptions = [...newOptions, ...searchOptions];
-      setOptions(newOptions);
+      newOptions = [
+        ...newOptions,
+        ...searchOptions,
+        ...previousSearches
+      ].filter(item => !memberIds.includes(item.membershipId.toString()));
+      setOptions(uniqBy(newOptions, "memberId"));
     });
 
     return () => {
       active = false;
     }
-  }, [value, inputValue, search]);
+  }, [value, inputValue, search, memberIds]);
 
   const renderOption = (props: React.HTMLAttributes<HTMLLIElement>, option: PlayerData) => {
     return (

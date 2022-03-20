@@ -15,7 +15,7 @@ import { getAssetUrl } from "../../utils/functions";
 import { LIGHT_STAT_HASH } from "../../utils/constants";
 
 // Components
-import { Loading } from "../generics";
+import LoadingCharacter from "./LoadingCharacter";
 import {
   ItemMods,
   PlayerName,
@@ -75,7 +75,7 @@ const DisplayCharacter = ( { player, data, characterId, onChangeCharacter, onLoa
 
   // Wait for all the dbs to load
   if(!loaded) {
-    return <Box sx={{ p: 0 }}><Loading marginTop="43px" /></Box>;
+    return <LoadingCharacter />;
   }
 
   // Get the light stat type
