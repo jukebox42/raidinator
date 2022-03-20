@@ -1,9 +1,8 @@
-import { useState, useEffect, useMemo, useContext } from "react";
+import { useState, useEffect, useMemo, useRef, useContext } from "react";
 import {
   Stack,
   Typography,
 } from "@mui/material";
-import clone from "lodash/clone";
 
 import db, { ManifestTables } from "../store/db";
 import { LANGUAGE } from "../utils/constants";
@@ -25,6 +24,7 @@ function CharacterList() {
   const context = useContext(AppContext);
   const [error, setError] = useState("");
   const [refreshing, setRefreshing] = useState(false);
+  const refreshCount = useRef(0);
   const [loading, setLoading] = useState(true);
   const [playerCacheLoaded, setPlayerCacheLoaded] = useState(false)
   const [fireteamDialogOpen, setFireteamDialogOpen] = useState(false);
@@ -36,6 +36,7 @@ function CharacterList() {
    */
   const refreshCallback = () => {
     setRefreshing(true);
+    context.refresh();
   }
 
   /**
@@ -136,6 +137,18 @@ function CharacterList() {
     setFireteamDialogOpen(true);
   }
 
+  /**
+   * Handle the refresh event. keep track of how many got refreshed so we know when we are done.
+   */
+  const onRefreshed = (membershipId: number) => {
+    refreshCount.current++;
+    console.log("REFRESHED", membershipId, refreshCount.current);
+    if (refreshCount.current >= context.cards.length) {
+      setRefreshing(false);
+      refreshCount.current = 0;
+    }
+  };
+
   if (error) {
     return (
       <>
@@ -167,8 +180,9 @@ function CharacterList() {
             return (
               <CharacterContextProvider key={card.membershipId} membershipId={card.membershipId} membershipType={card.player.membershipType}>
                 <Character
-                  refresh={refreshing}
                   player={card.player}
+                  lastRefresh={context.lastRefresh}
+                  onRefreshed={onRefreshed}
                   onLoadFireteam={loadFireteam}/>
               </CharacterContextProvider>
             );

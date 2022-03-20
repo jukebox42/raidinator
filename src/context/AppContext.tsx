@@ -1,3 +1,4 @@
+import { now } from "lodash";
 import { useState, createContext } from "react";
 
 import db from "../store/db";
@@ -14,6 +15,8 @@ interface Card {
 }
 
 type AppContextType = {
+  lastRefresh: number;
+  refresh: () => void;
   cards: Card[],
   addCard: (membershipId: number, player: PlayerData) => void;
   deleteCard: (membershipId: number) => Promise<void>;
@@ -21,6 +24,8 @@ type AppContextType = {
 }
 
 export const AppContext = createContext<AppContextType>({
+  lastRefresh: 0,
+  refresh: () => {},
   cards: [],
   addCard: () => {},
   deleteCard: () => Promise.resolve(),
@@ -29,6 +34,11 @@ export const AppContext = createContext<AppContextType>({
 
 const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [cards, setCards] = useState<Card[]>([]);
+  const [lastRefresh, setLastRefresh] = useState(0);
+
+  const refresh = async () => {
+    setLastRefresh(new Date().getTime());
+  }
 
   const addCard = async (membershipId: number, player: PlayerData) => {
     if (cards.length === 6 || cards.find(c => c.membershipId === membershipId)) {
@@ -62,6 +72,8 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
         addCard,
         replaceCards,
         deleteCard,
+        lastRefresh,
+        refresh,
       }}>
       {children}
     </AppContext.Provider>

@@ -120,7 +120,7 @@ const CharacterSubclass = ( {itemDefinition, itemInstance, sockets}: Props ) => 
     return <></>;
   }
 
-  console.log("Subclass Socket", superAbility, itemInstance);
+  // console.log("Subclass Socket", superAbility, itemInstance);
 
   return (
     <DetailTooltip title={

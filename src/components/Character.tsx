@@ -10,6 +10,7 @@ import { AppContext } from "../context/AppContext";
 
 // Components
 import { Loading, TouchCard } from "./generics";
+import LoadingCharacter from "./characterViews/LoadingCharacter";
 import PickCharacter from "./characterViews/PickCharacter";
 import DisplayCharacter from "./characterViews/DisplayCharacter";
 
@@ -18,23 +19,36 @@ import { PlayerData } from "../utils/interfaces";
 
 type Props = {
   player: PlayerData;
-  refresh: boolean;
+  lastRefresh: number;
+  onRefreshed: (membershipId: number) => void;
   onLoadFireteam: (player: PlayerData) => void;
 }
 
-const Character = ( { player, onLoadFireteam, refresh }: Props ) => {
+const Character = ( { player, onLoadFireteam, lastRefresh, onRefreshed }: Props ) => {
   const appContext = useContext(AppContext);
   const context = useContext(CharacterContext);
-  const [first, setFirst] = useState(true);
+  const [first, setFirst] = useState(true); // handle first load so we can show the last used character
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("F", refresh);
-    context.loadData(refresh).then(() => setLoading(false));
-  }, [refresh]);
+    if (lastRefresh === context.lastRefresh || first) {
+      return;
+    }
+
+    context.setLastRefresh(lastRefresh);
+    setLoading(true);
+    context.loadData(true).then(() => {
+      setLoading(false);
+      onRefreshed(player.membershipId);
+    });
+  }, [lastRefresh]);
 
   useEffect(() => {
-    if (loading || !context.data || !!context.characterId) {
+    context.loadData().then(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (loading || !context.data || !!context.characterId || !first) {
       return;
     }
 
@@ -59,7 +73,7 @@ const Character = ( { player, onLoadFireteam, refresh }: Props ) => {
       onDelete={() => appContext.deleteCard(player.membershipId)}
     >
       <CardContent sx={{ p: 0, pb: "0px !important" }}>
-        {(loading) && <Box sx={{ p: 0 }}><Loading marginTop="48px" /></Box>}
+        {loading && <LoadingCharacter />}
         {!loading && data && !first && !characterId && <PickCharacter player={player} data={data} />}
         {!loading && data && !!characterId &&
           <DisplayCharacter

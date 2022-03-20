@@ -59,7 +59,7 @@ const NavBar = ( { acting, refreshCallback }: NavBarProps) => {
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>Raid Watch</Typography>
           <IconButton
-            
+            disabled={acting}
             size="large"
             aria-label="account of current user"
             aria-controls="menu-appbar"
