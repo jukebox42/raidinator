@@ -19,11 +19,6 @@ import { Loading } from "../generics";
 import * as Components from "../../bungie/interfaces/Destiny/Components";
 import { PlayerData } from "../../utils/interfaces";
 
-interface CardData {
-  id?: string,
-  key: string,
-}
-
 type FireteamDialogProps = {
   open: boolean;
   player: PlayerData | null;
@@ -53,7 +48,8 @@ const FireteamDialog = ({ onClose, player, open = false }: FireteamDialogProps) 
       return onClose();
     }
     console.log("Found a party");
-    loadFireteam(party);
+    await loadFireteam(party);
+    return onClose();
   };
 
   const loadFireteam = async (party: Components.Profiles.DestinyProfileTransitoryPartyMember[]) => {

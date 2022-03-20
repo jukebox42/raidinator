@@ -57,9 +57,16 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   };
 
   const replaceCards = async (newCards: Card[] ) => {
+    console.log("REPLACE");
     if(newCards.length > 6) {
       return;
     }
+
+    const deletePromises = cards.map(c => db.deletePlayerCache(c.membershipId));
+    await Promise.allSettled(deletePromises);
+
+    const addCards = newCards.map(c => db.AppPlayers.put(c.player, c.player.membershipId));
+    await Promise.allSettled(addCards);
 
     const tempCards = newCards.map(c => { return {membershipId: c.membershipId, player: c.player}});
     setCards([...tempCards]);
