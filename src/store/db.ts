@@ -3,6 +3,10 @@ import Dexie, { Table } from "dexie";
 import { PlayerData } from "../utils/interfaces";
 
 import * as BI from "../bungie/interfaces";
+import { DataCollection } from "../bungie/interfaces/Dictionaries";
+import * as Entities from "../bungie/interfaces/Destiny/Entities";
+import * as Components from "../bungie/interfaces/Destiny/Components";
+import { CharactersData } from "../utils/interfaces";
 
 export type ManifestTables = "DestinyNodeStepSummaryDefinition" | "DestinyArtDyeChannelDefinition" | 
                              "DestinyArtDyeReferenceDefinition" | "DestinyPlaceDefinition" |
@@ -158,6 +162,39 @@ class Db extends Dexie {
   }
 
   /**
+   * Load a character from the database. Combines all the data that would come back from getProfile
+   * @param playerId 
+   * @returns 
+   */
+  async loadCharacter (playerId: number): Promise<{characterId: number, data: CharactersData}> {
+    let characterId: number | undefined = 0;
+    let characters!: DataCollection<Entities.Characters.DestinyCharacterComponent>;
+    let characterEquipment!: DataCollection<Entities.Inventory.DestinyInventoryComponent>;
+    let itemComponents!: Entities.Items.DestinyItemComponentSet;
+    let characterPlugSets!: DataCollection<Components.PlugSets.DestinyPlugSetsComponent>;
+  
+    characterId = await db.AppPlayersSelectedCharacter.get(playerId);
+    characters = await db.AppCharacters.get(playerId);
+    characterEquipment = await db.AppCharacterEquipment.get(playerId);
+    itemComponents = await db.AppItemComponents.get(playerId);
+    characterPlugSets = await db.AppCharacterPlugSets.get(playerId);
+  
+    if (!characterId) {
+      characterId = 0;
+    }
+  
+    return {
+      characterId,
+      data: {
+        characters,
+        characterEquipment,
+        itemComponents,
+        characterPlugSets,
+      }
+    };
+  }
+
+  /**
    * Add the player to the db so it's there for next time
    */
   async putSearchResult(playerData: PlayerData) {
@@ -195,13 +232,14 @@ class Db extends Dexie {
   /**
    * Remove a player from the db.
    */
-  async deletePlayerCache(playerId: string) {
-    await this.AppPlayers.delete(playerId);
-    await this.AppCharacters.delete(playerId);
-    await this.AppItemComponents.delete(playerId);
-    await this.AppCharacterPlugSets.delete(playerId);
-    await this.AppCharacterEquipment.delete(playerId);
-    await this.AppPlayersSelectedCharacter.delete(playerId);
+  async deletePlayerCache(playerId: number) {
+    const strPlayerId = playerId.toString(); // numbers are too long have to use a string
+    await this.AppPlayers.delete(strPlayerId);
+    await this.AppCharacters.delete(strPlayerId);
+    await this.AppItemComponents.delete(strPlayerId);
+    await this.AppCharacterPlugSets.delete(strPlayerId);
+    await this.AppCharacterEquipment.delete(strPlayerId);
+    await this.AppPlayersSelectedCharacter.delete(strPlayerId);
   }
 }
 

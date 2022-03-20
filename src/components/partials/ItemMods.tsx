@@ -30,27 +30,24 @@ import {
 import Mod from "./Mod";
 
 // Interfaces
-import { GuardianData } from "../../utils/interfaces";
+import { CharactersData } from "../../utils/interfaces";
 import * as BI from "../../bungie/interfaces/";
 import { DestinyItemSocketState } from "../../bungie/interfaces/Destiny/Entities/Items";
 
 type ItemModsProps = {
-  guardian: GuardianData;
+  data: CharactersData;
+  characterId: number;
   weaponTypes: string[]; // TODO this could be better yeah?
   weaponEnergyTypes: BI.Destiny.DestinyEnergyType[];
   subclassEnergyType: BI.Destiny.DestinyEnergyType;
 }
 
-const ItemMods = ( {guardian, weaponTypes, weaponEnergyTypes, subclassEnergyType}: ItemModsProps ) => {
-  // const context = useContext(GuardianContext);
-  const instances = guardian.itemComponents.instances;
-  const sockets = guardian.itemComponents.sockets;
-  const characterEquipment = guardian.inventory;
+const ItemMods = ( {data, characterId, weaponTypes, weaponEnergyTypes, subclassEnergyType}: ItemModsProps ) => {
+  const instances = data.itemComponents.instances.data;
+  const sockets = data.itemComponents.sockets.data;
+  const characterEquipment = data.characterEquipment.data[characterId];
 
   const plugs = useLiveQuery(async () => {
-    if (!sockets) {
-      return;
-    }
     // get item instance ids to filter with. itemSockets includes ALL characters items
     const equippedItemKeys = characterEquipment.items.map((e: any) => e.itemInstanceId.toString());
 
@@ -58,9 +55,9 @@ const ItemMods = ( {guardian, weaponTypes, weaponEnergyTypes, subclassEnergyType
 
     // get full list of plugs in sockets
     let flatPlugs: DestinyItemSocketState[] = [];
-    Object.keys(instances.data).forEach(itemId => {
-      if (equippedItemKeys.includes(itemId) && sockets.data[itemId as any]) {
-        flatPlugs = flatPlugs.concat(sockets.data[itemId as any].sockets);
+    Object.keys(instances).forEach(itemId => {
+      if (equippedItemKeys.includes(itemId) && sockets[itemId as any]) {
+        flatPlugs = flatPlugs.concat(sockets[itemId as any].sockets);
       }
     });
     // push items into a map so they are easier to index

@@ -14,12 +14,13 @@ import { ReactComponent as TitanSymbol } from '../../assets/titan_emblem.svg';
 
 // Interfaces
 import * as BI from "../../bungie/interfaces";
+import { DataCollection } from "../../bungie/interfaces/Dictionaries";
 import { DestinyInventoryItemDefinition } from "../../bungie/interfaces/Destiny/Definitions";
-import { GuardianData } from "../../utils/interfaces";
 import db from "../../store/db";
+import { DestinyItemSocketsComponent } from "../../bungie/interfaces/Destiny/Entities/Items";
 
-type CharacterSubclassProps = {
-  guardian: GuardianData;
+type Props = {
+  sockets: DataCollection<DestinyItemSocketsComponent>;
   itemDefinition: BI.Destiny.Definitions.DestinyInventoryItemDefinition | undefined;
   itemInstance: BI.Destiny.Entities.Items.DestinyItemComponent | undefined;
 }
@@ -92,7 +93,7 @@ export const isSubClass = (itemDefinition: BI.Destiny.Definitions.DestinyInvento
          itemDefinition.traitIds.includes("item_type.dark_subclass"));
 }
 
-const CharacterSubclass = ( {itemDefinition, itemInstance, guardian}: CharacterSubclassProps ) => {
+const CharacterSubclass = ( {itemDefinition, itemInstance, sockets}: Props ) => {
   // console.log("Subclass", itemDefinition, itemInstance);
 
   // Find super ability
@@ -100,7 +101,6 @@ const CharacterSubclass = ( {itemDefinition, itemInstance, guardian}: CharacterS
     if (!itemInstance) {
       return;
     }
-    const sockets = guardian.itemComponents.sockets;
     const id = itemInstance.itemInstanceId;
     // New super 3.0
     if (sockets.data[id]) {
@@ -120,7 +120,7 @@ const CharacterSubclass = ( {itemDefinition, itemInstance, guardian}: CharacterS
     return <></>;
   }
 
-  console.log("Subclass Socket", superAbility, itemInstance);
+  // console.log("Subclass Socket", superAbility, itemInstance);
 
   return (
     <DetailTooltip title={

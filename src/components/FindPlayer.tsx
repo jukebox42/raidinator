@@ -1,12 +1,11 @@
-import { useState, useEffect, useMemo, useContext } from "react";
-import { useLiveQuery } from "dexie-react-hooks";
+import { useState, useEffect, useMemo } from "react";
+import uniqBy from "lodash/uniqBy";
 import {
-  Box,
-  CardContent,
-  Autocomplete,
-  InputAdornment,
+  Paper,
   TextField,
   Typography,
+  Autocomplete,
+  InputAdornment,
   AutocompleteRenderInputParams,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -15,35 +14,20 @@ import throttle from "lodash/throttle";
 import db from "../store/db";
 import { getAssetUrl } from "../utils/functions";
 
-// Components
-import { TouchCard } from "./generics";
-
 // Interfaces
 import { findPlayers } from "../bungie/api";
 import * as BI from "../bungie/interfaces";
 import { PlayerData } from "../utils/interfaces";
-import { AppContext } from "../store/AppContext";
 
 type FindPlayerProps = {
-  cardKey: string;
-  onDelete: (key: string) => void;
-  onFoundPlayer: (player: PlayerData, cardKey: string) => void;
+  memberIds: string[];
+  onFoundPlayer: (player: PlayerData) => void;
 }
 
-const FindPlayer = ({ onFoundPlayer, cardKey, onDelete }: FindPlayerProps) => {
-  const context = useContext(AppContext);
+const FindPlayer = ({ onFoundPlayer, memberIds }: FindPlayerProps) => {
   const [value, setValue] = useState<PlayerData | null>(null); //todo: do i need this?
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState<PlayerData[]>([]);
-  const [dbOptions, setdbOptions] = useState<PlayerData[]>([]);
-
-  useLiveQuery(async () => {
-    const ids = context.map(c => c.id);
-    const previousSearches = (await db.AppSearches.toArray())
-      .filter(item => !ids.includes(item.membershipId.toString()));
-    setOptions([...options, ...previousSearches]);
-    setdbOptions([...previousSearches]);
-  });
 
   const search = useMemo(() =>
     throttle(
@@ -58,49 +42,64 @@ const FindPlayer = ({ onFoundPlayer, cardKey, onDelete }: FindPlayerProps) => {
     let active = true;
 
     if (inputValue === "") {
-      setOptions(value ? [value] : [...dbOptions]);
+      db.AppSearches.toArray().then(previousSearch => {
+        const newOptions = [
+          ...previousSearch
+        ].filter(item => !memberIds.includes(item.membershipId.toString()));
+
+        setOptions(value ? [value] : newOptions);
+      });
       return;
     }
 
-    search(inputValue, (response: BI.User.UserSearchResponse) => {
-      if (active) {
-        const ids = context.map(c => c.id);
-        // if no results (or error)
-        if (!response.searchResults) {
-          setOptions([...dbOptions.filter(item => !ids.includes(item.membershipId.toString()))]);
-          return;
-        }
-
-        let newOptions: PlayerData[] = [];
-
-        if (value) {
-          newOptions = [value];
-        }
-
-        // filter out the players without memberships then map them to player objects
-        const searchOptions = response.searchResults
-          .filter(item => item.destinyMemberships.length > 0)
-          .filter(item => !ids.includes(item.destinyMemberships[0].membershipId.toString()))
-          .map(item => {
-            return {
-              bungieGlobalDisplayName: item.bungieGlobalDisplayName,
-              bungieGlobalDisplayNameCode: item.bungieGlobalDisplayNameCode,
-              membershipId: item.destinyMemberships[0].membershipId,
-              iconPath: item.destinyMemberships[0].iconPath,
-              membershipType: item.destinyMemberships[0].membershipType,
-            }
-          });
-
-        // map results
-        newOptions = [...newOptions, ...searchOptions];
-        setOptions(newOptions);
+    search(inputValue, async (response: BI.User.UserSearchResponse) => {
+      if (!active) {
+        return
       }
+
+      const previousSearches = await db.AppSearches.toArray();
+
+      // if no results (or error)
+      if (!response.searchResults) {
+        const opts = [
+          ...previousSearches
+        ].filter(item => !memberIds.includes(item.membershipId.toString()));
+        setOptions(uniqBy(opts, "memberId"));
+        return;
+      }
+
+      let newOptions: PlayerData[] = [];
+
+      if (value) {
+        newOptions = [value];
+      }
+
+      // filter out the players without memberships then map them to player objects
+      const searchOptions = response.searchResults
+        .filter(item => item.destinyMemberships.length > 0)
+        .map(item => {
+          return {
+            bungieGlobalDisplayName: item.bungieGlobalDisplayName,
+            bungieGlobalDisplayNameCode: item.bungieGlobalDisplayNameCode,
+            membershipId: item.destinyMemberships[0].membershipId,
+            iconPath: item.destinyMemberships[0].iconPath,
+            membershipType: item.destinyMemberships[0].membershipType,
+          }
+        });
+
+      // map results
+      newOptions = [
+        ...newOptions,
+        ...searchOptions,
+        ...previousSearches
+      ].filter(item => !memberIds.includes(item.membershipId.toString()));
+      setOptions(uniqBy(newOptions, "memberId"));
     });
 
     return () => {
       active = false;
     }
-  }, [value, inputValue, search, context]);
+  }, [value, inputValue, search, memberIds]);
 
   const renderOption = (props: React.HTMLAttributes<HTMLLIElement>, option: PlayerData) => {
     return (
@@ -117,7 +116,6 @@ const FindPlayer = ({ onFoundPlayer, cardKey, onDelete }: FindPlayerProps) => {
     return (
       <TextField
         {...params}
-        label="Search"
         InputProps={{
           ...params.InputProps,
           startAdornment: (<InputAdornment position="start"><SearchIcon /></InputAdornment>),
@@ -130,35 +128,29 @@ const FindPlayer = ({ onFoundPlayer, cardKey, onDelete }: FindPlayerProps) => {
   };
 
   return (
-    <TouchCard
-      className="guardianCard"
-      sx={{m: 1, mb: 0, p: 0, background: "rgb(16 19 28 / 0.65)" }}
-      onDelete={() => onDelete(cardKey)}
-    >
-      <CardContent sx={{ p: 0, pb: "0px !important" }}>
-        <Box sx={{m: 2, mt: "53px"}}>
-          <Autocomplete
-            id="findGuardian"
-            filterOptions={x => x}
-            autoComplete
-            includeInputInList
-            filterSelectedOptions
-            value={value}
-            options={options}
-            onInputChange={(event: React.SyntheticEvent<Element, Event>, newValue: string) => setInputValue(newValue)}
-            onChange={async (event: React.SyntheticEvent<Element, Event>, newValue: PlayerData | null) => {
-              if (newValue) {
-                await db.putSearchResult(newValue); // store player in search table.
-                onFoundPlayer(newValue, cardKey); // pass the found player back to the app
-              }
-            }}
-            getOptionLabel={(option) => option.membershipId.toString()}
-            renderOption={renderOption}
-            renderInput={renderInput}
-          />
-        </Box>
-      </CardContent>
-    </TouchCard>
+    <Paper elevation={3} sx={{ m: 1, p: 1, borderRadius: 20, position: "fixed", bottom: 1, left: 1, right: 1 }}>
+      <Autocomplete
+        sx={{ p: 1, pr: 3, pl: 3 }}
+        id="findGuardian"
+        filterOptions={x => x}
+        includeInputInList
+        inputValue={inputValue}
+        value={value}
+        options={options}
+        onInputChange={(_: React.SyntheticEvent<Element, Event>, newValue: string) => setInputValue(newValue)}
+        onChange={async (_: React.SyntheticEvent<Element, Event>, newValue: PlayerData | null) => {
+          if (newValue) {
+            await db.putSearchResult(newValue); // store player in search table.
+            onFoundPlayer(newValue); // pass the found player back to the app
+            setValue(null);
+            setInputValue("");
+          }
+        }}
+        getOptionLabel={(option) => option.membershipId.toString()}
+        renderOption={renderOption}
+        renderInput={renderInput}
+      />
+    </Paper>
   );
 };
 

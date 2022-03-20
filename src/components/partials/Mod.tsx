@@ -28,6 +28,9 @@ const Mod = ( {plug, showWarning, showError, reason}: ModProps ) => {
   const [perks, setPerks] = useState<string[]>([]);
 
   useEffect(() => {
+    if (perks.length > 0) {
+      return () => {}
+    }
     const perkHashes = plug.perks.map(p => p.perkHash.toString());
     db.DestinySandboxPerkDefinition.bulkGet(perkHashes).then(resp => {
       const perkDescriptions = resp
