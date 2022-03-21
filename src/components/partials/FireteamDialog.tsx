@@ -39,11 +39,13 @@ const FireteamDialog = ({ onClose, player, open = false }: FireteamDialogProps) 
     console.log("RES", result);
     // TODO: Need an error message if there's no fireteam. Use snackbar?
     if(!result.profileTransitoryData?.data?.partyMembers) {
+      context.addToast("Failed to load fireteam. Player is not logged in.", "error");
       console.log("No Party, not logged in");
       return onClose();
     }
     const party = result.profileTransitoryData.data.partyMembers;
     if (party.length <= 1) {
+      context.addToast("Failed to load fireteam. Player is solo.", "error");
       console.log("No party, player is solo");
       return onClose();
     }
