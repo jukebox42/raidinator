@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import {
   Card,
   CardProps,
+  IconButton,
 } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import clone from "lodash/clone";
 
@@ -73,6 +75,8 @@ function TouchCard<C extends React.ElementType>(
   const cleanProps = clone(props);
   delete (cleanProps as any).onDelete;
 
+  const widthMatches = useMediaQuery("(max-width:450px)");
+
   return (
     <Card {...cleanProps}
       onTouchStart={onTouchStart}
@@ -85,6 +89,12 @@ function TouchCard<C extends React.ElementType>(
           sx={{ position: "absolute", mt: "32px", fontSize: 80, right: 1, zIndex: 999 }}
         />}
       {props.children}
+      {!widthMatches && <IconButton
+        onClick={() => props.onDelete()}
+        sx={{ position: "absolute", right: 1, bottom: 1}}
+      >
+        <DeleteForeverIcon />
+      </IconButton>}
     </Card>
   )
 }

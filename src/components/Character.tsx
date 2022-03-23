@@ -1,7 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import {
-  CardContent,
-} from "@mui/material";
+import { CardContent } from "@mui/material";
 
 import { CharacterContext } from "../context/CharacterContext";
 import { AppContext } from "../context/AppContext";
@@ -67,8 +65,7 @@ const Character = ( { player, onLoadFireteam, lastRefresh, onRefreshed }: Props 
 
   return (
     <TouchCard
-      className="guardianCard"
-      sx={{ m: 1, mb: 0, p: 0, background: "rgb(16 19 28 / 0.75)" }}
+      sx={{ position: "relative", minHeight: "155px", m: 1, mb: 0, p: 0, background: "rgb(16 19 28 / 0.75)" }}
       onDelete={() => appContext.deleteCard(player.membershipId)}
     >
       <CardContent sx={{ p: 0, pb: "0px !important" }}>

@@ -1,5 +1,4 @@
 import { Typography } from "@mui/material";
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 const Intro = () => {
   return (
@@ -13,8 +12,6 @@ const Intro = () => {
       <Typography variant="caption" component="p" color="white" sx={{ textAlign: "center" }}>
         Created by PlasmaticSpoon.
       </Typography>
-
-      <ArrowDownwardIcon sx={{position: "fixed", bottom: "200px", left: "50%", ml: "-50px", fontSize: 100, color: "white"}} />
     </>
   );
 }

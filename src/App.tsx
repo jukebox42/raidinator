@@ -1,4 +1,5 @@
 import {
+  Box,
   ThemeProvider,
 } from "@mui/material";
 
@@ -12,7 +13,9 @@ function App() {
   return (
     <AppContextProvider>
       <ThemeProvider theme={theme}>
-        <CharacterList />
+        <Box className="main" sx={{ p:0, position: "relative", maxWidth: "450px", height: "100vh" }}>
+          <CharacterList />
+        </Box>
       </ThemeProvider>
     </AppContextProvider>
   );

@@ -139,7 +139,7 @@ const FindPlayer = ({ onFoundPlayer, memberIds }: FindPlayerProps) => {
   };
 
   return (
-    <Paper elevation={3} sx={{ m: 1, p: 1, borderRadius: 20, position: "fixed", bottom: 1, left: 1, right: 1 }}>
+    <Paper elevation={3} sx={{ m: 1, p: 1, borderRadius: 20, position: "fixed", bottom: 1, left: 1, right: 1, maxWidth: "430px" }}>
       <Autocomplete
         sx={{ p: 1, pr: 3, pl: 3 }}
         id="findGuardian"
