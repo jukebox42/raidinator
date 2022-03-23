@@ -15,12 +15,11 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import CachedIcon from "@mui/icons-material/Cached";
 import DataThresholdingIcon from "@mui/icons-material/DataThresholding";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import HelpIcon from "@mui/icons-material/Help";
 
 import db from "../../store/db";
-import { LASER_SOUNDS_URL, SOURCE_URL, VERSION } from "../../utils/constants";
+import { SOURCE_URL, VERSION } from "../../utils/constants";
 
 // Components
 import InstructionsDialog from "./InstructionsDialog";
@@ -84,10 +83,6 @@ const NavBar = ( { acting, refreshCallback }: NavBarProps) => {
           <ListItemButton key="help" onClick={() => setInstructionsOpen(true)}>
             <ListItemIcon><HelpIcon /></ListItemIcon>
             <ListItemText primary="Help" />
-          </ListItemButton>
-          <ListItemButton key="clan" component="a" href={LASER_SOUNDS_URL} target="_blank">
-            <ListItemIcon><FavoriteIcon /></ListItemIcon>
-            <ListItemText primary="Laser Sounds" />
           </ListItemButton>
           <ListItem key="git" component="a" href={SOURCE_URL} target="_blank">
             <ListItemIcon><GitHubIcon /></ListItemIcon>

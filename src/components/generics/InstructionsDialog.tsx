@@ -28,31 +28,31 @@ const InstructionsDialog = ({ onClose, open = false }: InstructionsDialogProps) 
         <List>
           <ListItem>
             <ListItemIcon><CachedIcon /></ListItemIcon>
-            <ListItemText>Refresh guardian data from API.</ListItemText>
+            <ListItemText>Click the refresh button to reload guardian data from API.</ListItemText>
           </ListItem>
           <ListItem>
             <ListItemIcon><GroupAddIcon /></ListItemIcon>
-            <ListItemText>Load active fireteam (Will silently fail if not logged in).</ListItemText>
+            <ListItemText>Click the group icon to load the active fireteam.</ListItemText>
           </ListItem>
           <ListItem>
             <ListItemIcon><SwipeIcon /></ListItemIcon>
-            <ListItemText>Swipe guardian card left or right to remove.</ListItemText>
+            <ListItemText>Swipe a guardian card left or right to remove.</ListItemText>
           </ListItem>
           <ListItem>
             <ListItemIcon><TouchAppIcon /></ListItemIcon>
-            <ListItemText>Tap emblem to change character.</ListItemText>
+            <ListItemText>Tap the guardian emblem to change the guardian.</ListItemText>
           </ListItem>
           <ListItem>
             <ListItemIcon><TouchAppIcon /></ListItemIcon>
-            <ListItemText>Tap mods to view name.</ListItemText>
+            <ListItemText>Tap on a mod to view it's details.</ListItemText>
           </ListItem>
           <ListItem>
             <ListItemIcon><TouchAppIcon /></ListItemIcon>
-            <ListItemText>Double tap equipment to open light.gg.</ListItemText>
+            <ListItemText>Double tap on an equipment item to open light.gg.</ListItemText>
           </ListItem>
           <ListItem>
             <ListItemIcon><DoNotDisturbAltIcon /></ListItemIcon>
-            <ListItemText>Mods crossed out don't have their requirements met. Tap for details.</ListItemText>
+            <ListItemText>Mods crossed out don't have their requirements met. Tap on the mod for details.</ListItemText>
           </ListItem>
         </List>
       </DialogContent>

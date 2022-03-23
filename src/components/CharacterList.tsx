@@ -12,6 +12,7 @@ import CharacterContextProvider from "../context/CharacterContext";
 // Components
 import FindPlayer from "../components/FindPlayer";
 import Character from "../components/Character";
+import Intro from "../components/Intro";
 import { FireteamDialog } from "../components/partials"
 import { Loading, NavBar, ErrorBoundary } from "../components/generics";
 
@@ -197,6 +198,7 @@ function CharacterList() {
           })}
         </Stack>
         </ErrorBoundary>
+        {context.cards.length === 0 && <Intro />}
         {context.cards.length < 6 && <FindPlayer onFoundPlayer={foundPlayer} memberIds={membershipIds} />}
         <FireteamDialog
           player={fireteamDialogPlayer}
