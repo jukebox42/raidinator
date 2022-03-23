@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 
 import db from "../../store/db";
-import { getMemberById, getProfile } from "../../bungie/api";
+import { getMemberById } from "../../bungie/api";
 import { AppContext } from "../../context/AppContext";
 
 // Components
@@ -18,6 +18,7 @@ import { Loading } from "../generics";
 // Interfaces
 import * as Components from "../../bungie/interfaces/Destiny/Components";
 import { PlayerData } from "../../utils/interfaces";
+import { getCharacters } from "../../store/api";
 
 type FireteamDialogProps = {
   open: boolean;
@@ -34,22 +35,26 @@ const FireteamDialog = ({ onClose, player, open = false }: FireteamDialogProps) 
       return;
     }
     setFetchingFireteam(true);
-    const result = await getProfile(player.membershipId, player.membershipType);
+    const {
+      data,
+      characterId,
+      error,
+      profileTransitoryData
+    } = await getCharacters(player.membershipId, player.membershipType, true);
+    if (error.errorCode !== 1) {
+      context.addToast(`Failed to load fireteam: ${error.message}`, "error");
+      return onClose();
+    }
     setFetchingFireteam(false);
-    console.log("RES", result);
-    // TODO: Need an error message if there's no fireteam. Use snackbar?
-    if(!result.profileTransitoryData?.data?.partyMembers) {
-      context.addToast("Failed to load fireteam. Player is not logged in.", "error");
-      console.log("No Party, not logged in");
+    if(!profileTransitoryData?.data?.partyMembers) {
+      context.addToast(`Failed to load fireteam: ${player.bungieGlobalDisplayName} is offline.`, "info");
       return onClose();
     }
-    const party = result.profileTransitoryData.data.partyMembers;
-    if (party.length <= 1) {
-      context.addToast("Failed to load fireteam. Player is solo.", "error");
-      console.log("No party, player is solo");
+    const party = profileTransitoryData?.data?.partyMembers;
+    if (party && party.length <= 1) {
+      context.addToast(`Failed to load fireteam: ${player.bungieGlobalDisplayName} is solo.`, "info");
       return onClose();
     }
-    console.log("Found a party");
     await loadFireteam(party);
     return onClose();
   };

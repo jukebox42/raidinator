@@ -14,6 +14,7 @@ import DisplayCharacter from "./characterViews/DisplayCharacter";
 
 // Interfaces
 import { PlayerData } from "../utils/interfaces";
+import CharacterError from "./characterViews/CharacterError";
 
 type Props = {
   player: PlayerData;
@@ -71,9 +72,11 @@ const Character = ( { player, onLoadFireteam, lastRefresh, onRefreshed }: Props 
       onDelete={() => appContext.deleteCard(player.membershipId)}
     >
       <CardContent sx={{ p: 0, pb: "0px !important" }}>
-        {loading && <LoadingCharacter />}
-        {!loading && data && !first && !characterId && <PickCharacter player={player} data={data} />}
-        {!loading && data && !!characterId &&
+        {context.error && <CharacterError />}
+        {!context.error && loading && <LoadingCharacter />}
+        {!context.error && !loading && data && !first && !characterId &&
+          <PickCharacter player={player} data={data} />}
+        {!context.error && !loading && data && !!characterId &&
           <DisplayCharacter
             player={player}
             data={data}

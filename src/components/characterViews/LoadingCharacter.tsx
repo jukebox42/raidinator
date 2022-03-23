@@ -17,7 +17,10 @@ const LoadingCharacter = () => {
       <Stack direction="row" sx={{ ml: 1 }}>
         {/* TODO: Make a wrapper to angle it so it's a diamond */}
         <Skeleton variant="rectangular" animation="wave" width={55} height={55} sx={{ mr: 1 }} />
-        <Skeleton variant="rectangular" animation="wave" width={235} height={55} sx={{ mr: 1 }} />
+        <Skeleton variant="rectangular" animation="wave" width={55} height={55} sx={{ mr: 1 }} />
+        <Skeleton variant="rectangular" animation="wave" width={55} height={55} sx={{ mr: 1 }} />
+        <Skeleton variant="rectangular" animation="wave" width={55} height={55} sx={{ mr: 1 }} />
+        <Skeleton variant="rectangular" animation="wave" width={55} height={55} sx={{ mr: 1 }} />
       </Stack>
       <Box sx={{ ml: 1, display: "flex", flexDirection: "row" }}>
         <Box sx={{ width: "55px", mt: 1 , ml: 1 }}></Box>

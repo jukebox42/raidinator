@@ -9,9 +9,9 @@ import {
 } from "@mui/material";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import CachedIcon from "@mui/icons-material/Cached";
-import SwipeIcon from '@mui/icons-material/Swipe';
-import TouchAppIcon from '@mui/icons-material/TouchApp';
-import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt';
+import SwipeIcon from "@mui/icons-material/Swipe";
+import TouchAppIcon from "@mui/icons-material/TouchApp";
+import DoNotDisturbAltIcon from "@mui/icons-material/DoNotDisturbAlt";
 
 type InstructionsDialogProps = {
   open: boolean;

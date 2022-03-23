@@ -15,7 +15,7 @@ type ToastProps = {
 
 const Toast = ({ key, message, severity = "info", onClose }: ToastProps) => {
   const [open, setOpen] = useState(true);
-  const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+  const handleClose = (_: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }

@@ -1,12 +1,11 @@
 import { useState, useEffect, useMemo, useRef, useContext } from "react";
-import {
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Stack, Typography } from "@mui/material";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 import db, { ManifestTables } from "../store/db";
 import { LANGUAGE } from "../utils/constants";
-import { getManifest, getManifestContent } from "../bungie/api";
+import { getManifestContent } from "../bungie/api";
+import { getManifest } from "../store/api";
 import { AppContext } from "../context/AppContext";
 import CharacterContextProvider from "../context/CharacterContext";
 
@@ -56,9 +55,11 @@ function CharacterList() {
     });
   }
 
+  type ManifestValue = { data: BI.Destiny.Config.DestinyManifest, error: any };
+
   const loadManifest = useMemo(() =>
     (
-      callback: (response: BI.Destiny.Config.DestinyManifest) => void,
+      callback: ({ data, error }: ManifestValue) => Promise<void>,
     ) => getManifest().then(callback),
     []
   );
@@ -68,13 +69,19 @@ function CharacterList() {
     let active = true;
 
     if(!loading && !refreshing) {
-      console.log("App Loaded.");
       return;
     }
 
     // See if we need to load the manifest data and do it
-    loadManifest(async response => {
+    loadManifest(async ({ data, error }: ManifestValue) => {
       if (!active) {
+        return;
+      }
+
+      // If error then show the error.
+      if (error.errorCode !== 1) {
+        setError(error.errorStatus);
+        context.addToast(error.errorStatus);
         return;
       }
 
@@ -82,7 +89,7 @@ function CharacterList() {
         await db.init();
 
         // Check manifest version
-        const liveVersion = response.version;
+        const liveVersion = data.version;
         const savedVersion = await db.AppManifestVersion.get(1);
         if (liveVersion === savedVersion) {
           console.log("Manifest already up to date", liveVersion);
@@ -91,14 +98,16 @@ function CharacterList() {
 
         // Load manifest data
         console.log("Loading manifest from", savedVersion, "to", liveVersion, "...");
-        const manifestPath = response.jsonWorldContentPaths[LANGUAGE];
+        const manifestPath = data.jsonWorldContentPaths[LANGUAGE];
         await writeManifests(manifestPath);
         await db.AppManifestVersion.put(liveVersion, 1);
         console.log("Manifest loaded.")
         return setLoading(false);
       } catch (e) {
         console.error("ERROR", e);
-        setError("Failed to load Manifest.");
+        const error = "Failed to load manifest.";
+        context.addToast(error);
+        setError(error);
       }
     });
   }, []);
@@ -109,9 +118,7 @@ function CharacterList() {
       return;
     }
 
-    console.log("Loading Players from DB...");
     db.AppPlayers.toArray().then(dbPlayers => {
-      console.log("DB Players loaded", dbPlayers);
       if (dbPlayers.length) {
         const cards = dbPlayers.map(p => { return { membershipId: p.membershipId, player: p, refresh: false } });
         context.replaceCards(cards);
@@ -132,7 +139,6 @@ function CharacterList() {
    * Handle showing the fireteam loader dialog
    */
   const loadFireteam = (player: PlayerData) => {
-    console.log("Loading Fireteam", player);
     setFreteamDialogPlayer(player);
     setFireteamDialogOpen(true);
   }
@@ -140,9 +146,8 @@ function CharacterList() {
   /**
    * Handle the refresh event. keep track of how many got refreshed so we know when we are done.
    */
-  const onRefreshed = (membershipId: number) => {
+  const onRefreshed = () => {
     refreshCount.current++;
-    console.log("REFRESHED", membershipId, refreshCount.current);
     if (refreshCount.current >= context.cards.length) {
       setRefreshing(false);
       refreshCount.current = 0;
@@ -153,7 +158,10 @@ function CharacterList() {
     return (
       <>
         <NavBar refreshCallback={refreshCallback} acting={true}/>
-        <Typography variant="body1" sx={{ color: "white" }}>{error}</Typography>
+        <Typography variant="body1" sx={{ textAlign: "center", mt: "150px" }}>
+          <ErrorOutlineIcon sx={{fontSize: 60}} />
+        </Typography>
+        <Typography variant="body1" sx={{ textAlign: "center", color: "white" }}>{error}</Typography>
       </>
     );
   }

@@ -51,8 +51,6 @@ const ItemMods = ( {data, characterId, weaponTypes, weaponEnergyTypes, subclassE
     // get item instance ids to filter with. itemSockets includes ALL characters items
     const equippedItemKeys = characterEquipment.items.map((e: any) => e.itemInstanceId.toString());
 
-    //console.log(sockets.data["6917529623489675981"]);
-
     // get full list of plugs in sockets
     let flatPlugs: DestinyItemSocketState[] = [];
     Object.keys(instances).forEach(itemId => {

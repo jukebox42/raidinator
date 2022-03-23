@@ -8,9 +8,9 @@ import { getAssetUrl } from "../../utils/functions";
 
 // Components
 import { Caption, DetailTooltip } from "../generics";
-import { ReactComponent as HunterSymbol } from '../../assets/hunter_emblem.svg';
-import { ReactComponent as WarlockSymbol } from '../../assets/warlock_emblem.svg';
-import { ReactComponent as TitanSymbol } from '../../assets/titan_emblem.svg';
+import { ReactComponent as HunterSymbol } from "../../assets/hunter_emblem.svg";
+import { ReactComponent as WarlockSymbol } from "../../assets/warlock_emblem.svg";
+import { ReactComponent as TitanSymbol } from "../../assets/titan_emblem.svg";
 
 // Interfaces
 import * as BI from "../../bungie/interfaces";

@@ -27,7 +27,7 @@ export const getManifest = async () => {
       headers,
     });
 
-  return handleResponse<BI.Destiny.Config.DestinyManifest>(await ret.json());
+  return await ret.json() as BI.Response<BI.Destiny.Config.DestinyManifest>;
 }
 
 export const getManifestContent = async (path: string): Promise<BI.Data> => {
@@ -56,7 +56,7 @@ export const findPlayers = async (name: string, page: number = 0) => {
       headers,
     });
 
-  return handleResponse<BI.User.UserSearchResponse>(await ret.json());
+  return await ret.json() as BI.Response<BI.User.UserSearchResponse>;
 }
 
 export const getProfile = async (id: number, type: number) => {
@@ -70,9 +70,14 @@ export const getProfile = async (id: number, type: number) => {
       headers,
     });
 
-  return handleResponse<BI.Destiny.Responses.DestinyProfileResponse>(await ret.json());
+  return await ret.json() as BI.Response<BI.Destiny.Responses.DestinyProfileResponse>;
 }
 
+/**
+ * TODO: rewrite this too. eventually.
+ * @param id 
+ * @returns 
+ */
 export const getMemberById = async (id: string) => {
   const ret = await fetch(
     BUNGIE_API_URLS.GET_USER_BY_ID

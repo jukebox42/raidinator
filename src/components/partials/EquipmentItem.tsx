@@ -55,7 +55,7 @@ const EquipmentItem = ( {itemDefinition, itemInstance, itemInstanceDetails, dama
 
   const itemUrl = `${LIGHT_GG_URL}${itemDefinition.hash}`;
 
-  const onClick = (e: any) => {
+  const onClick = (_: any) => {
     setClickCount(clickCount + 1);
   }
 
@@ -74,7 +74,7 @@ const EquipmentItem = ( {itemDefinition, itemInstance, itemInstanceDetails, dama
     }
 
     setClickCount(0);
-    window.open(itemUrl, '_blank')
+    window.open(itemUrl, "_blank")
   }, [clickCount])
 
   return (

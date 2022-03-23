@@ -57,7 +57,6 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   };
 
   const replaceCards = async (newCards: Card[] ) => {
-    console.log("REPLACE");
     if(newCards.length > 6) {
       return;
     }

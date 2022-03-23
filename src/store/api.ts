@@ -1,5 +1,42 @@
 import db from "../store/db";
-import { getProfile } from "../bungie/api";
+import {
+  getProfile,
+  getManifest as getBungieManifest,
+  findPlayers as findBungiePlayers,
+} from "../bungie/api";
+
+
+/**
+ * Get the manifest endpoint. this tells us the version and where to get the data
+ * @returns 
+ */
+export const getManifest = async () => {
+  const response = await getBungieManifest();
+  const error = {
+    errorCode: response.ErrorCode, // response.ErrorCode
+    errorStatus: response.ErrorStatus, // response.ErrorStatus
+    message: response.Message, //response.Message
+  };
+
+  return { data: response.Response, error };
+}
+
+/**
+ * Search for players by name
+ * @param name The name to search by
+ * @param page The page number...
+ * @returns 
+ */
+ export const findPlayers = async (name: string, page: number = 0) => {
+  const response = await findBungiePlayers(name, page);
+  const error = {
+    errorCode: response.ErrorCode, // response.ErrorCode
+    errorStatus: response.ErrorStatus, // response.ErrorStatus
+    message: response.Message, //response.Message
+  };
+
+  return { data: response.Response, error };
+}
 
 /**
  * Get a character from the API
@@ -9,10 +46,10 @@ import { getProfile } from "../bungie/api";
  * @returns 
  */
 export const getCharacters = async (membershipId: number, membershipType: number, ignoreCache: boolean = false) => {
-  // TODO: handleResponse needs to pass back errors for now empty them out
   const error = {
     errorCode: 1, // response.ErrorCode
     errorStatus: "Success", // response.ErrorStatus
+    message: "Ok", //response.Message
   };
 
   if (!ignoreCache) {
@@ -31,19 +68,23 @@ export const getCharacters = async (membershipId: number, membershipType: number
         characterPlugSets: dbResponse.data.characterPlugSets,
       }
 
-      return { data, characterId, error }
+      return { data, characterId, error, profileTransitoryData: {} as any }
     }
     console.log("DB was incomplete, fetching from API");
   }
 
 
   const response = await getProfile(membershipId, membershipType);
+  error.errorCode = response.ErrorCode;
+  error.errorStatus = response.ErrorStatus;
+  error.message = response.Message
+
   const characterId = 0;
   const data = {
-    ...response, // response.Response
+    ...response.Response
   }
 
-  console.log("Loaded from API...", response);
+
   if (error.errorCode === 1) {
     // Store/overwrite in DB
     await db.AppCharacters.put(data.characters, membershipId);
@@ -52,5 +93,5 @@ export const getCharacters = async (membershipId: number, membershipType: number
     await db.AppCharacterPlugSets.put(data.characterPlugSets, membershipId);
   }
 
-  return { data, characterId, error };
+  return { data, characterId, error, profileTransitoryData: data.profileTransitoryData };
 }

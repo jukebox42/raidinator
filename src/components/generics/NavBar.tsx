@@ -17,7 +17,7 @@ import CachedIcon from "@mui/icons-material/Cached";
 import DataThresholdingIcon from "@mui/icons-material/DataThresholding";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import GitHubIcon from "@mui/icons-material/GitHub";
-import HelpIcon from '@mui/icons-material/Help';
+import HelpIcon from "@mui/icons-material/Help";
 
 import db from "../../store/db";
 import { LASER_SOUNDS_URL, SOURCE_URL, VERSION } from "../../utils/constants";

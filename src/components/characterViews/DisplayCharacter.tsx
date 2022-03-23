@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import { v4 as uuid } from "uuid";
 import {
   Box,
@@ -11,6 +11,7 @@ import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import uniq from "lodash/uniq";
 
 import db from "../../store/db";
+import { AppContext } from "../../context/AppContext";
 import { getAssetUrl } from "../../utils/functions";
 import { LIGHT_STAT_HASH } from "../../utils/constants";
 
@@ -31,6 +32,7 @@ import {
 // Interfaces
 import { CharactersData, PlayerData } from "../../utils/interfaces";
 import * as Definitions from "../../bungie/interfaces/Destiny/Definitions";
+import { CharacterContext } from "../../context/CharacterContext";
 
 interface Props {
   player: PlayerData;
@@ -41,6 +43,8 @@ interface Props {
 }
 
 const DisplayCharacter = ( { player, data, characterId, onChangeCharacter, onLoadFireteam }: Props ) => {
+  const appContext = useContext(AppContext);
+  const context = useContext(CharacterContext);
   const [loaded, setLoaded] = useState(false);
   const damageTypes =  useRef<Definitions.DestinyDamageTypeDefinition[]>([]);
   const energyTypes = useRef<Definitions.EnergyTypes.DestinyEnergyTypeDefinition[]>([]);
@@ -55,7 +59,6 @@ const DisplayCharacter = ( { player, data, characterId, onChangeCharacter, onLoa
   const sockets = data.itemComponents.sockets;
 
   const loadManifestDetails = async () => {
-    //setLoaded(false);
     damageTypes.current = await db.DestinyDamageTypeDefinition.toArray();
     energyTypes.current = await db.DestinyEnergyTypeDefinition.toArray();
     statTypes.current = await db.DestinyStatDefinition.toArray();
@@ -81,15 +84,21 @@ const DisplayCharacter = ( { player, data, characterId, onChangeCharacter, onLoa
   // Get the light stat type
   const lightStatType = statTypes.current.find(t => t.hash.toString() === LIGHT_STAT_HASH);
   if (!lightStatType) {
-    console.error("Error Could Not Find Stat Type", LIGHT_STAT_HASH);
-    return <>Error Could Not Find Stat Type</>;
+    //TODO: this really doesn't need to be so extreme. We need a "missing" icon
+    const errorText = `Error: Could not find light stat for ${player.bungieGlobalDisplayName}`;
+    appContext.addToast(errorText, "error");
+    context.setError(errorText);
+    return <></>;
   }
 
   // get subclass
   const subclassDefinition = itemDefinitions.current.find(idef => isSubClass(idef));
   if (!subclassDefinition) {
-    console.error("Error Could Not Find Subclass Definition");
-    return <>Error Could Not Find Subclass Definition</>;
+    // TODO see the one about light
+    const errorText = `Error: Could not find subclass definition for ${player.bungieGlobalDisplayName}`;
+    appContext.addToast(errorText, "error");
+    context.setError(errorText);
+    return <></>;
   }
   const subclassInstance = items.find(gi => gi.itemHash === subclassDefinition?.hash);
 
@@ -113,10 +122,7 @@ const DisplayCharacter = ( { player, data, characterId, onChangeCharacter, onLoa
           <CharacterStats stats={character.stats} statTypes={statTypes.current} />
         </Box>
         <Box sx={{ display: "flex", m: 1, mb: 0 }}>
-          <img
-            src={getAssetUrl(lightStatType.displayProperties.icon)}
-            className="icon-light invert"
-          />
+          <img src={getAssetUrl(lightStatType.displayProperties.icon)} className="icon-light invert" />
           <Typography variant="subtitle1" sx={{ mt: "-3px" }}>
             {character.light}
           </Typography>
@@ -137,6 +143,10 @@ const DisplayCharacter = ( { player, data, characterId, onChangeCharacter, onLoa
             gi => gi.itemHash === itemDefinition.hash);
           if (!itemInstance) {
             console.error("Could not find item instance for", itemDefinition.hash);
+            appContext.addToast(
+              `Error: Could not find item instance for ${itemDefinition.displayProperties.name}`,
+              "error"
+            );
             return <Skeleton key={uuid()} variant="rectangular" width={55} height={55} sx={{mt:1, mr: 1}} />
           }
           const itemInstanceDetails = itemComponents[itemInstance.itemInstanceId];

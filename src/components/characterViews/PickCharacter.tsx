@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Button, Stack } from "@mui/material";
-import StarIcon from '@mui/icons-material/Star';
+import StarIcon from "@mui/icons-material/Star";
 
 import { getAssetUrl } from "../../utils/functions";
 import { CharacterContext } from "../../context/CharacterContext";

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useContext } from "react";
 import uniqBy from "lodash/uniqBy";
 import {
   Paper,
@@ -13,11 +13,14 @@ import throttle from "lodash/throttle";
 
 import db from "../store/db";
 import { getAssetUrl } from "../utils/functions";
+import { findPlayers } from "../store/api";
+import { AppContext } from "../context/AppContext";
 
 // Interfaces
-import { findPlayers } from "../bungie/api";
+
 import * as BI from "../bungie/interfaces";
 import { PlayerData } from "../utils/interfaces";
+
 
 type FindPlayerProps = {
   memberIds: string[];
@@ -25,15 +28,18 @@ type FindPlayerProps = {
 }
 
 const FindPlayer = ({ onFoundPlayer, memberIds }: FindPlayerProps) => {
+  const appContext = useContext(AppContext);
   const [value, setValue] = useState<PlayerData | null>(null); //todo: do i need this?
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState<PlayerData[]>([]);
+
+  type SearchType = { data: BI.User.UserSearchResponse, error: any };
 
   const search = useMemo(() =>
     throttle(
       (
         text: string,
-        callback: (response: BI.User.UserSearchResponse) => void,
+        callback: ({ data, error }: SearchType) => Promise<void>,
       ) => findPlayers(text, 0).then(callback),
       1000
     ), []);
@@ -52,15 +58,20 @@ const FindPlayer = ({ onFoundPlayer, memberIds }: FindPlayerProps) => {
       return;
     }
 
-    search(inputValue, async (response: BI.User.UserSearchResponse) => {
+    search(inputValue, async ({data, error }) => {
       if (!active) {
         return
       }
 
       const previousSearches = await db.AppSearches.toArray();
 
+      if (error.errorCode !== 1) {
+        appContext.addToast(`Search failed: ${error.errorStatus}`, "error");
+        return;
+      }
+
       // if no results (or error)
-      if (!response.searchResults) {
+      if (!data.searchResults) {
         const opts = [
           ...previousSearches
         ].filter(item => !memberIds.includes(item.membershipId.toString()));
@@ -75,7 +86,7 @@ const FindPlayer = ({ onFoundPlayer, memberIds }: FindPlayerProps) => {
       }
 
       // filter out the players without memberships then map them to player objects
-      const searchOptions = response.searchResults
+      const searchOptions = data.searchResults
         .filter(item => item.destinyMemberships.length > 0)
         .map(item => {
           return {
