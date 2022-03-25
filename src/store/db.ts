@@ -3,10 +3,6 @@ import Dexie, { Table } from "dexie";
 import { PlayerData } from "../utils/interfaces";
 
 import * as BI from "../bungie/interfaces";
-import { DataCollection } from "../bungie/interfaces/Dictionaries";
-import * as Entities from "../bungie/interfaces/Destiny/Entities";
-import * as Components from "../bungie/interfaces/Destiny/Components";
-import { CharactersData } from "../utils/interfaces";
 
 export type ManifestTables = "DestinyNodeStepSummaryDefinition" | "DestinyArtDyeChannelDefinition" | 
                              "DestinyArtDyeReferenceDefinition" | "DestinyPlaceDefinition" |
@@ -34,10 +30,6 @@ class Db extends Dexie {
   AppSearches!: Table<PlayerData>;
   AppPlayers!: Table<PlayerData>;
   AppPlayersSelectedCharacter!: Table<number>;
-  AppCharacters!: Table<any>;
-  AppItemComponents!: Table<any>;
-  AppCharacterEquipment!: Table<any>;
-  AppCharacterPlugSets!: Table<any>;
   AppManifestVersion!: Table<string>;
 
   // destiny
@@ -126,14 +118,10 @@ class Db extends Dexie {
     }
 
     this.version(1).stores({
+      AppManifestVersion: "", // holds the most recent version of the destiny manifest, this tells us if we need to reload
       AppSearches: "", // holds the resent selections to make searching quicker
       AppPlayers: "", // holds the loaded players
       AppPlayersSelectedCharacter: "", // holds the id of the character the player selected
-      AppCharacters: "", // holds the loaded characters
-      AppItemComponents: "", // holds the loaded character items
-      AppCharacterEquipment: "", // holds the loaded character equipment
-      AppCharacterPlugSets: "", // holds mods i think? don't ask
-      AppManifestVersion: "", // holds the most recent version of the destiny manifest, this tells us if we need to reload
 
       // bungie manifest data
       DestinyNodeStepSummaryDefinition: "", DestinyArtDyeChannelDefinition: "", DestinyArtDyeReferenceDefinition: "", DestinyPlaceDefinition: "",
@@ -162,36 +150,29 @@ class Db extends Dexie {
   }
 
   /**
-   * Load a character from the database. Combines all the data that would come back from getProfile
-   * @param playerId 
+   * Load selected character id from the db. Returns 0 if they dont exist.
+   * @param playerId aka membershipId
    * @returns 
    */
-  async loadCharacter (playerId: number): Promise<{characterId: number, data: CharactersData}> {
-    let characterId: number | undefined = 0;
-    let characters!: DataCollection<Entities.Characters.DestinyCharacterComponent>;
-    let characterEquipment!: DataCollection<Entities.Inventory.DestinyInventoryComponent>;
-    let itemComponents!: Entities.Items.DestinyItemComponentSet;
-    let characterPlugSets!: DataCollection<Components.PlugSets.DestinyPlugSetsComponent>;
-  
-    characterId = await db.AppPlayersSelectedCharacter.get(playerId);
-    characters = await db.AppCharacters.get(playerId);
-    characterEquipment = await db.AppCharacterEquipment.get(playerId);
-    itemComponents = await db.AppItemComponents.get(playerId);
-    characterPlugSets = await db.AppCharacterPlugSets.get(playerId);
-  
-    if (!characterId) {
-      characterId = 0;
-    }
-  
-    return {
-      characterId,
-      data: {
-        characters,
-        characterEquipment,
-        itemComponents,
-        characterPlugSets,
-      }
-    };
+  async loadCharacterId (playerId: number): Promise<number> {
+    const characterId = await db.AppPlayersSelectedCharacter.get(playerId);
+    return characterId ? characterId : 0;
+  }
+
+  /**
+   * Set(or replace) the character id to the selected db so it's used.
+   * @param playerId aka membershipId
+   */
+  async setCharacterId (playerId: number, characterId: number): Promise<void> {
+    await db.AppPlayersSelectedCharacter.put(characterId, playerId);
+  }
+
+  /**
+   * Deletes the character id from the db.
+   * @param playerId aka membershipId
+   */
+   async removeCharacterId (playerId: number): Promise<void> {
+    await db.AppPlayersSelectedCharacter.delete(playerId);
   }
 
   /**
@@ -220,25 +201,11 @@ class Db extends Dexie {
   }
 
   /**
-   * clear character caches, resets the field
-   */
-  async clearAppCharacterCache() {
-    await this.AppCharacters.clear();
-    await this.AppItemComponents.clear();
-    await this.AppCharacterPlugSets.clear();
-    await this.AppCharacterEquipment.clear();
-  }
-
-  /**
    * Remove a player from the db.
    */
   async deletePlayerCache(playerId: number) {
     const strPlayerId = playerId.toString(); // numbers are too long have to use a string
     await this.AppPlayers.delete(strPlayerId);
-    await this.AppCharacters.delete(strPlayerId);
-    await this.AppItemComponents.delete(strPlayerId);
-    await this.AppCharacterPlugSets.delete(strPlayerId);
-    await this.AppCharacterEquipment.delete(strPlayerId);
     await this.AppPlayersSelectedCharacter.delete(strPlayerId);
   }
 }

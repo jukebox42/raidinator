@@ -7,20 +7,20 @@ import {
 export type SeverityType = "info" | "success" | "warning" | "error";
 
 type ToastProps = {
-  key: string;
-  message: string;
+  id: string;
+  message: string | React.ReactNode;
   severity?: SeverityType;
   onClose: (key: string) => void;
 }
 
-const Toast = ({ key, message, severity = "info", onClose }: ToastProps) => {
+const Toast = ({ id, message, severity = "info", onClose }: ToastProps) => {
   const [open, setOpen] = useState(true);
   const handleClose = (_: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }
     setOpen(false);
-    setTimeout(() => onClose(key), 500);
+    setTimeout(() => onClose(id), 500);
   };
 
   return (

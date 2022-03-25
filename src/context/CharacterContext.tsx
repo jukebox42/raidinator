@@ -43,8 +43,7 @@ const CharacterContextProvider = ({ children, membershipId, membershipType }: Ch
   const [data, setData] = useState<CharactersData | undefined>(undefined);
 
   const getSelectedCharacterId = async () => {
-    const characterId = await db.AppPlayersSelectedCharacter.get(membershipId);
-    return characterId ? characterId : 0;
+    return await db.loadCharacterId(membershipId);
   }
 
   const loadData = async (ignoreCache: boolean = false) => {
@@ -67,12 +66,12 @@ const CharacterContextProvider = ({ children, membershipId, membershipType }: Ch
 
   const setCharacterId = async (characterId: number) => {
     if (characterId === 0) {
-      await db.AppPlayersSelectedCharacter.delete(membershipId.toString());
+      await db.removeCharacterId(membershipId); // we delete over replace to zero in the event they want to clean up
     } else {
-      await db.AppPlayersSelectedCharacter.put(characterId, membershipId);
+      await db.setCharacterId(membershipId, characterId);
     }
     internalSetCharacterId(characterId);
-  } 
+  }
 
   return (
     <CharacterContext.Provider

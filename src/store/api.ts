@@ -5,7 +5,6 @@ import {
   findPlayers as findBungiePlayers,
 } from "../bungie/api";
 
-
 /**
  * Get the manifest endpoint. this tells us the version and where to get the data
  * @returns 
@@ -46,52 +45,32 @@ export const getManifest = async () => {
  * @returns 
  */
 export const getCharacters = async (membershipId: number, membershipType: number, ignoreCache: boolean = false) => {
-  const error = {
-    errorCode: 1, // response.ErrorCode
-    errorStatus: "Success", // response.ErrorStatus
-    message: "Ok", //response.Message
-  };
-  let characterId = 0;
-
-  const dbResponse = await db.loadCharacter(membershipId);
-  if (
-    dbResponse.data.characters && dbResponse.data.characterEquipment &&
-    dbResponse.data.itemComponents && dbResponse.data.characterPlugSets
-  ) {
-    if (dbResponse.characterId) {
-      characterId = dbResponse.characterId;
-    }
-    const data = {
-      characters: dbResponse.data.characters,
-      characterEquipment: dbResponse.data.characterEquipment,
-      itemComponents: dbResponse.data.itemComponents,
-      characterPlugSets: dbResponse.data.characterPlugSets,
-    }
-
-    if (!ignoreCache) {
-      console.log("Loaded from DB...", dbResponse);
-      return { data, characterId, error, profileTransitoryData: {} as any }
-    }
-  }
-
+  let characterId = await db.loadCharacterId(membershipId);
   const response = await getProfile(membershipId, membershipType);
-  error.errorCode = response.ErrorCode;
-  error.errorStatus = response.ErrorStatus;
-  error.message = response.Message
+
+  const error = {
+    errorCode: response.ErrorCode,
+    errorStatus: response.ErrorStatus,
+    message: response.Message,
+  };
 
   const data = {
     ...response.Response
   }
 
-
-  if (error.errorCode === 1) {
-    // Store/overwrite in DB
-    await db.AppCharacters.put(data.characters, membershipId);
-    await db.AppCharacterEquipment.put(data.characterEquipment, membershipId);
-    await db.AppItemComponents.put(data.itemComponents, membershipId);
-    await db.AppCharacterPlugSets.put(data.characterPlugSets, membershipId);
+  // Handle loading when we dont have a character id picked.
+  // TODO: Does this really belong here or have we violated the rule of potentially managing view state in an api
+  // function? I dont know. think about it.
+  if (characterId === 0 && data.characters.data &&  Object.keys(data.characters.data).length > 0) {
+    const characters = data.characters.data;
+    const sortedCharacterKeys = Object.keys(characters).sort((a: any, b: any) => {
+      return (new Date(characters[a].dateLastPlayed) as any) +
+            (new Date(characters[b].dateLastPlayed) as any);
+    });
+    characterId = characters[sortedCharacterKeys[0]].characterId;
+    await db.setCharacterId(membershipId, characterId); // store the value so it's there on refresh and stuff
   }
 
-  console.log("Loaded from API...");
+  console.log("Loaded from API...", response);
   return { data, characterId, error, profileTransitoryData: data.profileTransitoryData };
 }

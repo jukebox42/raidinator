@@ -31,15 +31,6 @@ function CharacterList() {
   const [fireteamDialogPlayer, setFreteamDialogPlayer] = useState<PlayerData | null>(null);
 
   /**
-   * Handle refreshing the app. purges all cached guardian data but NOT player data and character
-   * selections per player.
-   */
-  const refreshCallback = () => {
-    setRefreshing(true);
-    context.refresh();
-  }
-
-  /**
    * Writes the manifest tables on a full refresh
    */
    const writeManifests = (manifestPath: string) => {
@@ -142,6 +133,18 @@ function CharacterList() {
   const loadFireteam = (player: PlayerData) => {
     setFreteamDialogPlayer(player);
     setFireteamDialogOpen(true);
+  }
+
+  /**
+   * Handle refreshing the app. purges all cached guardian data but NOT player data and character
+   * selections per player.
+   */
+  const refreshCallback = () => {
+    if (context.cards.length  === 0) {
+      return;
+    }
+    setRefreshing(true);
+    context.refresh();
   }
 
   /**

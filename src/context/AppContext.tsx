@@ -81,7 +81,7 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
       ...toasts,
       {
         key: key,
-        toast: <Toast key={key} message={message} severity={severity} onClose={removeToast} />
+        toast: <Toast key={key} id={key} message={message} severity={severity} onClose={removeToast} />
       }
     ]);
   }

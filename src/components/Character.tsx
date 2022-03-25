@@ -24,7 +24,6 @@ type Props = {
 const Character = ( { player, onLoadFireteam, lastRefresh, onRefreshed }: Props ) => {
   const appContext = useContext(AppContext);
   const context = useContext(CharacterContext);
-  const [first, setFirst] = useState(true);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -44,27 +43,6 @@ const Character = ( { player, onLoadFireteam, lastRefresh, onRefreshed }: Props 
     context.loadData().then(() => setLoading(false));
   }, []);
 
-  useEffect(() => {
-    if (loading || !context.data || !!context.characterId || !first) {
-      return;
-    }
-
-    if (context.characterId > 0) {
-      setFirst(false);
-      return;
-    }
-
-    // Sort by loaded
-    const characters = context.data.characters.data;
-    const firstKey = Object.keys(characters).sort((a: any, b: any) => {
-      return (new Date(characters[a].dateLastPlayed) as any) +
-            (new Date(characters[b].dateLastPlayed) as any);
-    })[0];
-
-    context.setCharacterId(firstKey as any);
-    setFirst(false);
-  }, [loading, context.data, context.setCharacterId]);
-
   const data = context.data;
   const characterId = context.characterId;
 
@@ -76,7 +54,7 @@ const Character = ( { player, onLoadFireteam, lastRefresh, onRefreshed }: Props 
       <CardContent sx={{ p: 0, pb: "0px !important" }}>
         {context.error && <CharacterError />}
         {!context.error && loading && <LoadingCharacter />}
-        {!context.error && !loading && data && !first && !characterId &&
+        {!context.error && !loading && data && !characterId &&
           <PickCharacter player={player} data={data} />}
         {!context.error && !loading && data && !!characterId &&
           <DisplayCharacter
@@ -84,7 +62,7 @@ const Character = ( { player, onLoadFireteam, lastRefresh, onRefreshed }: Props 
             data={data}
             characterId={characterId}
             onLoadFireteam={() => onLoadFireteam(player)}
-            onChangeCharacter={() => { setFirst(false); context.setCharacterId(0); }}
+            onChangeCharacter={() => { context.setCharacterId(0); }}
           />}
       </CardContent>
     </TouchCard>
