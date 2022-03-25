@@ -1,6 +1,6 @@
 import { createTheme } from "@mui/material";
 
-export const VERSION = "0.1.7b";
+export const VERSION = "0.1.8b";
 
 // API
 export const DEV_MODE = process.env.NODE_ENV === "development";

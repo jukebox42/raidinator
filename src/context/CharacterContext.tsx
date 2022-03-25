@@ -21,6 +21,7 @@ type CharacterContextType = {
   data?: CharactersData;
   loadData: (ignoreCache?: boolean) => Promise<void>;
   setCharacterId: (characterId: number) => void;
+  getSelectedCharacterId: () => Promise<number>;
 }
 
 export const CharacterContext = createContext<CharacterContextType>({
@@ -31,6 +32,7 @@ export const CharacterContext = createContext<CharacterContextType>({
   setLastRefresh: () => {},
   loadData: () => Promise.resolve(),
   setCharacterId: () => Promise.resolve(),
+  getSelectedCharacterId: () => Promise.resolve(0),
 });
 
 const CharacterContextProvider = ({ children, membershipId, membershipType }: CharacterContextProviderProps) => {
@@ -39,6 +41,11 @@ const CharacterContextProvider = ({ children, membershipId, membershipType }: Ch
   const [lastRefresh, setLastRefresh] = useState(0);
   const [error, setError] = useState("");
   const [data, setData] = useState<CharactersData | undefined>(undefined);
+
+  const getSelectedCharacterId = async () => {
+    const characterId = await db.AppPlayersSelectedCharacter.get(membershipId);
+    return characterId ? characterId : 0;
+  }
 
   const loadData = async (ignoreCache: boolean = false) => {
     setError(""); // clear error
@@ -62,7 +69,7 @@ const CharacterContextProvider = ({ children, membershipId, membershipType }: Ch
     if (characterId === 0) {
       await db.AppPlayersSelectedCharacter.delete(membershipId.toString());
     } else {
-      await db.AppPlayersSelectedCharacter.put(membershipId, characterId);
+      await db.AppPlayersSelectedCharacter.put(characterId, membershipId);
     }
     internalSetCharacterId(characterId);
   } 
@@ -74,6 +81,7 @@ const CharacterContextProvider = ({ children, membershipId, membershipType }: Ch
         error,
         setError,
         loadData,
+        getSelectedCharacterId,
         characterId: internalCharacterId,
         setCharacterId,
         lastRefresh,

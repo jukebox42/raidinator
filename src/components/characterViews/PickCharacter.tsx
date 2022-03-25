@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Stack } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 
@@ -19,21 +19,26 @@ type Props = {
 
 const PickCharacter = ({ player, data }: Props) => {
   const context = useContext(CharacterContext);
+  const [lastOnline, setLastOnline] = useState("");
   const characters = data.characters.data;
 
-  // Sort by loaded
-  const sortedCharacterKeys = Object.keys(characters).sort((a: any, b: any) => {
-    return (new Date(characters[a].dateLastPlayed) as any) +
-           (new Date(characters[b].dateLastPlayed) as any);
-  });
+  // Get the last online so we can mark it
+  useEffect(() => {
+    const sortedCharacterKeys = Object.keys(characters).sort((a: any, b: any) => {
+      return (new Date(characters[a].dateLastPlayed) as any) +
+            (new Date(characters[b].dateLastPlayed) as any);
+    });
+
+    setLastOnline(sortedCharacterKeys[0]);
+  }, [context.data, data]);
 
   return (
     <>
       <PlayerName player={player} showCode={true} />
       <Stack direction="row" justifyContent="center" alignItems="center">
         {Object.keys(characters).map(i => {
-          const character = characters[i as any] as DestinyCharacterComponent;
-          const isLastOnline = sortedCharacterKeys[0].toString() === character.characterId.toString();
+          const character = characters[i] as DestinyCharacterComponent;
+          const isLastOnline = character.characterId.toString() === lastOnline;
           return (
             <Button
               className="icon-character-button"

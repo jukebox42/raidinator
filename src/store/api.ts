@@ -51,35 +51,34 @@ export const getCharacters = async (membershipId: number, membershipType: number
     errorStatus: "Success", // response.ErrorStatus
     message: "Ok", //response.Message
   };
+  let characterId = 0;
 
-  if (!ignoreCache) {
-    const dbResponse = await db.loadCharacter(membershipId);
-    console.log("Loaded from DB...", dbResponse);
-    if (
-      dbResponse.data.characters && dbResponse.data.characterEquipment &&
-      dbResponse.data.itemComponents && dbResponse.data.characterPlugSets
-      // TODO: we should probably have a way to bust this cache, maybe a last loaded by player id?
-    ) {
-      const characterId = dbResponse.characterId ? dbResponse.characterId : 0;
-      const data = {
-        characters: dbResponse.data.characters,
-        characterEquipment:  dbResponse.data.characterEquipment,
-        itemComponents: dbResponse.data.itemComponents,
-        characterPlugSets: dbResponse.data.characterPlugSets,
-      }
+  const dbResponse = await db.loadCharacter(membershipId);
+  if (
+    dbResponse.data.characters && dbResponse.data.characterEquipment &&
+    dbResponse.data.itemComponents && dbResponse.data.characterPlugSets
+  ) {
+    if (dbResponse.characterId) {
+      characterId = dbResponse.characterId;
+    }
+    const data = {
+      characters: dbResponse.data.characters,
+      characterEquipment: dbResponse.data.characterEquipment,
+      itemComponents: dbResponse.data.itemComponents,
+      characterPlugSets: dbResponse.data.characterPlugSets,
+    }
 
+    if (!ignoreCache) {
+      console.log("Loaded from DB...", dbResponse);
       return { data, characterId, error, profileTransitoryData: {} as any }
     }
-    console.log("DB was incomplete, fetching from API");
   }
-
 
   const response = await getProfile(membershipId, membershipType);
   error.errorCode = response.ErrorCode;
   error.errorStatus = response.ErrorStatus;
   error.message = response.Message
 
-  const characterId = 0;
   const data = {
     ...response.Response
   }
@@ -93,5 +92,6 @@ export const getCharacters = async (membershipId: number, membershipType: number
     await db.AppCharacterPlugSets.put(data.characterPlugSets, membershipId);
   }
 
+  console.log("Loaded from API...");
   return { data, characterId, error, profileTransitoryData: data.profileTransitoryData };
 }

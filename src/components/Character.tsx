@@ -24,11 +24,11 @@ type Props = {
 const Character = ( { player, onLoadFireteam, lastRefresh, onRefreshed }: Props ) => {
   const appContext = useContext(AppContext);
   const context = useContext(CharacterContext);
-  const [first, setFirst] = useState(true); // handle first load so we can show the last used character
+  const [first, setFirst] = useState(true);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (lastRefresh === context.lastRefresh || first) {
+    if (lastRefresh === context.lastRefresh) {
       return;
     }
 
@@ -46,6 +46,11 @@ const Character = ( { player, onLoadFireteam, lastRefresh, onRefreshed }: Props 
 
   useEffect(() => {
     if (loading || !context.data || !!context.characterId || !first) {
+      return;
+    }
+
+    if (context.characterId > 0) {
+      setFirst(false);
       return;
     }
 
@@ -79,7 +84,7 @@ const Character = ( { player, onLoadFireteam, lastRefresh, onRefreshed }: Props 
             data={data}
             characterId={characterId}
             onLoadFireteam={() => onLoadFireteam(player)}
-            onChangeCharacter={() => context.setCharacterId(0)}
+            onChangeCharacter={() => { setFirst(false); context.setCharacterId(0); }}
           />}
       </CardContent>
     </TouchCard>

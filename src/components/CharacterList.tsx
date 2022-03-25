@@ -81,7 +81,7 @@ function CharacterList() {
 
       // If error then show the error.
       if (error.errorCode !== 1) {
-        setError(error.errorStatus);
+        setError(error.message);
         context.addToast(error.errorStatus);
         return;
       }
