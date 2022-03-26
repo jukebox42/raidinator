@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
-import { Paper } from "@mui/material";
+import { Paper, Typography } from "@mui/material";
 
 import { getAssetUrl } from "../../utils/functions";
+
+// Components
+import { Caption, DetailTooltip } from "../generics";
 
 // Interfaces
 import * as BI from "../../bungie/interfaces";
@@ -75,24 +78,29 @@ const EquipmentItem = ( {itemDefinition, itemInstance, itemInstanceDetails, dama
 
     setClickCount(0);
     window.open(itemUrl, "_blank")
-  }, [clickCount])
+  }, [clickCount]);
+
+  const watermarkIcon = itemDefinition.quality.displayVersionWatermarkIcons[itemInstance.versionNumber];
 
   return (
-    <Paper
-      key={itemInstance.itemInstanceId}
-      elevation={0}
-      className={"icon-item"}
-      onClick={onClick}
-    >
-      <img src={getAssetUrl(itemDefinition.displayProperties.icon)} className="icon" />
-      <img
-        src={getAssetUrl(itemDefinition.quality.displayVersionWatermarkIcons[itemInstance.versionNumber])}
-        className="icon"
-
-      />
-      {elementType?.displayProperties.hasIcon &&
-        <img src={getAssetUrl(elementType.displayProperties.icon)} className="icon-element"/>}
-    </Paper>
+    <DetailTooltip title={
+      <>
+        <Typography variant="body1">
+          {elementType?.displayProperties.hasIcon &&
+            <img src={getAssetUrl(elementType.displayProperties.icon)} width="12" style={{ marginRight: "5px" }} />}
+          <strong>{itemDefinition.displayProperties.name}</strong>
+        </Typography>
+        <Caption fade>{itemDefinition.itemTypeDisplayName}</Caption>
+        <Caption>{itemDefinition.flavorText}</Caption>
+      </>
+    } flow={false}>
+      <Paper key={itemInstance.itemInstanceId} elevation={0} className={"icon-item"} onClick={onClick}>
+        <img src={getAssetUrl(itemDefinition.displayProperties.icon)} className="icon" />
+        <img src={getAssetUrl(watermarkIcon)} className="icon"/>
+        {elementType?.displayProperties.hasIcon &&
+          <img src={getAssetUrl(elementType.displayProperties.icon)} className="icon-element" />}
+      </Paper>
+    </DetailTooltip>
   )
 }
 

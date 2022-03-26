@@ -156,7 +156,7 @@ const CharacterSubclass = ( {itemDefinition, itemInstance, sockets, talentGrids}
   }
 
   const superType = itemDefinition.talentGrid.buildName.replace(/_.*/, "");
-
+  const className = `icon-item subclass ${superType} superVersion${superVersion}`;
   const arrowSx = { position: "absolute", fontSize: "40px"};
   const vArrowSx = { ...arrowSx, left: "50%", ml: "-20px"};
 
@@ -168,7 +168,7 @@ const CharacterSubclass = ( {itemDefinition, itemInstance, sockets, talentGrids}
         <Caption>{superAbility.displayProperties.description}</Caption>
       </>
     } flow={false}>
-    <Paper key={itemInstance.itemInstanceId} elevation={0} className={`icon-item subclass ${superType} superVersion${superVersion}`} sx={{ background: "none" }}>
+    <Paper key={itemInstance.itemInstanceId} elevation={0} className={className} sx={{ background: "none" }}>
       <img src={getAssetUrl(superAbility.displayProperties.icon)} className="icon" />
       {position === "T" && <ArrowDropUpIcon  sx={{ ...vArrowSx, top: "-14px" }} />}
       {position === "M" && <ArrowRightIcon sx={{ ...arrowSx, right: "-14px", top: "50%", mt: "-20px" }} />}

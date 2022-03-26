@@ -96,6 +96,12 @@ body {
   height: 35px;
   margin: 10px 0 0 10px;
 }
+/* resize super icons */
+.superVersion3 .icon {
+  width: 51px;
+  height: 51px;
+  margin: 2px 0 0 2px;
+}
 
 .icon-character {
   width: 55px;

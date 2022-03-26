@@ -44,7 +44,7 @@ const NavBar = ( { acting, refreshCallback }: NavBarProps) => {
 
   return (
     <Box sx={{ flexGrow: 1, maxWidth: "450px" }}>
-      <AppBar position="static" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1}}>
+      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, maxWidth: "450px", left: 0}}>
         <Toolbar>
           <IconButton
             size="large"

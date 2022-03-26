@@ -187,7 +187,7 @@ function CharacterList() {
     <>
         <NavBar refreshCallback={refreshCallback} acting={loading || refreshing}/>
         <ErrorBoundary>
-        <Stack sx={{ mx: "auto", pb: "65px" }}>
+        <Stack sx={{ mx: "auto", pt: "57px", pb: "65px" }}>
           {context.cards.map(card => {
             return (
               <CharacterContextProvider key={card.membershipId} membershipId={card.membershipId} membershipType={card.player.membershipType}>
