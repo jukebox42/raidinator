@@ -3,8 +3,12 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 import { getAssetUrl } from "../../utils/functions";
+import { selectedSubclassNode } from "./subclass";
 
 // Components
 import { Caption, DetailTooltip } from "../generics";
@@ -17,10 +21,12 @@ import * as BI from "../../bungie/interfaces";
 import { DataCollection } from "../../bungie/interfaces/Dictionaries";
 import { DestinyInventoryItemDefinition } from "../../bungie/interfaces/Destiny/Definitions";
 import db from "../../store/db";
-import { DestinyItemSocketsComponent } from "../../bungie/interfaces/Destiny/Entities/Items";
+import { DestinyItemSocketsComponent, DestinyItemTalentGridComponent } from "../../bungie/interfaces/Destiny/Entities/Items";
+import { useState } from "react";
 
 type Props = {
   sockets: DataCollection<DestinyItemSocketsComponent>;
+  talentGrids: DataCollection<DestinyItemTalentGridComponent>;
   itemDefinition: BI.Destiny.Definitions.DestinyInventoryItemDefinition | undefined;
   itemInstance: BI.Destiny.Entities.Items.DestinyItemComponent | undefined;
 }
@@ -93,8 +99,9 @@ export const isSubClass = (itemDefinition: BI.Destiny.Definitions.DestinyInvento
          itemDefinition.traitIds.includes("item_type.dark_subclass"));
 }
 
-const CharacterSubclass = ( {itemDefinition, itemInstance, sockets}: Props ) => {
-  // console.log("Subclass", itemDefinition, itemInstance);
+const CharacterSubclass = ( {itemDefinition, itemInstance, sockets, talentGrids}: Props ) => {
+  const [position, setPosition] = useState("");
+  const [superVersion, setSuperVersion] = useState(3);
 
   // Find super ability
   const superAbility = useLiveQuery(async () => {
@@ -102,6 +109,7 @@ const CharacterSubclass = ( {itemDefinition, itemInstance, sockets}: Props ) => 
       return;
     }
     const id = itemInstance.itemInstanceId;
+
     // New super 3.0
     if (sockets.data[id]) {
       const definitions = await db.DestinyInventoryItemDefinition.bulkGet(
@@ -111,8 +119,35 @@ const CharacterSubclass = ( {itemDefinition, itemInstance, sockets}: Props ) => 
       return definitions.find(a => a?.itemTypeDisplayName === "Super Ability");
     }
 
-    // I checked talent grid and there's nothing in there. I need to
-    // find the super icons for non 3.0 supers.
+    setSuperVersion(2);
+
+    // Get the current talent grid
+    const talentGrid = talentGrids.data[itemInstance.itemInstanceId];
+    if (!talentGrid) {
+      console.error("Failed to find the talent grid");
+      return itemDefinition; // fallback show element
+    }
+
+    // get the definition for the talent grid
+    const gridDef = await db.DestinyTalentGridDefinition.get(talentGrid.talentGridHash.toString());
+    if (!gridDef) {
+      console.error("Failed to find the grid definition");
+      return itemDefinition; // fallback show element
+    }
+
+    // get only the active talent grid nodes
+    const activeGridDefNodes = gridDef.nodes.filter(dn => {
+      // filters down to only active nodes that are not hidden
+      return !!talentGrid.nodes.find(tn => tn.nodeHash === dn.nodeHash && tn.isActivated && !tn.hidden);
+    });
+
+    // get the super node
+    const { superNode, position } = selectedSubclassNode(activeGridDefNodes);
+    if (superNode) {
+      setPosition(position);
+      return superNode.steps[0];
+    }
+
     return itemDefinition;
   });
 
@@ -120,7 +155,10 @@ const CharacterSubclass = ( {itemDefinition, itemInstance, sockets}: Props ) => 
     return <></>;
   }
 
-  // console.log("Subclass Socket", superAbility, itemInstance);
+  const superType = itemDefinition.talentGrid.buildName.replace(/_.*/, "");
+
+  const arrowSx = { position: "absolute", fontSize: "40px"};
+  const vArrowSx = { ...arrowSx, left: "50%", ml: "-20px"};
 
   return (
     <DetailTooltip title={
@@ -130,8 +168,11 @@ const CharacterSubclass = ( {itemDefinition, itemInstance, sockets}: Props ) => 
         <Caption>{superAbility.displayProperties.description}</Caption>
       </>
     } flow={false}>
-    <Paper key={itemInstance.itemInstanceId} elevation={0} className="icon-item subclass" sx={{ background: "none" }}>
+    <Paper key={itemInstance.itemInstanceId} elevation={0} className={`icon-item subclass ${superType} superVersion${superVersion}`} sx={{ background: "none" }}>
       <img src={getAssetUrl(superAbility.displayProperties.icon)} className="icon" />
+      {position === "T" && <ArrowDropUpIcon  sx={{ ...vArrowSx, top: "-14px" }} />}
+      {position === "M" && <ArrowRightIcon sx={{ ...arrowSx, right: "-14px", top: "50%", mt: "-20px" }} />}
+      {position === "B" && <ArrowDropDownIcon sx={{ ...vArrowSx, bottom: "-14px" }} />}
     </Paper>
     </DetailTooltip>
   )

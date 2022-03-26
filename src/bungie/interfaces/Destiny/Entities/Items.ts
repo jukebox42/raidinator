@@ -1,4 +1,4 @@
-import { DestinyBreakerType } from "../index";
+import { DestinyBreakerType, DestinyTalentNode } from "../index";
 import { DataCollection } from "../../Dictionaries";
 
 /**
@@ -86,10 +86,21 @@ export interface DestinyItemSocketsComponent {
 }
 
 /**
+ * https://bungie-net.github.io/multi/schema_Destiny-Entities-Items-DestinyItemTalentGridComponent.html#schema_Destiny-Entities-Items-DestinyItemTalentGridComponent
+ */
+export interface DestinyItemTalentGridComponent {
+  talentGridHash: number;
+  nodes: DestinyTalentNode[];
+  isGridComplete: boolean;
+  gridProgression: any; // dont care
+}
+
+/**
  * https://bungie-net.github.io/multi/schema_DestinyItemComponentSetOfint64.html#schema_DestinyItemComponentSetOfint64
  */
 export interface DestinyItemComponentSet {
   instances: DataCollection<DestinyItemInstanceComponent>;
   sockets: DataCollection<DestinyItemSocketsComponent>;
+  talentGrids: DataCollection<DestinyItemTalentGridComponent>
   // there is more here but these are all I care about right now
 }

@@ -1,6 +1,6 @@
 import { createTheme } from "@mui/material";
 
-export const VERSION = "0.1.8b";
+export const VERSION = "0.1.9b";
 
 // API
 export const DEV_MODE = process.env.NODE_ENV === "development";
@@ -22,6 +22,7 @@ export const LANGUAGE = "en";
 // URLS
 export const SOURCE_URL = "https://github.com/jukebox42/raidinator";
 export const ASSET_URL = "https://www.bungie.net";
+export const MISSING_ICON_URL = "img/misc/missing_icon_d2.png";
 export const API_URL = `${ASSET_URL}/platform`;
 export const LASER_SOUNDS_URL =  `${ASSET_URL}/en/ClanV2/Index?groupId=221919`;
 export const LIGHT_GG_URL = "https://www.light.gg/db/items/";
@@ -34,6 +35,7 @@ export const PROFILE_COMPONENTS = [
   "CharacterEquipment",
   "ItemInstances",
   "ItemSockets",
+  "ItemTalentGrids",
   "Transitory",
 ];
 export const DESTINY_API_URLS = {

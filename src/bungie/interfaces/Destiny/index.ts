@@ -85,3 +85,19 @@ export enum DestinyBreakerType {
   Disruption = 2,
   Stagger = 3,
 }
+
+/**
+ * https://bungie-net.github.io/multi/schema_Destiny-DestinyTalentNode.html#schema_Destiny-DestinyTalentNode
+ */
+export interface DestinyTalentNode {
+  nodeIndex: number;
+  nodeHash: number;
+  state: number;
+  isActivated: boolean;
+  stepIndex: number;
+  materialsToUpgrade: any; // dont care
+  activationGridLevel: number;
+  progressPercent: number;
+  hidden: boolean;
+  nodeStatsBlock: any; // dont care
+}

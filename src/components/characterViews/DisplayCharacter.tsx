@@ -57,6 +57,7 @@ const DisplayCharacter = ( { player, data, characterId, onChangeCharacter, onLoa
   const items = data.characterEquipment.data[characterId].items;
   const itemComponents = data.itemComponents.instances.data;
   const sockets = data.itemComponents.sockets;
+  const talentGrids = data.itemComponents.talentGrids;
 
   const loadManifestDetails = async () => {
     damageTypes.current = await db.DestinyDamageTypeDefinition.toArray();
@@ -131,6 +132,7 @@ const DisplayCharacter = ( { player, data, characterId, onChangeCharacter, onLoa
       <Stack direction="row" sx={{ ml: 1 }}>
         <CharacterSubclass
           sockets={sockets}
+          talentGrids={talentGrids}
           itemDefinition={subclassDefinition}
           itemInstance={subclassInstance}
         />
