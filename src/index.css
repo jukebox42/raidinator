@@ -61,7 +61,7 @@ body {
   content: "";
   width: 39px;
   height:39px;
-  background-image: linear-gradient(to bottom right, rgba(179, 85, 22, 0),  rgba(179, 85, 22, 1));
+  background-image: linear-gradient(to bottom right, rgba(212, 101, 27, 0.2),  rgba(212, 101, 27, 1));
   position: absolute;
   left: 8px;
   top: 8px;;
@@ -72,7 +72,7 @@ body {
   content: "";
   width: 39px;
   height:39px;
-  background-image: linear-gradient(to bottom right, rgba(104, 173, 237, 0),  rgba(104, 173, 237, 1));
+  background-image: linear-gradient(to bottom right, rgba(104, 173, 237, 0.2),  rgba(104, 173, 237, 1));
   position: absolute;
   left: 8px;
   top: 8px;;

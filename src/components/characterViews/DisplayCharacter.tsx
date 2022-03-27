@@ -2,12 +2,14 @@ import { useState, useRef, useEffect, useContext } from "react";
 import { v4 as uuid } from "uuid";
 import {
   Box,
+  Button,
   IconButton,
   Stack,
   Typography,
   Skeleton,
 } from "@mui/material";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import WarningIcon from "@mui/icons-material/Warning";
 import uniq from "lodash/uniq";
 
 import db from "../../store/db";
@@ -110,14 +112,29 @@ const DisplayCharacter = ( { player, data, characterId, onChangeCharacter, onLoa
   // get all the weapon types. yes this will include item_type.weapon but we dont care.
   const weaponTypes = uniq(weapons.map(i => i.traitIds).flat());
 
+  // TODO: is last online should be a shared function
+  let isLastOnline = true;
+  if (context.data) {
+    const characters = context.data.characters.data;
+    const sortedCharacterKeys = Object.keys(characters).sort((a: any, b: any) => {
+      return (new Date(characters[a].dateLastPlayed) as any) +
+            (new Date(characters[b].dateLastPlayed) as any);
+    });
+    isLastOnline = character.characterId.toString() === sortedCharacterKeys[0].toString();
+  }
+
   return (
     <>
       <Box sx={{ p: 0, m: 0, ml: 1, display: "flex", flexDirection: "row" }}>
-        <img
-          src={getAssetUrl(character.emblemPath)}
-          className="icon-emblem"
+        <Button
+          key={character.characterId}
+          variant="text"
           onClick={onChangeCharacter}
-        />
+          sx={{ padding: 0, position: "relative" }}
+        >
+          <img src={getAssetUrl(character.emblemPath)} className="icon-character"/>
+          {!isLastOnline && <WarningIcon color="warning" sx={{ position: "absolute", right: 0, top: 0, width: "20px", height: "20px" }} />}
+        </Button>
         <Box sx={{ flexGrow: 1 }}>
           <PlayerName player={player} classType={character.classType} />
           <CharacterStats stats={character.stats} statTypes={statTypes.current} />
