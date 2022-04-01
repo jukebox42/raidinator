@@ -2,7 +2,12 @@
 // trying to figure out how to get this data.
 // https://github.com/DestinyItemManager/DIM/blob/233e247b4abd23a55a3e987389e04b08e3ddc91b/src/app/inventory/subclass.ts
 
-import { DestinyTalentNodeDefinition } from "../../bungie/interfaces/Destiny/Definitions";
+// Interfaces
+import * as BI from "../../../bungie/interfaces";
+import {
+  DestinyInventoryItemDefinition,
+  DestinyTalentNodeDefinition
+} from "../../../bungie/interfaces/Destiny/Definitions";
 
 export type SuperPosition = "T" | "M" | "B" | "";
 
@@ -29,7 +34,7 @@ const superNodeHashes = {
 /**
  * A map to find the super hash.
  * 
- * You like I might be wondering how this works. Or maybe it's me again and I havent looked at this in a few weeks.
+ * You, like I, might be wondering how this works. Or maybe it's me again and I havent looked at this in a few weeks.
  * Either way here's the breakdown: In each talent group there's one(or more) abilities that are unique to the grid so
  * we find that grid item and that tells us which one they wanted to use. We then map it to the grid item that defines
  * what the user is. Because only one of them has a layoutIdentifier called "super". Otherwise this would have been too
@@ -72,6 +77,9 @@ const nodeHashToSubclassPath: {
   1236431642: { position: "B", superHash: superNodeHashes.hammerOfSol }
 };
 
+/**
+ * Select the subclass node from the active grid nodes
+ */
 export const selectedSubclassNode = (activeGridDefNodes: DestinyTalentNodeDefinition[]) => {
   for (const node of activeGridDefNodes) {
     const def = nodeHashToSubclassPath[node.steps[0].nodeStepHash];
@@ -86,4 +94,58 @@ export const selectedSubclassNode = (activeGridDefNodes: DestinyTalentNodeDefini
   }
 
   return { superNode: null, position: "" };
+}
+
+/**
+ * Conver an array of damage types to energy types. I dunno why these arent the same but they arent.
+ * see DestinySamageTypeDefinition and DestinyEnergyTypeDefinition for proof.
+ */
+ export const convertDamageTypeToEnergyType = (damageTypes: number[]): BI.Destiny.DestinyEnergyType[] => {
+  return damageTypes.map(dt => {
+    switch(dt) {
+      case 2:
+        return BI.Destiny.DestinyEnergyType.Arc;
+      case 3:
+        return BI.Destiny.DestinyEnergyType.Thermal;
+      case 4:
+        return BI.Destiny.DestinyEnergyType.Void;
+      case 6:
+        return BI.Destiny.DestinyEnergyType.Stasis;
+      default:
+        return BI.Destiny.DestinyEnergyType.Any;
+    }
+  });
+}
+
+/**
+ * Get the energy of the subclass
+ *
+ * TODO: this is silly, there has to be a better way(and a better spot)
+ */
+ export const getSubclassEnergyType = (subclassDefinition: DestinyInventoryItemDefinition) => {
+  if (/^void/.test(subclassDefinition.talentGrid.buildName)) {
+    return BI.Destiny.DestinyEnergyType.Void;
+  }
+  if (/^thermal/.test(subclassDefinition.talentGrid.buildName)) {
+    return BI.Destiny.DestinyEnergyType.Thermal;
+  }
+  if (/^arc/.test(subclassDefinition.talentGrid.buildName)) {
+    return BI.Destiny.DestinyEnergyType.Arc;
+  }
+  if (/^stasis/.test(subclassDefinition.talentGrid.buildName)) {
+    return BI.Destiny.DestinyEnergyType.Stasis;
+  }
+
+  // fallthrough
+  console.error("ENERGY TYPE NOT MATCHED", subclassDefinition);
+  return BI.Destiny.DestinyEnergyType.Any;
+}
+
+/**
+ * Determine if an item is a subclass
+ */
+ export const isSubClass = (itemDefinition: BI.Destiny.Definitions.DestinyInventoryItemDefinition | undefined) => {
+  return itemDefinition && itemDefinition.traitIds && (
+         itemDefinition.traitIds.includes("item_type.light_subclass") ||
+         itemDefinition.traitIds.includes("item_type.dark_subclass"));
 }

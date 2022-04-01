@@ -24,12 +24,12 @@ import { SOURCE_URL, VERSION } from "../../utils/constants";
 // Components
 import InstructionsDialog from "./InstructionsDialog";
 
-type NavBarProps = {
+type Props = {
   acting: boolean;
   refreshCallback: () => void;
 }
 
-const NavBar = ( { acting, refreshCallback }: NavBarProps) => {
+const NavBar = ( { acting, refreshCallback }: Props) => {
   const [open, setOpen] = useState(false);
   const [instructionsOpen, setInstructionsOpen] = useState(false);
 

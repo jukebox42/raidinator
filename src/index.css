@@ -12,16 +12,6 @@ body {
   background-attachment: fixed;
 }
 
-.icon-item {
-  width: 55px;
-  height: 55px;
-}
-
-.icon-emblem {
-  width: 55px;
-  height: 55px;
-}
-
 .class-icon {
   display: inline-block;
 }
@@ -31,7 +21,7 @@ body {
   height: 25px;
 }
 
-.icon-emblem, .icon-item, .icon-character {
+.icon-character {
   position: relative;
   border-radius: 3px;
   margin: 5px 5px 0 0;
@@ -47,14 +37,6 @@ body {
   position: absolute;
   left: 10px;
   top: 13px;
-}
-
-.icon-item .icon {
-  width: 100%;
-  height: 100%;
-  position:absolute;
-  left: 0;
-  top: 0;
 }
 
 .subclass.thermal:before {
@@ -91,13 +73,13 @@ body {
 }
 
 /* resize super icons */
-.superVersion2 .icon {
+.superVersion2 .MuiPaper-item {
   width: 35px;
   height: 35px;
   margin: 10px 0 0 10px;
 }
 /* resize super icons */
-.superVersion3 .icon {
+.superVersion3 .MuiPaper-item {
   width: 51px;
   height: 51px;
   margin: 2px 0 0 2px;
@@ -113,30 +95,6 @@ body {
   width: 25px;
   height: 25px;
   overflow: hidden;
-}
-
-.warning {
-  box-shadow:0px 0px 0px 2px rgb(255, 167, 38) inset !important;
-  position: relative;
-}
-
-.warning:after {
-  position: absolute;
-  content: "";
-  left: 0;
-  top: 49%;
-  right: 0;
-  border-top: 2px solid;
-  border-color: rgb(255, 167, 38);
-  transform:rotate(-45deg);
-}
-
-.warning.error {
-  box-shadow:0px 0px 0px 2px red inset !important;
-}
-
-.warning.error:after {
-  border-color: red;
 }
 
 .icon-light, .icon-platform {

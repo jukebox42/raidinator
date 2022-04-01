@@ -1,13 +1,6 @@
-.whiteClock {
-  border: 3px solid #FFF !important;
-}
-.whiteClock:after, .whiteClock:before {
-  background-color: #fff !important;
-}
-
 .clock{
 	border-radius: 40px;
-	border: 3px solid #463B3E;
+	border: 3px solid #FFF;
 	position: relative;
   left: 50%;
   margin-left: -30px;
@@ -19,7 +12,7 @@
 .clock:after{
 	content: "";
 	position: absolute;
-	background-color: #463B3E;
+	background-color: #fff;
 	top: 10px;
 	left: 46%;
 	height: 20px;
@@ -37,7 +30,7 @@
 .clock:before{
 	content: "";
 	position: absolute;
-	background-color: #463B3E;
+	background-color: #fff;
 	top: 2px;
 	left: 46%;
 	height: 30px;

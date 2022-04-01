@@ -1,6 +1,6 @@
 import { createTheme } from "@mui/material";
 
-export const VERSION = "0.1.11b";
+export const VERSION = "0.2.00b";
 
 // API
 export const DEV_MODE = process.env.NODE_ENV === "development";
@@ -53,6 +53,23 @@ export const specialDamageMods = [
  */
 export const LIGHT_STAT_HASH = "1935470627";
 
+/**
+ * This is the hash of the kinetic damage type
+ */
+export const KINETIC_DAMAGE_HASH = 3373582085;
+
+declare module '@mui/material/Paper' {
+  interface PaperPropsVariantOverrides {
+    equipment: true;
+    item: true;
+    energy: true;
+    mod: true;
+    subclass: true;
+  }
+}
+
+const iconSize = "55px";
+
 // MUI Theme
 export const theme = createTheme({
   palette: {
@@ -76,7 +93,56 @@ export const theme = createTheme({
           color: "rgba(0, 0, 0, 0.90)",
         }
       }
-    }
+    },
+    MuiPaper: {
+      variants: [
+        // Equipment (also subclass)
+        {
+          props: { variant: "equipment" },
+          style: {
+            width: iconSize,
+            height: iconSize,
+            position: "relative",
+            borderRadius: "3px",
+            margin: "5px 5px 0 0",
+            overflow: "hidden",
+            background: "none",
+          },
+        },
+        // item
+        {
+          props: { variant: "item" },
+          style: {
+            width: iconSize,
+            height: iconSize,
+            position: "absolute",
+            background: "none",
+          }
+        },
+        // energy
+        {
+          props: { variant: "energy" },
+          style: {
+            width: "16px",
+            height: "16px",
+            position: "absolute",
+            right: "2px",
+            bottom: "2px",
+            background: "none",
+          }
+        },
+        // mod
+        {
+          props: { variant: "mod" },
+          style: {
+            position: "relative",
+            width: "25px",
+            height: "25px",
+            overflow: "hidden",
+          }
+        },
+      ]
+    },
   },
   shape: {
     borderRadius: 3,

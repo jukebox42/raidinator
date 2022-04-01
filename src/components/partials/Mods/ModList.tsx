@@ -2,39 +2,39 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { Stack } from "@mui/material";
 import { v4 as uuid } from "uuid";
 
-import db from "../../store/db";
-import { specialDamageMods } from "../../utils/constants";
-import { getChampionMods, checkChampionMod } from "../../utils/rules/championRules";
+import db from "../../../store/db";
+import { specialDamageMods } from "../../../utils/constants";
+import { getChampionMods, checkChampionMod } from "./rules/championRules";
 import {
   getChargedWithLightChargerMods,
   getChargedWithLightSpenderMods,
   checkChargedWithLightMod,
-} from "../../utils/rules/chargedWithLightRules";
+} from "./rules/chargedWithLightRules";
 
 import {
   getWellGeneratorMods,
   getWellSpenderMods,
   checkWellMod,
-} from "../../utils/rules/wellRules";
+} from "./rules/wellRules";
 
 import {
   getRaidMods,
-} from "../../utils/rules/raidRules";
+} from "./rules/raidRules";
 
 import {
   getAmmoFinderMods,
   checkAmmoFinderMod,
-} from "../../utils/rules/ammoFinderRules";
+} from "./rules/ammoFinderRules";
 
 // Components
 import Mod from "./Mod";
 
 // Interfaces
-import { CharactersData } from "../../utils/interfaces";
-import * as BI from "../../bungie/interfaces/";
-import { DestinyItemSocketState } from "../../bungie/interfaces/Destiny/Entities/Items";
+import { CharactersData } from "../../../utils/interfaces";
+import * as BI from "../../../bungie/interfaces/";
+import { DestinyItemSocketState } from "../../../bungie/interfaces/Destiny/Entities/Items";
 
-type ItemModsProps = {
+type Props = {
   data: CharactersData;
   characterId: number;
   weaponTypes: string[]; // TODO this could be better yeah?
@@ -42,7 +42,7 @@ type ItemModsProps = {
   subclassEnergyType: BI.Destiny.DestinyEnergyType;
 }
 
-const ItemMods = ( {data, characterId, weaponTypes, weaponEnergyTypes, subclassEnergyType}: ItemModsProps ) => {
+const ModList = ( {data, characterId, weaponTypes, weaponEnergyTypes, subclassEnergyType}: Props ) => {
   const instances = data.itemComponents.instances.data;
   const sockets = data.itemComponents.sockets.data;
   const characterEquipment = data.characterEquipment.data[characterId];
@@ -144,4 +144,4 @@ const ItemMods = ( {data, characterId, weaponTypes, weaponEnergyTypes, subclassE
   )
 }
 
-export default ItemMods;
+export default ModList;

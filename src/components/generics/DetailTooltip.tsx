@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 
-type TooltipProps = {
+type Props = {
   title: React.ReactElement<any, any> | string;
   flow?: boolean;
   warning?: boolean;
@@ -13,7 +13,7 @@ type TooltipProps = {
   children: React.ReactElement<any, any>;
 }
 
-const DetailTooltip = ( {title, children, flow = true, warning = false, error = false}: TooltipProps ) => {
+const DetailTooltip = ( {title, children, flow = true, warning = false, error = false}: Props ) => {
   const [open, setOpen] = React.useState(false);
   
   const handleTooltipClose = () => setOpen(false);

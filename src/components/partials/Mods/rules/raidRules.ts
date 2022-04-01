@@ -1,4 +1,4 @@
-import { DestinyInventoryItemDefinition } from "../../bungie/interfaces/Destiny/Definitions";
+import { DestinyInventoryItemDefinition } from "../../../../bungie/interfaces/Destiny/Definitions";
 
 const isRaidMod = (mod: DestinyInventoryItemDefinition) => mod.displayProperties &&
                                 /enhancements.raid/.test(mod.plug.plugCategoryIdentifier) &&

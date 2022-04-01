@@ -6,19 +6,15 @@ import {
 
 import "./Loading.css";
 
-type LoaderProps = {
+type Props = {
   marginTop: string;
   loadingText?: string;
 }
 
-const Loading = memo(({ marginTop, loadingText}: LoaderProps) => {
-  const circleClasses = ["clock"];
-  //if (loadingText) {
-    circleClasses.push("whiteClock");
-  //}
+const Loading = memo(({ marginTop, loadingText }: Props) => {
   return (
     <Box className="loading" sx={{ mt: marginTop, justifyContent: "center", textAlign: "center" }}>
-      <div className={circleClasses.join(" ")}></div>
+      <div className="clock"></div>
       {loadingText &&
         <Typography variant="body1" sx={{ color: "white" }}>{loadingText}</Typography>}
     </Box>

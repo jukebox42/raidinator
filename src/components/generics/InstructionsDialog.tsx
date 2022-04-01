@@ -13,12 +13,12 @@ import SwipeIcon from "@mui/icons-material/Swipe";
 import TouchAppIcon from "@mui/icons-material/TouchApp";
 import DoNotDisturbAltIcon from "@mui/icons-material/DoNotDisturbAlt";
 
-type InstructionsDialogProps = {
+type Props = {
   open: boolean;
   onClose: () => void;
 }
 
-const InstructionsDialog = ({ onClose, open = false }: InstructionsDialogProps) => {
+const InstructionsDialog = ({ onClose, open = false }: Props) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>

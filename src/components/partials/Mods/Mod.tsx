@@ -6,24 +6,24 @@ import {
 import { v4 as uuid } from "uuid";
 import uniq from "lodash/uniq";
 
-import { DetailTooltip } from "../generics";
-import { getAssetUrl } from "../../utils/functions";
+import { getAssetUrl } from "../../../utils/functions";
 
 // Components
-import { Caption } from "../generics";
+import { DetailTooltip, Caption } from "../../generics";
+import ModImage from "./ModImage";
 
 // Interfaces
-import * as BI from "../../bungie/interfaces"
-import db from "../../store/db";
+import * as BI from "../../../bungie/interfaces"
+import db from "../../../store/db";
 
-type ModProps = {
+type Props = {
   plug: BI.Destiny.Definitions.DestinyInventoryItemDefinition;
   showWarning?: boolean;
   showError?:boolean;
   reason?: string;
 }
 
-const Mod = ( {plug, showWarning, showError, reason}: ModProps ) => {
+const Mod = ( {plug, showWarning, showError, reason}: Props ) => {
   // console.log(plug.displayProperties.name, plug);
   const [perks, setPerks] = useState<string[]>([]);
 
@@ -40,6 +40,8 @@ const Mod = ( {plug, showWarning, showError, reason}: ModProps ) => {
     });
   }, []);
 
+  const imageClasses = [showWarning ? "warning" : "", showError ? "error" : ""].join(" ");
+
   return (
     <DetailTooltip
       warning={showWarning}
@@ -55,7 +57,7 @@ const Mod = ( {plug, showWarning, showError, reason}: ModProps ) => {
         </>
       }
     >
-      <img src={getAssetUrl(plug.displayProperties.icon)} className="icon-mods" />
+      {ModImage({ src: getAssetUrl(plug.displayProperties.icon), className:imageClasses })}
     </DetailTooltip>
   );
 }

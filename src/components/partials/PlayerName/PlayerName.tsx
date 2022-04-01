@@ -3,17 +3,17 @@ import {
   Typography,
 } from "@mui/material";
 
-import { getClassSvg } from "../partials";
+import { getClassSvg } from "../../partials";
 
-import { PlayerData } from "../../utils/interfaces";
+import { PlayerData } from "../../../utils/interfaces";
 
-type PlayerNameProps = {
+type Props = {
   player: PlayerData;
   showCode?: boolean;
   classType?: number;
 }
 
-const PlayerName = ({ player, showCode, classType }: PlayerNameProps) => {
+const PlayerName = ({ player, showCode, classType }: Props) => {
   return (
     <Box sx={{ m: 1, ml: 0, mb: 0, display: "flex" }}>
        {Number.isInteger(classType) &&

@@ -11,6 +11,7 @@ import { PlayerName, getClassSvg } from "../partials";
 // Interfaces
 import { CharactersData, PlayerData } from "../../utils/interfaces";
 import { DestinyCharacterComponent } from "../../bungie/interfaces/Destiny/Entities/Characters";
+import { lastOnlineCharacterId } from "./utils";
 
 type Props = {
   player: PlayerData;
@@ -24,12 +25,8 @@ const PickCharacter = ({ player, data }: Props) => {
 
   // Get the last online so we can mark it
   useEffect(() => {
-    const sortedCharacterKeys = Object.keys(characters).sort((a: any, b: any) => {
-      return (new Date(characters[a].dateLastPlayed) as any) +
-            (new Date(characters[b].dateLastPlayed) as any);
-    });
-
-    setLastOnline(sortedCharacterKeys[0]);
+    const lastId = lastOnlineCharacterId(characters);
+    setLastOnline(lastId);
   }, [context.data, data]);
 
   return (

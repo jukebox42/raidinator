@@ -2,12 +2,12 @@ import React from "react";
 import { Typography } from "@mui/material";
 import { blueGrey } from '@mui/material/colors';
 
-type CaptionProps = {
+type Props = {
   children: React.ReactElement<any, any> | string;
   fade?: boolean;
 }
 
-const Caption = ( { children, fade = false }: CaptionProps ) => {
+const Caption = ( { children, fade = false }: Props ) => {
   const sx = fade ? { color: blueGrey[300] } : {};
 
   return (

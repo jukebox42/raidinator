@@ -1,3 +1,4 @@
+// TODO: refactor this so it has a utils file
 import { useState, useContext } from "react";
 import {
   Button,
@@ -8,25 +9,25 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-import db from "../../store/db";
-import { getMemberById } from "../../bungie/api";
-import { AppContext } from "../../context/AppContext";
+import db from "../../../store/db";
+import { getMemberById } from "../../../bungie/api";
+import { AppContext } from "../../../context/AppContext";
 
 // Components
-import { Loading } from "../generics";
+import { Loading } from "../../generics";
 
 // Interfaces
-import * as Components from "../../bungie/interfaces/Destiny/Components";
-import { PlayerData } from "../../utils/interfaces";
-import { getCharacters } from "../../store/api";
+import * as Components from "../../../bungie/interfaces/Destiny/Components";
+import { PlayerData } from "../../../utils/interfaces";
+import { getCharacters } from "../../../store/api";
 
-type FireteamDialogProps = {
+type Props = {
   open: boolean;
   player: PlayerData | null;
   onClose: () => void;
 }
 
-const FireteamDialog = ({ onClose, player, open = false }: FireteamDialogProps) => {
+const FireteamDialog = ({ onClose, player, open = false }: Props) => {
   const context = useContext(AppContext);
   const [fetchingFireteam, setFetchingFireteam] = useState(false);
 
