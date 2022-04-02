@@ -1,44 +1,3 @@
-body {
-  margin: 0;
-  background-color: #10131C;
-}
-
-.main {
-  background-color: #10131C;
-  background-image: url("assets/bg.jpg");
-  background-repeat:no-repeat;
-  background-size: 380%;
-  background-position: 50% 54px;
-  background-attachment: fixed;
-}
-
-.class-icon {
-  display: inline-block;
-}
-
-.class-icon svg {
-  width: 25px;
-  height: 25px;
-}
-
-.icon-character {
-  position: relative;
-  border-radius: 3px;
-  margin: 5px 5px 0 0;
-  overflow: hidden;
-}
-
-.icon-character-button {
-  position: relative;
-}
-.icon-character-button svg:first-of-type {
-  width: 50px;
-  height: 50px;
-  position: absolute;
-  left: 10px;
-  top: 13px;
-}
-
 .subclass.thermal:before {
   content: "";
   width: 39px;
@@ -73,38 +32,21 @@ body {
 }
 
 /* resize super icons */
-.superVersion2 .MuiPaper-item {
+.superVersion2 img {
   width: 35px;
   height: 35px;
   margin: 10px 0 0 10px;
 }
 /* resize super icons */
-.superVersion3 .MuiPaper-item {
+.superVersion3 img {
   width: 51px;
   height: 51px;
   margin: 2px 0 0 2px;
 }
 
-.icon-character {
-  width: 55px;
-  height: 55px;
-}
-
-.icon-mods {
-  position: relative;
-  width: 25px;
-  height: 25px;
-  overflow: hidden;
-}
-
 .icon-light, .icon-platform {
   width: 20px;
   height: 20px;
-}
-
-.icon-stat {
-  width: 16px;
-  height: 16px;
 }
 
 .icon-element {

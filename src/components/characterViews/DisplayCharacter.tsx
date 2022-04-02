@@ -117,7 +117,7 @@ const DisplayCharacter = ( { player, data, characterId, onChangeCharacter, onLoa
   return (
     <>
       <Box sx={{ p: 0, m: 0, ml: 1, display: "flex", flexDirection: "row" }}>
-        <Emblem character={character} isLastOnline={isLastOnline} onClick={onChangeCharacter} />
+        <Emblem emblemPath={character.emblemPath} isLastOnline={isLastOnline} onClick={onChangeCharacter} />
         <Box sx={{ flexGrow: 1 }}>
           <PlayerName player={player} classType={character.classType} />
           <StatList stats={character.stats} statTypes={statTypes.current} />

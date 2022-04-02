@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material";
+import darkScrollbar from "@mui/material/darkScrollbar";
 
 export const VERSION = "0.2.00b";
 
@@ -83,6 +84,15 @@ export const theme = createTheme({
     divider: "#FFF",
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          ...darkScrollbar(),
+          margin: 0,
+          backgroundColor: "#10131C",
+        }
+      }
+    },
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
@@ -129,16 +139,6 @@ export const theme = createTheme({
             right: "2px",
             bottom: "2px",
             background: "none",
-          }
-        },
-        // mod
-        {
-          props: { variant: "mod" },
-          style: {
-            position: "relative",
-            width: "25px",
-            height: "25px",
-            overflow: "hidden",
           }
         },
       ]

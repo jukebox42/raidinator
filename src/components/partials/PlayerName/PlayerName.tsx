@@ -2,6 +2,7 @@ import {
   Box,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/system";
 
 import { getClassSvg } from "../../partials";
 
@@ -13,16 +14,28 @@ type Props = {
   classType?: number;
 }
 
+const StylesPlayerName  = styled(Box, {
+  name: "PlayerName",
+  slot: "Wrapper",
+})(({ theme }) => ({
+  margin: `${theme.spacing(1)} ${theme.spacing(1)} 0 0`,
+  display: "flex",
+  ".classSvg": {
+    width: "25px",
+    height: "25px",
+    display: "inline-block",
+  }
+}));
+
 const PlayerName = ({ player, showCode, classType }: Props) => {
   return (
-    <Box sx={{ m: 1, ml: 0, mb: 0, display: "flex" }}>
-       {Number.isInteger(classType) &&
-        <div className="class-icon">{getClassSvg(classType as number)}</div>}
-      <Typography variant="h5" sx={{ml: 1, mt: "-3px"}}>
+    <StylesPlayerName>
+       {Number.isInteger(classType) && getClassSvg(classType as number)}
+      <Typography variant="h5" sx={{ml: 1, mt: "-4px"}}>
         {player.bungieGlobalDisplayName}
         {showCode && "#" + player.bungieGlobalDisplayNameCode}
       </Typography>
-    </Box>
+    </StylesPlayerName>
   );
 };
 

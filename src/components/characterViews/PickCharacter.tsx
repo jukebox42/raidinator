@@ -6,7 +6,7 @@ import { getAssetUrl } from "../../utils/functions";
 import { CharacterContext } from "../../context/CharacterContext";
 
 // Components
-import { PlayerName, getClassSvg } from "../partials";
+import { PlayerName, getClassSvg, Emblem } from "../partials";
 
 // Interfaces
 import { CharactersData, PlayerData } from "../../utils/interfaces";
@@ -37,16 +37,14 @@ const PickCharacter = ({ player, data }: Props) => {
           const character = characters[i] as DestinyCharacterComponent;
           const isLastOnline = character.characterId.toString() === lastOnline;
           return (
-            <Button
-              className="icon-character-button"
+            <Emblem
+              big={true}
               key={character.characterId}
-              variant="text"
-              onClick={_ => context.setCharacterId(character.characterId)}
-            >
-              <img src={getAssetUrl(character.emblemPath)} className="icon-character"/>
-              {getClassSvg(character.classType)}
-              {isLastOnline && <StarIcon color="success" sx={{ position: "absolute", left: 0, top: 0 }} />}
-            </Button>
+              onClick={() => context.setCharacterId(character.characterId)}
+              warn={false}
+              emblemPath={character.emblemPath}
+              classSvg={getClassSvg(character.classType)}
+              isLastOnline={isLastOnline} />
           )
         })}
       </Stack>

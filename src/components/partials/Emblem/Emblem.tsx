@@ -1,27 +1,64 @@
-import { Button } from "@mui/material";
+import { Button, ButtonProps } from "@mui/material";
+import { styled } from "@mui/system";
 import WarningIcon from "@mui/icons-material/Warning";
-
+import StarIcon from "@mui/icons-material/Star";
 import { getAssetUrl } from "../../../utils/functions";
-import { DestinyCharacterComponent } from "../../../bungie/interfaces/Destiny/Entities/Characters";
+
+
+interface EmblemButtonProps extends ButtonProps {
+  emblemPath: string;
+  big?: boolean
+}
+
+const EmblemButton = styled(Button, {
+  name: "EmblemButton",
+  slot: "Wrapper",
+  shouldForwardProp:(propName) => propName !== "emblemPath" && propName !== "big",
+})<EmblemButtonProps>(({ theme, emblemPath, big = false }) => {
+  const boxSize = big ? "75px" : "55px";
+  const margin = big ? theme.spacing(3) : theme.spacing(1);
+  return {
+    width: boxSize,
+    minWidth: boxSize, //dunno where this comes from
+    height: boxSize,
+    position: "relative",
+    padding: 0,
+    backgroundImage: `url("${emblemPath}")`,
+    backgroundSize: "contain",
+    borderRadius: theme.shape.borderRadius,
+    margin: `${margin} ${margin} 0 0`,
+    ".classSvg": {
+      width: "60px",
+      height: "60px",
+      position: "absolute",
+      left: "8px",
+      top: "10px",
+    }
+  }
+});
 
 type Props = {
-  character: DestinyCharacterComponent;
+  big?: boolean;
+  emblemPath: string;
   isLastOnline: boolean;
+  classSvg?: JSX.Element;
+  warn?: boolean;
   onClick: () => void;
 }
 
-const Emblem = ({ character, isLastOnline, onClick }: Props) => {
+const Emblem = ({ emblemPath, isLastOnline, onClick, classSvg, warn = true, big = false }: Props) => {
   return (
-    <Button
-      key={character.characterId}
+    <EmblemButton
+      big={big}
       variant="text"
       onClick={onClick}
-      sx={{ padding: 0, position: "relative" }}
+      emblemPath={getAssetUrl(emblemPath)}
     >
-      <img src={getAssetUrl(character.emblemPath)} className="icon-character"/>
-      {!isLastOnline &&
-        <WarningIcon color="warning" sx={{ position: "absolute", right: 0, top: 0, width: "20px", height: "20px" }} />}
-    </Button>
+      {classSvg}
+      {isLastOnline && !warn && <StarIcon color="success" sx={{ position: "absolute", left: -10, top: -10 }} />}
+      {!isLastOnline && warn &&
+        <WarningIcon color="warning" sx={{ position: "absolute", right: -5, top: -5, width: "20px", height: "20px" }} />}
+    </EmblemButton>
   )
 }
 
