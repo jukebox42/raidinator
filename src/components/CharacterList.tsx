@@ -118,6 +118,14 @@ function CharacterList() {
     });
   }, [loading]);
 
+  // Forces scroll to the bottom of the character list div so new players are visible when added
+  useEffect(() => {
+    const charactersWrapper = document.querySelector("#root>.MuiBox-root");
+    if (charactersWrapper) {
+      charactersWrapper.scrollTop = charactersWrapper.scrollHeight;
+    }
+  }, [context.cards]);
+
   /**
    * Create a new character card
    */

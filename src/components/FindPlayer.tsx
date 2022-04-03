@@ -168,6 +168,8 @@ const FindPlayer = ({ onFoundPlayer, memberIds }: FindPlayerProps) => {
             onFoundPlayer(newValue); // pass the found player back to the app
             setValue(null);
             setInputValue("");
+            // blur the input so mobile closes the keyboard;
+            (document.activeElement as HTMLElement).blur();
           }
         }}
         getOptionLabel={(option) => option.membershipId.toString()}
