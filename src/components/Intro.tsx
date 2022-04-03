@@ -7,7 +7,7 @@ const Intro = () => {
         Welcome to Raid Watch
       </Typography>
       <Typography variant="body1" component="p" color="white" sx={{ textAlign: "center", p: 2 }}>
-        An tool to give fireteam members quick <br/>information about their loadouts.
+        A tool to give fireteam members quick <br/>information about their loadouts.
       </Typography>
       <Typography variant="caption" component="p" color="white" sx={{ textAlign: "center" }}>
         Created by PlasmaticSpoon.

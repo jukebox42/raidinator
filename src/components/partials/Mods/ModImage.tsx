@@ -44,7 +44,7 @@ type Props = {
 }
 
 export const ModImage = ({src, className = ""}: Props) => {
-  return <Paper className={className} sx={modSx(src)} />;
+  return <Paper elevation={0} className={className} sx={modSx(src)} />;
 }
 
 export default ModImage;

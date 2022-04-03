@@ -1,8 +1,8 @@
 import Dexie, { Table } from "dexie";
 
-import { PlayerData } from "../utils/interfaces";
+import { PlayerData, AppSettings } from "utils/interfaces";
 
-import * as BI from "../bungie/interfaces";
+import * as BI from "bungie/interfaces";
 
 export type ManifestTables = "DestinyNodeStepSummaryDefinition" | "DestinyArtDyeChannelDefinition" | 
                              "DestinyArtDyeReferenceDefinition" | "DestinyPlaceDefinition" |
@@ -27,6 +27,7 @@ export type ManifestTables = "DestinyNodeStepSummaryDefinition" | "DestinyArtDye
                              "DestinyChecklistDefinition" | "DestinyEnergyTypeDefinition";
 
 class Db extends Dexie {
+  AppSettings!: Table<AppSettings>;
   AppSearches!: Table<PlayerData>;
   AppPlayers!: Table<PlayerData>;
   AppPlayersSelectedCharacter!: Table<number>;
@@ -118,6 +119,7 @@ class Db extends Dexie {
     }
 
     this.version(1).stores({
+      AppSettings: "",
       AppManifestVersion: "", // holds the most recent version of the destiny manifest, this tells us if we need to reload
       AppSearches: "", // holds the resent selections to make searching quicker
       AppPlayers: "", // holds the loaded players
@@ -147,6 +149,15 @@ class Db extends Dexie {
     });
 
     return this.open();
+  }
+
+  /**
+   * Get the app settings
+   */
+  async getSettings (): Promise<AppSettings> {
+    const settings = await db.AppSettings.get(1);
+
+    return { detailed: false, ...settings };
   }
 
   /**

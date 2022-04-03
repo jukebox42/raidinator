@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Typography } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
-import { CharacterContext } from "../../context/CharacterContext";
+import { CharacterContext } from "context/CharacterContext";
 
 const CharacterError = () => {
   const context = useContext(CharacterContext);

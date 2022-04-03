@@ -1,16 +1,14 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, Stack } from "@mui/material";
-import StarIcon from "@mui/icons-material/Star";
+import { Stack } from "@mui/material";
 
-import { getAssetUrl } from "../../utils/functions";
-import { CharacterContext } from "../../context/CharacterContext";
+import { CharacterContext } from "context/CharacterContext";
 
 // Components
 import { PlayerName, getClassSvg, Emblem } from "../partials";
 
 // Interfaces
-import { CharactersData, PlayerData } from "../../utils/interfaces";
-import { DestinyCharacterComponent } from "../../bungie/interfaces/Destiny/Entities/Characters";
+import { CharactersData, PlayerData } from "utils/interfaces";
+import { DestinyCharacterComponent } from "bungie/interfaces/Destiny/Entities/Characters";
 import { lastOnlineCharacterId } from "./utils";
 
 type Props = {

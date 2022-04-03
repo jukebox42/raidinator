@@ -1,10 +1,10 @@
 import { useState, createContext, useContext } from "react";
 
-import { getCharacters } from "../store/api";
-import db from "../store/db";
-
-import { CharactersData } from "../utils/interfaces";
 import { AppContext } from "./AppContext";
+import { getCharacters } from "store/api";
+import db from "store/db";
+
+import { CharactersData } from "utils/interfaces";
 
 interface CharacterContextProviderProps {
   children?: JSX.Element;

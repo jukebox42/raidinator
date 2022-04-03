@@ -8,13 +8,7 @@ import { getClassSvg } from "../../partials";
 
 import { PlayerData } from "../../../utils/interfaces";
 
-type Props = {
-  player: PlayerData;
-  showCode?: boolean;
-  classType?: number;
-}
-
-const StylesPlayerName  = styled(Box, {
+const PlayerNameWrapper  = styled(Box, {
   name: "PlayerName",
   slot: "Wrapper",
 })(({ theme }) => ({
@@ -27,15 +21,21 @@ const StylesPlayerName  = styled(Box, {
   }
 }));
 
+type Props = {
+  player: PlayerData;
+  showCode?: boolean;
+  classType?: number;
+}
+
 const PlayerName = ({ player, showCode, classType }: Props) => {
   return (
-    <StylesPlayerName>
+    <PlayerNameWrapper>
        {Number.isInteger(classType) && getClassSvg(classType as number)}
       <Typography variant="h5" sx={{ml: 1, mt: "-4px"}}>
         {player.bungieGlobalDisplayName}
         {showCode && "#" + player.bungieGlobalDisplayNameCode}
       </Typography>
-    </StylesPlayerName>
+    </PlayerNameWrapper>
   );
 };
 

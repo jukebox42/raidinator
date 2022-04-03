@@ -1,24 +1,25 @@
+// TODO: break up this file it's too big
 import { useState, useEffect, useMemo, useRef, useContext } from "react";
 import { Stack, Typography } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
-import db, { ManifestTables } from "../store/db";
-import { LANGUAGE } from "../utils/constants";
-import { getManifestContent } from "../bungie/api";
-import { getManifest } from "../store/api";
-import { AppContext } from "../context/AppContext";
-import CharacterContextProvider from "../context/CharacterContext";
+import db, { ManifestTables } from "store/db";
+import { LANGUAGE } from "utils/constants";
+import { getManifestContent } from "bungie/api";
+import { getManifest } from "store/api";
+import { AppContext } from "context/AppContext";
+import CharacterContextProvider from "context/CharacterContext";
 
 // Components
-import FindPlayer from "../components/FindPlayer";
-import Character from "../components/Character";
-import Intro from "../components/Intro";
-import { FireteamDialog } from "../components/partials"
-import { Loading, NavBar, ErrorBoundary } from "../components/generics";
+import FindPlayer from "components/FindPlayer";
+import Character from "components/Character";
+import Intro from "components/Intro";
+import { FireteamDialog } from "components/partials"
+import { Loading, NavBar, ErrorBoundary } from "components/generics";
 
 // Interfaces
-import * as BI from "../bungie/interfaces";
-import { PlayerData } from "../utils/interfaces";
+import * as BI from "bungie/interfaces";
+import { PlayerData } from "utils/interfaces";
 
 function CharacterList() {
   const context = useContext(AppContext);
@@ -38,7 +39,7 @@ function CharacterList() {
       const promises = Object.keys(manifestResponse).map((table: any) => {
         const dbkeys = Object.keys(manifestResponse[table]);
         const dbvalues: any = Object.keys(manifestResponse[table]).map(
-          (oskey: any) => manifestResponse[table][oskey]);
+          oskey => manifestResponse[table][oskey]);
         console.log("Writing Table...");
         return (db[table as ManifestTables] as any).bulkPut(dbvalues, dbkeys).catch(
           (e: any) => console.error("Db Write failed:", table, e));
@@ -49,27 +50,9 @@ function CharacterList() {
 
   type ManifestValue = { data: BI.Destiny.Config.DestinyManifest, error: any };
 
-  const loadManifest = useMemo(() =>
-    (
-      callback: ({ data, error }: ManifestValue) => Promise<void>,
-    ) => getManifest().then(callback),
-    []
-  );
-
-  // Effect to load manifest on refresh
-  useEffect(() => {
-    let active = true;
-
-    if(!loading && !refreshing) {
-      return;
-    }
-
+  const handleManifestLoad = async (force = false) => {
     // See if we need to load the manifest data and do it
-    loadManifest(async ({ data, error }: ManifestValue) => {
-      if (!active) {
-        return;
-      }
-
+    await loadManifest(async ({ data, error }: ManifestValue) => {
       // If error then show the error.
       if (error.errorCode !== 1) {
         setError(error.message);
@@ -83,7 +66,7 @@ function CharacterList() {
         // Check manifest version
         const liveVersion = data.version;
         const savedVersion = await db.AppManifestVersion.get(1);
-        if (liveVersion === savedVersion) {
+        if (!force && liveVersion === savedVersion) {
           console.log("Manifest already up to date", liveVersion);
           return setLoading(false);
         }
@@ -93,7 +76,7 @@ function CharacterList() {
         const manifestPath = data.jsonWorldContentPaths[LANGUAGE];
         await writeManifests(manifestPath);
         await db.AppManifestVersion.put(liveVersion, 1);
-        console.log("Manifest loaded.")
+        console.log("Manifest loaded.");
         return setLoading(false);
       } catch (e) {
         console.error("ERROR", e);
@@ -102,6 +85,22 @@ function CharacterList() {
         setError(error);
       }
     });
+  }
+
+  const loadManifest = useMemo(() =>
+    (
+      callback: ({ data, error }: ManifestValue) => Promise<void>,
+    ) => getManifest().then(callback),
+    []
+  );
+
+  // Effect to load manifest on refresh
+  useEffect(() => {
+    if(!loading && !refreshing) {
+      return;
+    }
+
+    handleManifestLoad();
   }, []);
 
   // Effect to load players from cache
@@ -112,7 +111,7 @@ function CharacterList() {
 
     db.AppPlayers.toArray().then(dbPlayers => {
       if (dbPlayers.length) {
-        const cards = dbPlayers.map(p => { return { membershipId: p.membershipId, player: p, refresh: false } });
+        const cards = dbPlayers.map(p => ({ membershipId: p.membershipId, player: p, refresh: false }));
         context.replaceCards(cards);
       }
       setTimeout(() => setPlayerCacheLoaded(true), 0);
@@ -135,12 +134,22 @@ function CharacterList() {
     setFireteamDialogOpen(true);
   }
 
+    /**
+   * Handle reloading the manifest
+   */
+     const reloadManifestCallback = async () => {
+      setRefreshing(true); // this gets disabled in the refresh callback
+      await handleManifestLoad(true);
+      refreshCallback();
+    }
+
   /**
    * Handle refreshing the app. purges all cached guardian data but NOT player data and character
    * selections per player.
    */
   const refreshCallback = () => {
     if (context.cards.length  === 0) {
+      setRefreshing(false);
       return;
     }
     setRefreshing(true);
@@ -161,7 +170,7 @@ function CharacterList() {
   if (error) {
     return (
       <>
-        <NavBar refreshCallback={refreshCallback} acting={true}/>
+        <NavBar acting={true} refreshCallback={refreshCallback} reloadManifestCallback={reloadManifestCallback} />
         <Typography variant="body1" sx={{ textAlign: "center", mt: "150px" }}>
           <ErrorOutlineIcon sx={{fontSize: 60}} />
         </Typography>
@@ -175,7 +184,7 @@ function CharacterList() {
     const loadingText = refreshing ? "Refreshing..." : "Loading manifest...";
     return (
       <>
-        <NavBar refreshCallback={refreshCallback} acting={true}/>
+        <NavBar acting={true} refreshCallback={refreshCallback} reloadManifestCallback={reloadManifestCallback}/>
         <Loading marginTop="150px" loadingText={loadingText} />
       </>
     );
@@ -185,20 +194,26 @@ function CharacterList() {
 
   return (
     <>
-        <NavBar refreshCallback={refreshCallback} acting={loading || refreshing}/>
+        <NavBar
+          acting={loading || refreshing}
+          refreshCallback={refreshCallback}
+          reloadManifestCallback={reloadManifestCallback}
+        />
         <ErrorBoundary>
         <Stack sx={{ mx: "auto", pt: "57px", pb: "65px" }}>
-          {context.cards.map(card => {
-            return (
-              <CharacterContextProvider key={card.membershipId} membershipId={card.membershipId} membershipType={card.player.membershipType}>
-                <Character
-                  player={card.player}
-                  lastRefresh={context.lastRefresh}
-                  onRefreshed={onRefreshed}
-                  onLoadFireteam={loadFireteam}/>
-              </CharacterContextProvider>
-            );
-          })}
+          {context.cards.map(card => (
+            <CharacterContextProvider
+              key={card.membershipId}
+              membershipId={card.membershipId}
+              membershipType={card.player.membershipType}
+            >
+              <Character
+                player={card.player}
+                lastRefresh={context.lastRefresh}
+                onRefreshed={onRefreshed}
+                onLoadFireteam={loadFireteam}/>
+            </CharacterContextProvider>
+          ))}
         </Stack>
         </ErrorBoundary>
         {context.cards.length === 0 && <Intro />}

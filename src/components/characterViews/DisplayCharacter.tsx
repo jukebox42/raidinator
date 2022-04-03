@@ -7,9 +7,9 @@ import {
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import uniq from "lodash/uniq";
 
-import db from "../../store/db";
-import { AppContext } from "../../context/AppContext";
-import { LIGHT_STAT_HASH } from "../../utils/constants";
+import db from "store/db";
+import { AppContext } from "context/AppContext";
+import { LIGHT_STAT_HASH } from "utils/constants";
 
 // Components
 import LoadingCharacter from "./LoadingCharacter";
@@ -27,9 +27,9 @@ import {
 } from "../partials";
 
 // Interfaces
-import { CharactersData, PlayerData } from "../../utils/interfaces";
-import * as Definitions from "../../bungie/interfaces/Destiny/Definitions";
-import { CharacterContext } from "../../context/CharacterContext";
+import { CharactersData, PlayerData } from "utils/interfaces";
+import * as Definitions from "bungie/interfaces/Destiny/Definitions";
+import { CharacterContext } from "context/CharacterContext";
 import { lastOnlineCharacterId } from "./utils";
 
 interface Props {

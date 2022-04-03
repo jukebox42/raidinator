@@ -1,3 +1,4 @@
+/* TODO: collapse this into the files */
 .subclass.thermal:before {
   content: "";
   width: 39px;
@@ -42,19 +43,6 @@
   width: 51px;
   height: 51px;
   margin: 2px 0 0 2px;
-}
-
-.icon-light, .icon-platform {
-  width: 20px;
-  height: 20px;
-}
-
-.icon-element {
-  width: 16px;
-  height: 16px;
-  position: absolute;
-  right: 2px;
-  bottom: 2px;
 }
 
 /* MUI really makes this hard... */

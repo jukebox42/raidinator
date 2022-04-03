@@ -1,4 +1,4 @@
-import { DestinyCharacterComponent } from "../../bungie/interfaces/Destiny/Entities/Characters";
+import { DestinyCharacterComponent } from "bungie/interfaces/Destiny/Entities/Characters";
 
 /**
  * Get the ID of the last online character.

@@ -15,9 +15,7 @@ type Props = {
 
 const DetailTooltip = ( {title, children, flow = true, warning = false, error = false}: Props ) => {
   const [open, setOpen] = React.useState(false);
-  
   const handleTooltipClose = () => setOpen(false);
-
   const handleTooltipOpen = () => setOpen(true);
 
   const sx = { display: "flex", m: 1, mb: 0, ml: 0, position: "relative", background: "none" };

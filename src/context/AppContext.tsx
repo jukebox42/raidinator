@@ -1,10 +1,13 @@
 import { useState, createContext } from "react";
-import { Toast, SeverityType } from "../components/generics";
 import { v4 as uuid } from "uuid";
 
-import db from "../store/db";
+import db from "store/db";
 
-import { PlayerData } from "../utils/interfaces";
+// Components
+import { Toast, SeverityType } from "components/generics";
+
+// Interfaces
+import { PlayerData } from "utils/interfaces";
 
 interface AppContextProviderProps {
   children?: JSX.Element;

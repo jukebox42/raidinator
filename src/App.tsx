@@ -5,11 +5,11 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 
-import { theme } from "./utils/constants";
-import AppContextProvider from "./context/AppContext";
+import { theme } from "utils/constants";
+import AppContextProvider from "context/AppContext";
 
 // Components
-import CharacterList from "./components/CharacterList";
+import CharacterList from "components/CharacterList";
 import bg from "./assets/bg.jpg";
 
 const MainBox = styled(Box, {

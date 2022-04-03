@@ -1,9 +1,10 @@
-import db from "../store/db";
+// This file isn't great. rewrite
+import db from "store/db";
 import {
   getProfile,
   getManifest as getBungieManifest,
   findPlayers as findBungiePlayers,
-} from "../bungie/api";
+} from "bungie/api";
 
 /**
  * Get the manifest endpoint. this tells us the version and where to get the data

@@ -8,18 +8,31 @@ import {
   InputAdornment,
   AutocompleteRenderInputParams,
 } from "@mui/material";
+import { styled } from "@mui/system";
 import SearchIcon from "@mui/icons-material/Search";
 import throttle from "lodash/throttle";
 
-import db from "../store/db";
-import { getAssetUrl } from "../utils/functions";
-import { findPlayers } from "../store/api";
-import { AppContext } from "../context/AppContext";
+import db from "store/db";
+import { getAssetUrl } from "utils/functions";
+import { findPlayers } from "store/api";
+import { AppContext } from "context/AppContext";
 
 // Interfaces
+import * as BI from "bungie/interfaces";
+import { PlayerData } from "utils/interfaces";
 
-import * as BI from "../bungie/interfaces";
-import { PlayerData } from "../utils/interfaces";
+const PlayerPlatformIcon  = styled(Paper, {
+  name: "PlayerName",
+  slot: "Wrapper",
+})(({ theme }) => ({
+  background: "none",
+  display: "inline-block",
+  marginRight: theme.spacing(1),
+  "img": {
+    width: "20px",
+    height: "20px",
+  }
+}));
 
 
 type FindPlayerProps = {
@@ -115,8 +128,8 @@ const FindPlayer = ({ onFoundPlayer, memberIds }: FindPlayerProps) => {
   const renderOption = (props: React.HTMLAttributes<HTMLLIElement>, option: PlayerData) => {
     return (
       <li {...props}>
-        <img src={getAssetUrl(option.iconPath)} className="icon-platform" />
-        <Typography variant="h6">
+        <PlayerPlatformIcon><img src={getAssetUrl(option.iconPath)} /></PlayerPlatformIcon>
+        <Typography variant="h6" sx={{mt: "-4px"}}>
           {option.bungieGlobalDisplayName}#{option.bungieGlobalDisplayNameCode}
         </Typography>
       </li>

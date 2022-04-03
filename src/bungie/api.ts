@@ -3,10 +3,10 @@ import {
   ASSET_URL,
   BUNGIE_API_URLS,
   DESTINY_API_URLS,
-} from "../utils/constants";
+} from "utils/constants";
 
 // Interfaces
-import * as BI from "../bungie/interfaces/";
+import * as BI from "./interfaces/";
 
 const headers: HeadersInit = {
   "X-API-Key": API_KEY,

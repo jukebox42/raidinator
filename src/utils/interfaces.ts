@@ -1,7 +1,11 @@
-import * as BI from "../bungie/interfaces";
-import { DataCollection } from "../bungie/interfaces/Dictionaries";
-import * as Entities from "../bungie/interfaces/Destiny/Entities";
-import * as Components from "../bungie/interfaces/Destiny/Components";
+import * as BI from "bungie/interfaces";
+import { DataCollection } from "bungie/interfaces/Dictionaries";
+import * as Entities from "bungie/interfaces/Destiny/Entities";
+import * as Components from "bungie/interfaces/Destiny/Components";
+
+export interface AppSettings {
+  detailed: boolean;
+}
 
 /**
  * Data about a player

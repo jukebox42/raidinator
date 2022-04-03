@@ -1,4 +1,4 @@
-import { Paper, PaperProps, SxProps, Theme } from "@mui/material";
+import { Paper, SxProps, Theme } from "@mui/material";
 import { styled } from "@mui/system";
 
 type ImageVariant = "subclass" | "item" | "energy" | "mod";
@@ -89,9 +89,5 @@ const Image = ({src, variant, sx = {}, className = ""}: ImageProps) => {
     <Paper component="img" src={src} sx={sx} className={className} />
   );
 };
-
-export const ImageMod: React.FC<ImageProps> = ({src, className = ""}) => {
-  return <Paper className={className} sx={modSx(src)} />;
-}
 
 export default Image;

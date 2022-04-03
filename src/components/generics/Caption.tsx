@@ -9,7 +9,6 @@ type Props = {
 
 const Caption = ( { children, fade = false }: Props ) => {
   const sx = fade ? { color: blueGrey[300] } : {};
-
   return (
     <Typography variant="caption" component="p" mt={1} sx={sx}>{children}</Typography>
   );

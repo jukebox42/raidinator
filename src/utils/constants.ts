@@ -1,7 +1,7 @@
 import { createTheme } from "@mui/material";
 import darkScrollbar from "@mui/material/darkScrollbar";
 
-export const VERSION = "0.2.00b";
+export const VERSION = "1.0.0b";
 
 // API
 export const DEV_MODE = process.env.NODE_ENV === "development";

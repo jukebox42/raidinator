@@ -3,8 +3,8 @@ import { styled } from "@mui/system";
 
 import { getAssetUrl } from "../../../utils/functions";
 
-const SyledPaper  = styled(Paper, {
-  name: "PlayerName",
+const StatWrapper  = styled(Paper, {
+  name: "Stat",
   slot: "Wrapper",
 })(({ theme }) => ({
   margin: `${theme.spacing(1)} ${theme.spacing(1)} 0 0`,
@@ -22,12 +22,11 @@ type Props = {
 }
 
 const Stat = ( { value, iconUrl }: Props ) => {
-
   return (
-    <SyledPaper elevation={0}>
+    <StatWrapper elevation={0}>
       <img src={getAssetUrl(iconUrl)} />
       <Typography variant="caption" sx={{ mt: "-4px" }}>{value}</Typography>
-    </SyledPaper>
+    </StatWrapper>
   );
 }
 

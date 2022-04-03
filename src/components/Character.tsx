@@ -1,18 +1,20 @@
 import { useState, useEffect, useContext } from "react";
 import { CardContent } from "@mui/material";
 
-import { CharacterContext } from "../context/CharacterContext";
-import { AppContext } from "../context/AppContext";
+import { CharacterContext } from "context/CharacterContext";
+import { AppContext } from "context/AppContext";
 
 // Components
 import { TouchCard } from "./generics";
-import LoadingCharacter from "./characterViews/LoadingCharacter";
-import PickCharacter from "./characterViews/PickCharacter";
-import DisplayCharacter from "./characterViews/DisplayCharacter";
+import {
+  LoadingCharacter,
+  PickCharacter,
+  DisplayCharacter,
+  CharacterError
+} from "./characterViews";
 
 // Interfaces
-import { PlayerData } from "../utils/interfaces";
-import CharacterError from "./characterViews/CharacterError";
+import { PlayerData } from "utils/interfaces";
 
 type Props = {
   player: PlayerData;
