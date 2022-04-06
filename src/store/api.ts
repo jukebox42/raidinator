@@ -5,6 +5,7 @@ import {
   getManifest as getBungieManifest,
   findPlayers as findBungiePlayers,
 } from "bungie/api";
+import { lastOnlineCharacterId } from "components/characterViews/utils";
 
 /**
  * Get the manifest endpoint. this tells us the version and where to get the data
@@ -63,15 +64,9 @@ export const getCharacters = async (membershipId: number, membershipType: number
   // TODO: Does this really belong here or have we violated the rule of potentially managing view state in an api
   // function? I dont know. think about it.
   if (characterId === 0 && data.characters.data &&  Object.keys(data.characters.data).length > 0) {
-    const characters = data.characters.data;
-    const sortedCharacterKeys = Object.keys(characters).sort((a: any, b: any) => {
-      return (new Date(characters[a].dateLastPlayed) as any) +
-            (new Date(characters[b].dateLastPlayed) as any);
-    });
-    characterId = characters[sortedCharacterKeys[0]].characterId;
+    characterId = lastOnlineCharacterId(data.characters.data) as any;
     await db.setCharacterId(membershipId, characterId); // store the value so it's there on refresh and stuff
   }
 
-  console.log("Loaded from API...", response);
   return { data, characterId, error, profileTransitoryData: data.profileTransitoryData };
 }

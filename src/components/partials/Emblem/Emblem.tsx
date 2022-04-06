@@ -1,8 +1,9 @@
 import { Button, ButtonProps } from "@mui/material";
 import { styled } from "@mui/system";
-import WarningIcon from "@mui/icons-material/Warning";
-import StarIcon from "@mui/icons-material/Star";
-import { getAssetUrl } from "../../../utils/functions";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+
+import { getAssetUrl } from "utils/functions";
 
 
 interface EmblemButtonProps extends ButtonProps {
@@ -37,6 +38,9 @@ const EmblemButton = styled(Button, {
   }
 });
 
+const onlineSx = { position: "absolute", right: -10, top: -10, width: 30, height: 30 };
+const offlineSx = { position: "absolute", right: -5, top: -5, width: 20, height: 20 }
+
 type Props = {
   big?: boolean;
   emblemPath: string;
@@ -55,9 +59,8 @@ const Emblem = ({ emblemPath, isLastOnline, onClick, classSvg, warn = true, big 
       emblemPath={getAssetUrl(emblemPath)}
     >
       {classSvg}
-      {isLastOnline && !warn && <StarIcon color="success" sx={{ position: "absolute", left: -10, top: -10 }} />}
-      {!isLastOnline && warn &&
-        <WarningIcon color="warning" sx={{ position: "absolute", right: -5, top: -5, width: "20px", height: "20px" }} />}
+      {isLastOnline && !warn && <LightModeIcon color="success" sx={onlineSx} />}
+      {!isLastOnline && warn && <DarkModeIcon color="warning" sx={offlineSx} />}
     </EmblemButton>
   )
 }

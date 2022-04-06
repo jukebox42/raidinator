@@ -14,6 +14,8 @@ import CachedIcon from "@mui/icons-material/Cached";
 import SwipeIcon from "@mui/icons-material/Swipe";
 import TouchAppIcon from "@mui/icons-material/TouchApp";
 import DoNotDisturbAltIcon from "@mui/icons-material/DoNotDisturbAlt";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
 
 type Props = {
   open: boolean;
@@ -65,6 +67,10 @@ const InstructionsDialog = ({ onClose, open = false }: Props) => {
               <ListItemText>{instruct.text}</ListItemText>
             </ListItem>
           ))}
+          <ListItem>
+            <ListItemIcon><LightModeIcon color="success" />/<DarkModeIcon color="warning" /></ListItemIcon>
+            <ListItemText>The sun indicates the last online guardian for that player. The moon indicates the character was not the lost online guardian.</ListItemText>
+          </ListItem>
         </List>
       </DialogContent>
       <DialogActions>

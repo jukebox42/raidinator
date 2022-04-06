@@ -61,6 +61,7 @@ const CharacterContextProvider = ({ children, membershipId, membershipType }: Ch
     if (internalCharacterId === 0) {
       internalSetCharacterId(characterId);
     }
+
     setData(data);
   };
 
