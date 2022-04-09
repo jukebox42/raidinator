@@ -24,32 +24,39 @@ type Props = {
 
 const instructions = [
   {
-    icon: <CachedIcon />,
+    icon: [<CachedIcon />],
     text: "Click the refresh button to reload guardian data from API.",
   },
   {
-    icon: <GroupAddIcon />,
+    icon: [<GroupAddIcon />],
     text: "Click the group icon to load the active fireteam.",
   },
   {
-    icon: <SwipeIcon />,
+    icon: [<SwipeIcon />],
     text: "Swipe a guardian card left or right to remove.",
   },
   {
-    icon: <TouchAppIcon />,
+    icon: [<TouchAppIcon />],
     text: "Tap the emblem to change the guardian.",
   },
   {
-    icon: <TouchAppIcon />,
+    icon: [<TouchAppIcon />],
     text: "Tap on a mod, equipped item or subclass to view it's details.",
   },
   {
-    icon: <TouchAppIcon />,
+    icon: [<TouchAppIcon />],
     text: "Double tap on an equipped item to open light.gg.",
   },
   {
-    icon: <DoNotDisturbAltIcon />,
+    icon: [<DoNotDisturbAltIcon />],
     text: "Mods crossed out don't have their requirements met. Tap on the mod for details.",
+  },
+  {
+    icon: [
+      <LightModeIcon color="success" sx={{mt:-3}} />,
+      <DarkModeIcon color="warning" sx={{mt:3}} />
+    ],
+    text: "The sun indicates the last online guardian for that player. The moon indicates the character was not the lost online guardian.",
   },
 ]
 
@@ -63,14 +70,11 @@ const InstructionsDialog = ({ onClose, open = false }: Props) => {
         <List>
           {instructions.map((instruct, i) => (
             <ListItem key={i}>
-              <ListItemIcon>{instruct.icon}</ListItemIcon>
+              {instruct.icon.length === 1 && <ListItemIcon>{instruct.icon[0]}</ListItemIcon>}
+              {instruct.icon.length === 2 && <ListItemIcon sx={{ml: -3, mr: 3}}>{instruct.icon[0]}/{instruct.icon[1]}</ListItemIcon>}
               <ListItemText>{instruct.text}</ListItemText>
             </ListItem>
           ))}
-          <ListItem>
-            <ListItemIcon><LightModeIcon color="success" />/<DarkModeIcon color="warning" /></ListItemIcon>
-            <ListItemText>The sun indicates the last online guardian for that player. The moon indicates the character was not the lost online guardian.</ListItemText>
-          </ListItem>
         </List>
       </DialogContent>
       <DialogActions>

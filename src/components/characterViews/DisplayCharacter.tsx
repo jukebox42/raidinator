@@ -81,26 +81,23 @@ const DisplayCharacter = ( { player, data, characterId, onChangeCharacter, onLoa
   }
 
   // Get the light stat type
-  const lightStatType = statTypes.current.find(t => t.hash.toString() === LIGHT_STAT_HASH);
+  const lightStatType= statTypes.current.find(t => t.hash.toString() === LIGHT_STAT_HASH);
   if (!lightStatType) {
-    //TODO: this really doesn't need to be so extreme. We need a "missing" icon
     const errorText = `Error: Could not find light stat for ${player.bungieGlobalDisplayName}`;
     appContext.addToast(errorText, "error");
-    context.setError(errorText);
     return <></>;
   }
 
   // get subclass
-  const subclassDefinition = itemDefinitions.current.find(idef => isSubClass(idef));
+  let subclassDefinition = itemDefinitions.current.find(idef => isSubClass(idef));
   if (!subclassDefinition) {
-    // TODO see the one about light
     const errorText = `Error: Could not find subclass definition for ${player.bungieGlobalDisplayName}`;
     appContext.addToast(errorText, "error");
-    context.setError(errorText);
     return <></>;
   }
   const subclassInstance = items.find(gi => gi.itemHash === subclassDefinition?.hash);
 
+  // get all weapons
   const weapons = itemDefinitions.current
     .filter(i => i.traitIds && i.traitIds.includes("item_type.weapon"));
   // get all the weapon energy types

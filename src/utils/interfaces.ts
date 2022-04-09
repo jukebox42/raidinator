@@ -2,6 +2,7 @@ import * as BI from "bungie/interfaces";
 import { DataCollection } from "bungie/interfaces/Dictionaries";
 import * as Entities from "bungie/interfaces/Destiny/Entities";
 import * as Components from "bungie/interfaces/Destiny/Components";
+import { DestinyDisplayPropertiesDefinition } from "bungie/interfaces/Destiny/Definitions/Common";
 
 export interface AppSettings {
   detailed: boolean;
@@ -49,4 +50,17 @@ export interface CharactersData {
   characterEquipment: DataCollection<Entities.Inventory.DestinyInventoryComponent>;
   itemComponents: Entities.Items.DestinyItemComponentSet;
   characterPlugSets: DataCollection<Components.PlugSets.DestinyPlugSetsComponent>;
+}
+
+/**
+ * A partial of the inventory item used for stats.
+ * 
+ * TODO: refactor display character to use this.
+ */
+export interface PartialDestinyInventoryItemDefinition {
+  hash: number;
+  talentGrid: {
+    buildName: number;
+  }
+  displayProperties: DestinyDisplayPropertiesDefinition;
 }

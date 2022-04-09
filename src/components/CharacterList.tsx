@@ -35,12 +35,17 @@ function CharacterList() {
    * Writes the manifest tables on a full refresh
    */
    const writeManifests = (manifestPath: string) => {
+    const tableNames = db.tables.map(t => t.name);
+
     return getManifestContent(manifestPath).then(manifestResponse => {
-      const promises = Object.keys(manifestResponse).map((table: any) => {
+      const promises = Object.keys(manifestResponse).map(table => {
+        // Only write the manifest tables we care about. I'm sure I'll regret this when I need one I didn't write.
+        if (!tableNames.find(n => n === table)) {
+          return Promise.resolve();
+        }
         const dbkeys = Object.keys(manifestResponse[table]);
         const dbvalues: any = Object.keys(manifestResponse[table]).map(
           oskey => manifestResponse[table][oskey]);
-        console.log("Writing Table...");
         return (db[table as ManifestTables] as any).bulkPut(dbvalues, dbkeys).catch(
           (e: any) => console.error("Db Write failed:", table, e));
       });
@@ -189,7 +194,7 @@ function CharacterList() {
 
   // if not loaded show spinner
   if (loading || !playerCacheLoaded) {
-    const loadingText = refreshing ? "Refreshing..." : "Loading manifest...";
+    const loadingText = refreshing ? "Refreshing..." : "Loading Destiny Database...";
     return (
       <>
         <NavBar acting={true} refreshCallback={refreshCallback} reloadManifestCallback={reloadManifestCallback}/>

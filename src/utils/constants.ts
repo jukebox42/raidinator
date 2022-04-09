@@ -1,7 +1,7 @@
 import { createTheme } from "@mui/material";
 import darkScrollbar from "@mui/material/darkScrollbar";
 
-export const VERSION = "1.0.1b";
+export const VERSION = "1.0.2b";
 
 // API
 export const DEV_MODE = process.env.NODE_ENV === "development";
@@ -23,7 +23,7 @@ export const LANGUAGE = "en";
 // URLS
 export const SOURCE_URL = "https://github.com/jukebox42/raidinator";
 export const ASSET_URL = "https://www.bungie.net";
-export const MISSING_ICON_URL = "img/misc/missing_icon_d2.png";
+export const MISSING_ICON_URL = "img/misc/missing_icon_d2.png"; //  TODO: use this
 export const API_URL = `${ASSET_URL}/platform`;
 export const LASER_SOUNDS_URL =  `${ASSET_URL}/en/ClanV2/Index?groupId=221919`;
 export const LIGHT_GG_URL = "https://www.light.gg/db/items/";

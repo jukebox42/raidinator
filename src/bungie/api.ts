@@ -75,8 +75,6 @@ export const getProfile = async (id: number, type: number) => {
 
 /**
  * TODO: rewrite this too. eventually.
- * @param id 
- * @returns 
  */
 export const getMemberById = async (id: string) => {
   const ret = await fetch(

@@ -46,7 +46,7 @@ type Props = {
   reloadManifestCallback: () => void;
 }
 
-const NavBar = ( { acting, refreshCallback, reloadManifestCallback }: Props) => {
+const NavBar = ({ acting, refreshCallback, reloadManifestCallback }: Props) => {
   const [open, setOpen] = useState(false);
   const [instructionsOpen, setInstructionsOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
@@ -103,10 +103,11 @@ const NavBar = ( { acting, refreshCallback, reloadManifestCallback }: Props) => 
             <ListItemIcon><AutoAwesomeIcon /></ListItemIcon>
             <ListItemText primary="About" />
           </ListItemButton>
+          {/* I pulled this out because it's confusing for users and probably not that useful
           <ListItemButton key="reload" onClick={() => setReloadOpen(true)} disabled={acting}>
             <ListItemIcon><DownloadingIcon /></ListItemIcon>
             <ListItemText primary="Reload Manifest" />
-          </ListItemButton>
+          </ListItemButton>*/}
           <Divider variant="middle" />
           <ListItem key="git" component="a" href={SOURCE_URL} target="_blank">
             <ListItemIcon><GitHubIcon /></ListItemIcon>
@@ -137,7 +138,7 @@ const NavBar = ( { acting, refreshCallback, reloadManifestCallback }: Props) => 
           setOpen(false);
         }}
         onNo={() => setResetOpen(false)}
-        text="This will delete all cached data and reset the app." />
+        text="This will delete all cached data, reload the destiny database, and clear all guardians." />
     </Box>
   );
 }
