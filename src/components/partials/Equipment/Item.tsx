@@ -54,7 +54,7 @@ const Item = ( {itemDefinition, itemInstance, itemInstanceDetails, damageTypes, 
       <>
         <Typography variant="body1">
           {elementType?.displayProperties.hasIcon &&
-            <img src={getAssetUrl(elementType.displayProperties.icon)} width="12" style={{ marginRight: 1 }} />}
+            <img src={getAssetUrl(elementType.displayProperties.icon)} width="12" style={{ marginRight: 5 }} />}
           <strong>{itemDefinition.displayProperties.name}</strong>
         </Typography>
         <Caption fade>{itemDefinition.itemTypeDisplayName}</Caption>

@@ -1,6 +1,6 @@
 import intersection from "lodash/intersection";
 
-import { DestinyInventoryItemDefinition } from "../../../../bungie/interfaces/Destiny/Definitions";
+import { DestinyInventoryItemDefinition } from "bungie/interfaces/Destiny/Definitions";
 
 // TODO: can I get this from somewhere?
 interface WeaponMap {

@@ -1,5 +1,5 @@
-import { DestinyEnergyType } from "../../../../bungie/interfaces/Destiny";
-import { DestinyInventoryItemDefinition } from "../../../../bungie/interfaces/Destiny/Definitions";
+import { DestinyEnergyType } from "bungie/interfaces/Destiny";
+import { DestinyInventoryItemDefinition } from "bungie/interfaces/Destiny/Definitions";
 
 enum src {
   WEAPON = 1,
@@ -99,7 +99,10 @@ export const checkWellMod = (
   if (charger) {
     // can always create.
     if (charger.alwaysTrue) {
-      return true;
+      if (charger.energy) {
+        return charger.energy;
+      }
+      return subclassEnergy;
     }
 
     // if no source then it will always trigger and we just need to return the well type

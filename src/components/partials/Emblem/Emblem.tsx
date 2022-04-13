@@ -33,7 +33,7 @@ const EmblemButton = styled(Button, {
       height: "60px",
       position: "absolute",
       left: "8px",
-      top: "10px",
+      top: "8px",
     }
   }
 });

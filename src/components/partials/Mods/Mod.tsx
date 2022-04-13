@@ -1,20 +1,21 @@
 import { useEffect, useState } from "react";
 import {
   Alert,
+  Chip,
   Typography,
 } from "@mui/material";
 import { v4 as uuid } from "uuid";
 import uniq from "lodash/uniq";
 
-import { getAssetUrl } from "../../../utils/functions";
+import { getAssetUrl } from "utils/functions";
 
 // Components
-import { DetailTooltip, Caption } from "../../generics";
+import { DetailTooltip, Caption } from "components/generics";
 import ModImage from "./ModImage";
 
 // Interfaces
-import * as BI from "../../../bungie/interfaces"
-import db from "../../../store/db";
+import * as BI from "bungie/interfaces"
+import db from "store/db";
 
 type Props = {
   plug: BI.Destiny.Definitions.DestinyInventoryItemDefinition;
@@ -42,13 +43,21 @@ const Mod = ( {plug, showWarning, showError, reason}: Props ) => {
 
   const imageClasses = [showWarning ? "warning" : "", showError ? "error" : ""].join(" ");
 
+  const formatMod = () => {
+    const modImage = ModImage({ src: getAssetUrl(plug.displayProperties.icon), className:imageClasses });
+    // if big mode
+    //return (<Chip icon={modImage} label={plug.displayProperties.name}/>);
+
+    return modImage
+  }
+
   return (
     <DetailTooltip
       warning={showWarning}
       error={showError}
       title={
         <>
-          {showWarning && reason && <Alert severity="warning">{reason}</Alert>}
+          {!showError && showWarning && reason && <Alert severity="warning">{reason}</Alert>}
           {showError && reason && <Alert severity="error">{reason}</Alert>}
           <Typography variant="body1"><strong>{plug.displayProperties.name}</strong></Typography>
           <Caption fade>{plug.itemTypeDisplayName}</Caption>
@@ -57,7 +66,7 @@ const Mod = ( {plug, showWarning, showError, reason}: Props ) => {
         </>
       }
     >
-      {ModImage({ src: getAssetUrl(plug.displayProperties.icon), className:imageClasses })}
+      {formatMod()}
     </DetailTooltip>
   );
 }

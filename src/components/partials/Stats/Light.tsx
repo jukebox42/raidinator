@@ -23,7 +23,7 @@ type Props = {
 const Light = ({ light, imageUrl }: Props) => {
   return (
     <>
-      <LightIcon><img src={getAssetUrl(imageUrl)} /></LightIcon>
+      <LightIcon elevation={0}><img src={getAssetUrl(imageUrl)} /></LightIcon>
       <Typography variant="subtitle1" sx={{ mt: "-4px" }}>{light}</Typography>
     </>
   )

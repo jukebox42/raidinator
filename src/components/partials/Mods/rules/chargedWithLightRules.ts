@@ -1,7 +1,7 @@
 import intersection from "lodash/intersection";
 
-import { DestinyEnergyType } from "../../../../bungie/interfaces/Destiny";
-import { DestinyInventoryItemDefinition } from "../../../../bungie/interfaces/Destiny/Definitions";
+import { DestinyEnergyType } from "bungie/interfaces/Destiny";
+import { DestinyInventoryItemDefinition } from "bungie/interfaces/Destiny/Definitions";
 
 interface Chargers {
   name: string;

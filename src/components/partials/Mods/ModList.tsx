@@ -1,5 +1,5 @@
 import { useLiveQuery } from "dexie-react-hooks";
-import { Stack } from "@mui/material";
+import { Grid } from "@mui/material";
 import { v4 as uuid } from "uuid";
 
 import db from "../../../store/db";
@@ -78,7 +78,7 @@ const ModList = ( {data, characterId, weaponTypes, weaponEnergyTypes, subclassEn
   const raidMods = getRaidMods(plugs);
 
   return (
-    <Stack direction="row" sx={{ml: 1}}>
+    <Grid container spacing={1} sx={{ mt:0, ml: 1, mb: 1}}>
       {championMods.map(plug => {
         // Champion Mods
         const good = checkChampionMod(plug, weaponTypes, subclassEnergyType);
@@ -140,7 +140,7 @@ const ModList = ( {data, characterId, weaponTypes, weaponEnergyTypes, subclassEn
         }
         return;
       })}
-    </Stack>
+    </Grid>
   )
 }
 
