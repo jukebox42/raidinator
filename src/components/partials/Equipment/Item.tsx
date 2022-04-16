@@ -1,25 +1,29 @@
 import { useState, useEffect } from "react";
-import { Paper, Typography } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 
-import { getAssetUrl } from "../../../utils/functions";
+import db from "store/db";
+import { getAssetUrl } from "utils/functions";
 import { findElementType } from "./utils";
 
 // Components
-import { Caption, DetailTooltip, Image } from "../../generics";
+import { Description, DetailTooltip, Image } from "../../generics";
 
 // Interfaces
-import * as BI from "../../../bungie/interfaces";
-import { LIGHT_GG_URL } from "../../../utils/constants";
+import * as BI from "bungie/interfaces";
+import { LIGHT_GG_URL } from "utils/constants";
+import { useLiveQuery } from "dexie-react-hooks";
+import { getExoticArmorMods } from "../Mods/rules/exoticArmorRules";
 
 type Props = {
   itemDefinition: BI.Destiny.Definitions.DestinyInventoryItemDefinition;
   itemInstance: BI.Destiny.Entities.Items.DestinyItemComponent;
   itemInstanceDetails: BI.Destiny.Entities.Items.DestinyItemInstanceComponent;
+  itemSockets: BI.Destiny.Entities.Items.DestinyItemSocketsComponent;
   damageTypes: BI.Destiny.Definitions.DestinyDamageTypeDefinition[];
   energyTypes: BI.Destiny.Definitions.EnergyTypes.DestinyEnergyTypeDefinition[];
 }
 
-const Item = ( {itemDefinition, itemInstance, itemInstanceDetails, damageTypes, energyTypes}: Props ) => {
+const Item = ( {itemDefinition, itemInstance, itemInstanceDetails, itemSockets, damageTypes, energyTypes}: Props ) => {
   const [clickCount, setClickCount] = useState(0);
   const isWeapon = itemDefinition.traitIds.includes("item_type.weapon");
   const elementTypes = isWeapon ? damageTypes : energyTypes;
@@ -49,16 +53,54 @@ const Item = ( {itemDefinition, itemInstance, itemInstanceDetails, damageTypes, 
     window.open(itemUrl, "_blank")
   }, [clickCount]);
 
+  const exoticPlugs = useLiveQuery(async () => {
+    const socketHashes = itemSockets.sockets.filter(s => !!s.plugHash).map(s => s.plugHash.toString());
+    const plugs = await db.DestinyInventoryItemDefinition.bulkGet(socketHashes);
+    return getExoticArmorMods(plugs as any);
+  });
+
+  const renderItemName = (itemDefinition: any, elementType: any) => {
+    if (elementType?.displayProperties.hasIcon) {
+      return (
+        <Box sx={{ p: 0, m: 0, display: "flex", flexDirection: "row" }}>
+          <Typography variant="h6" sx={{ flexGrow: 1, mr: 2 }}>
+            {itemDefinition.displayProperties.name}
+          </Typography>
+          <Image src={getAssetUrl(elementType.displayProperties.icon)} sx={{ width: 22, height: 22, mt: 1 }} />
+        </Box>
+      )
+    }
+
+    return (
+      <Typography variant="h6">{itemDefinition.displayProperties.name}</Typography>
+    )
+  }
+
+  const renderExoticPerks = (plugs: any) => {
+    if (!plugs || plugs.length === 0) {
+      return (<></>);
+    }
+
+    return plugs.map((plug: any) => (
+      <Box key={plug.hash}>
+        <Box sx={{ p: 0, m: 0, mt: 2, display: "flex", flexDirection: "row" }}>
+          <Image src={getAssetUrl(plug.displayProperties.icon)} sx={{ width: 22, height: 22, mt: 1, mr: 1 }} />
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            {plug.displayProperties.name}
+          </Typography>
+        </Box>
+        <Description>{plug.displayProperties.description}</Description>
+      </Box>
+    ))
+  }
+
   return (
     <DetailTooltip title={
       <>
-        <Typography variant="body1">
-          {elementType?.displayProperties.hasIcon &&
-            <img src={getAssetUrl(elementType.displayProperties.icon)} width="12" style={{ marginRight: 5 }} />}
-          <strong>{itemDefinition.displayProperties.name}</strong>
-        </Typography>
-        <Caption fade>{itemDefinition.itemTypeDisplayName}</Caption>
-        <Caption>{itemDefinition.flavorText}</Caption>
+        {renderItemName(itemDefinition, elementType)}
+        <Description fade>{itemDefinition.itemTypeDisplayName}</Description>
+        <Description>{itemDefinition.flavorText}</Description>
+        {renderExoticPerks(exoticPlugs)}
       </>
     } flow={false}>
       <Paper key={itemInstance.itemInstanceId} variant="equipment" onClick={onClick}>

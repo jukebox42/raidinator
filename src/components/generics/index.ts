@@ -1,4 +1,4 @@
-export { default as Caption } from "./Caption";
+export { default as Description } from "./Description";
 export { default as ErrorBoundary } from "./ErrorBoundary";
 export { default as Loading } from "./Loading";
 export { default as DetailTooltip } from "./DetailTooltip";

@@ -6,7 +6,7 @@ import { styled } from "@mui/system";
 
 import { getClassSvg } from "../../partials";
 
-import { PlayerData } from "../../../utils/interfaces";
+import { PlayerData } from "utils/interfaces";
 
 const PlayerNameWrapper  = styled(Box, {
   name: "PlayerName",

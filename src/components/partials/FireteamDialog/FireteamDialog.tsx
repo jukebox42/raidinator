@@ -9,17 +9,17 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-import db from "../../../store/db";
-import { getMemberById } from "../../../bungie/api";
-import { AppContext } from "../../../context/AppContext";
+import db from "store/db";
+import { getMemberById } from "bungie/api";
+import { AppContext } from "context/AppContext";
 
 // Components
 import { Loading } from "../../generics";
 
 // Interfaces
-import * as Components from "../../../bungie/interfaces/Destiny/Components";
-import { PlayerData } from "../../../utils/interfaces";
-import { getCharacters } from "../../../store/api";
+import * as Components from "bungie/interfaces/Destiny/Components";
+import { PlayerData } from "utils/interfaces";
+import { getCharacters } from "store/api";
 
 type Props = {
   open: boolean;

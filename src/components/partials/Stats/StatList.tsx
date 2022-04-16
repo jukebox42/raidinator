@@ -4,8 +4,8 @@ import { Stack } from "@mui/material";
 import Stat from "./Stat";
 
 // Interfaces
-import * as BI from "../../../bungie/interfaces";
-import { LIGHT_STAT_HASH } from "../../../utils/constants";
+import * as BI from "bungie/interfaces";
+import { LIGHT_STAT_HASH } from "utils/constants";
 
 type Props = {
   stats: {

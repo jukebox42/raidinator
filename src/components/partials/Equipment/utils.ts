@@ -1,13 +1,13 @@
-import { KINETIC_DAMAGE_HASH } from "../../../utils/constants";
+import { KINETIC_DAMAGE_HASH } from "utils/constants";
 
 // Interfaces
-import * as BI from "../../../bungie/interfaces";
+import * as BI from "bungie/interfaces";
 import {
   DestinyDamageTypeDefinition as DamageType,
-} from "../../../bungie/interfaces/Destiny/Definitions";
+} from "bungie/interfaces/Destiny/Definitions";
 import {
   DestinyEnergyTypeDefinition as EnergyType,
-} from "../../../bungie/interfaces/Destiny/Definitions/EnergyTypes";
+} from "bungie/interfaces/Destiny/Definitions/EnergyTypes";
 
 /**
  * Determine if we should display the equipment item or not. We only care about weapons and exotic armor.

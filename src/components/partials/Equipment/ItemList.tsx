@@ -3,23 +3,24 @@ import { v4 as uuid } from "uuid";
 import { Skeleton } from "@mui/material";
 
 import { shouldDisplayEquipmentItem } from "./utils";
-import { AppContext } from "../../../context/AppContext";
+import { AppContext } from "context/AppContext";
 
 // Components
 import Item from "./Item";
 
 // Interfaces
-import * as BI from "../../../bungie/interfaces";
+import * as BI from "bungie/interfaces";
 
 type Props = {
   items: BI.Destiny.Entities.Items.DestinyItemComponent[];
   itemDefinitions: BI.Destiny.Definitions.DestinyInventoryItemDefinition[];
   itemComponents: { [id: number]: BI.Destiny.Entities.Items.DestinyItemInstanceComponent; };
+  sockets: { [id: number]: BI.Destiny.Entities.Items.DestinyItemSocketsComponent; };
   damageTypes: BI.Destiny.Definitions.DestinyDamageTypeDefinition[];
   energyTypes: BI.Destiny.Definitions.EnergyTypes.DestinyEnergyTypeDefinition[];
 }
 
-const ItemList = ({ items, itemDefinitions, itemComponents, damageTypes, energyTypes }: Props) => {
+const ItemList = ({ items, itemDefinitions, itemComponents, sockets, damageTypes, energyTypes }: Props) => {
   const appContext = useContext(AppContext);
   return (
     <>
@@ -39,12 +40,15 @@ const ItemList = ({ items, itemDefinitions, itemComponents, damageTypes, energyT
             return <Skeleton key={uuid()} variant="rectangular" width={55} height={55} sx={{mt:1, mr: 1}} />
           }
           const itemInstanceDetails = itemComponents[itemInstance.itemInstanceId];
+          const itemSockets = sockets[itemInstance.itemInstanceId];
+
           return (
             <Item
               key={uuid()}
               itemInstance={itemInstance}
               itemDefinition={itemDefinition}
               itemInstanceDetails={itemInstanceDetails}
+              itemSockets={itemSockets}
               damageTypes={damageTypes}
               energyTypes={energyTypes}
             />

@@ -3,11 +3,11 @@
 // https://github.com/DestinyItemManager/DIM/blob/233e247b4abd23a55a3e987389e04b08e3ddc91b/src/app/inventory/subclass.ts
 
 // Interfaces
-import * as BI from "../../../bungie/interfaces";
+import * as BI from "bungie/interfaces";
 import {
   DestinyInventoryItemDefinition,
   DestinyTalentNodeDefinition
-} from "../../../bungie/interfaces/Destiny/Definitions";
+} from "bungie/interfaces/Destiny/Definitions";
 
 export type SuperPosition = "T" | "M" | "B" | "";
 

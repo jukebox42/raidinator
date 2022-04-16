@@ -8,20 +8,20 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
-import db from "../../../store/db";
-import { getAssetUrl } from "../../../utils/functions";
+import db from "store/db";
+import { getAssetUrl } from "utils/functions";
 import { selectedSubclassNode } from "./utils";
 
 // Components
-import { Caption, DetailTooltip, Image } from "../../generics";
-import { ReactComponent as HunterSymbol } from "../../../assets/hunter_emblem.svg";
-import { ReactComponent as WarlockSymbol } from "../../../assets/warlock_emblem.svg";
-import { ReactComponent as TitanSymbol } from "../../../assets/titan_emblem.svg";
+import { Description, DetailTooltip, Image } from "../../generics";
+import { ReactComponent as HunterSymbol } from "assets/hunter_emblem.svg";
+import { ReactComponent as WarlockSymbol } from "assets/warlock_emblem.svg";
+import { ReactComponent as TitanSymbol } from "assets/titan_emblem.svg";
 
 // Interfaces
-import * as BI from "../../../bungie/interfaces";
-import { DataCollection } from "../../../bungie/interfaces/Dictionaries";
-import { DestinyItemSocketsComponent, DestinyItemTalentGridComponent } from "../../../bungie/interfaces/Destiny/Entities/Items";
+import * as BI from "bungie/interfaces";
+import { DataCollection } from "bungie/interfaces/Dictionaries";
+import { DestinyItemSocketsComponent, DestinyItemTalentGridComponent } from "bungie/interfaces/Destiny/Entities/Items";
 
 /**
  * Returns the svg of the characters class
@@ -108,9 +108,10 @@ const Subclass = ( {itemDefinition, itemInstance, sockets, talentGrids}: Props )
   return (
     <DetailTooltip title={
       <>
-        <Typography variant="body1"><strong>{superAbility.displayProperties.name}</strong></Typography>
-        <Caption fade>{itemDefinition.flavorText}</Caption>
-        <Caption>{superAbility.displayProperties.description}</Caption>
+        <Typography variant="h6">{superAbility.displayProperties.name}</Typography>
+        <Description fade>{itemDefinition.flavorText}</Description>
+
+        <Description>{superAbility.displayProperties.description}</Description>
       </>
     } flow={false}>
     <Paper key={itemInstance.itemInstanceId} variant="equipment" className={className}>

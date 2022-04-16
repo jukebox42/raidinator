@@ -10,7 +10,7 @@ import uniq from "lodash/uniq";
 import { getAssetUrl } from "utils/functions";
 
 // Components
-import { DetailTooltip, Caption } from "components/generics";
+import { DetailTooltip, Description } from "components/generics";
 import ModImage from "./ModImage";
 
 // Interfaces
@@ -60,9 +60,9 @@ const Mod = ( {plug, showWarning, showError, reason}: Props ) => {
           {!showError && showWarning && reason && <Alert severity="warning">{reason}</Alert>}
           {showError && reason && <Alert severity="error">{reason}</Alert>}
           <Typography variant="body1"><strong>{plug.displayProperties.name}</strong></Typography>
-          <Caption fade>{plug.itemTypeDisplayName}</Caption>
-          {perks && perks.map(p => <Caption key={uuid()}>{p}</Caption>)}
-          {plug.tooltipNotifications.map(t => <Caption key={uuid()}>{t.displayString}</Caption>)}
+          <Description fade>{plug.itemTypeDisplayName}</Description>
+          {perks && perks.map(p => <Description key={uuid()}>{p}</Description>)}
+          {plug.tooltipNotifications.map(t => <Description key={uuid()}>{t.displayString}</Description>)}
         </>
       }
     >

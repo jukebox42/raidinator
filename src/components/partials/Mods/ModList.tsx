@@ -2,8 +2,8 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { Grid } from "@mui/material";
 import { v4 as uuid } from "uuid";
 
-import db from "../../../store/db";
-import { specialDamageMods } from "../../../utils/constants";
+import db from "store/db";
+import { specialDamageMods } from "utils/constants";
 import { getChampionMods, checkChampionMod } from "./rules/championRules";
 import {
   getChargedWithLightChargerMods,
@@ -30,9 +30,9 @@ import {
 import Mod from "./Mod";
 
 // Interfaces
-import { CharactersData } from "../../../utils/interfaces";
-import * as BI from "../../../bungie/interfaces/";
-import { DestinyItemSocketState } from "../../../bungie/interfaces/Destiny/Entities/Items";
+import { CharactersData } from "utils/interfaces";
+import * as BI from "bungie/interfaces/";
+import { DestinyItemSocketState } from "bungie/interfaces/Destiny/Entities/Items";
 
 type Props = {
   data: CharactersData;

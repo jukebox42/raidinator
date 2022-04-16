@@ -1,7 +1,7 @@
 import { Paper, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 
-import { getAssetUrl } from "../../../utils/functions";
+import { getAssetUrl } from "utils/functions";
 
 const StatWrapper  = styled(Paper, {
   name: "Stat",

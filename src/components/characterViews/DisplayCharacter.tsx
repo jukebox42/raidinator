@@ -136,6 +136,7 @@ const DisplayCharacter = ( { player, data, characterId, onChangeCharacter, onLoa
           itemComponents={itemComponents}
           damageTypes={damageTypes.current}
           energyTypes={energyTypes.current}
+          sockets={sockets.data}
         />
       </Stack>
       <Box sx={{ ml: 1, display: "flex", flexDirection: "row" }}>

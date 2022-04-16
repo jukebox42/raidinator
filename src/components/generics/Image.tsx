@@ -83,10 +83,10 @@ const Image = ({src, variant, sx = {}, className = ""}: ImageProps) => {
     return <EnergyImage src={src} className={className} />
   }
   if (variant === "mod") {
-    return <Paper className={className} sx={modSx(src)} />
+    return <Paper className={className} sx={modSx(src)} elevation={0} />
   }
   return (
-    <Paper component="img" src={src} sx={sx} className={className} />
+    <Paper component="img" src={src} sx={sx} className={className} elevation={0} />
   );
 };
 

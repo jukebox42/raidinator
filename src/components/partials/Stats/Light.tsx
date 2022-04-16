@@ -1,7 +1,7 @@
 import { Typography, Paper } from "@mui/material";
 import { styled } from "@mui/system";
 
-import { getAssetUrl } from "../../../utils/functions";
+import { getAssetUrl } from "utils/functions";
 
 const LightIcon  = styled(Paper, {
   name: "Light",
