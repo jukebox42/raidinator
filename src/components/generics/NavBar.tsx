@@ -20,7 +20,7 @@ import CachedIcon from "@mui/icons-material/Cached";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import HelpIcon from "@mui/icons-material/Help";
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import DownloadingIcon from '@mui/icons-material/Downloading';
+//import DownloadingIcon from '@mui/icons-material/Downloading';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 
 import db from "store/db";
@@ -95,9 +95,9 @@ const NavBar = ({ acting, refreshCallback, reloadManifestCallback }: Props) => {
       >
         <Toolbar />
         <List>
-          <ListItemButton key="help" onClick={() => setInstructionsOpen(true)}>
+          <ListItemButton key="instructions" onClick={() => setInstructionsOpen(true)}>
             <ListItemIcon><HelpIcon /></ListItemIcon>
-            <ListItemText primary="Help" />
+            <ListItemText primary="Instructions" />
           </ListItemButton>
           <ListItemButton key="about" onClick={() => setAboutOpen(true)}>
             <ListItemIcon><AutoAwesomeIcon /></ListItemIcon>

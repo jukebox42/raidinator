@@ -24,6 +24,8 @@ const imageMap = {
   "Disruption": "/common/destiny2_content/icons/DestinyBreakerTypeDefinition_da558352b624d799cf50de14d7cb9565.png",
   "Stagger": "/common/destiny2_content/icons/DestinyBreakerTypeDefinition_825a438c85404efd6472ff9e97fc7251.png",
   "Shield-Piercing": "/common/destiny2_content/icons/DestinyBreakerTypeDefinition_07b9ba0194e85e46b258b04783e93d5d.png",
+  "Grenade": "/common/destiny2_content/icons/ca62128071dc254fe75891211b98b237.png",
+  "Melee": "/common/destiny2_content/icons/c7eefc8abbaa586eeab79e962a79d6ad.png",
 };
 
 const parseText = (text: string) => {

@@ -24,7 +24,7 @@ type Props = {
 const Stat = ( { value, iconUrl }: Props ) => {
   return (
     <StatWrapper elevation={0}>
-      <img src={getAssetUrl(iconUrl)} />
+      <img src={getAssetUrl(iconUrl)} alt={`${value}`} />
       <Typography variant="caption" sx={{ mt: "-4px" }}>{value}</Typography>
     </StatWrapper>
   );

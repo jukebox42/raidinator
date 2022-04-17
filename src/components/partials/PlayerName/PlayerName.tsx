@@ -31,7 +31,7 @@ const PlayerName = ({ player, showCode, classType }: Props) => {
   return (
     <PlayerNameWrapper>
        {Number.isInteger(classType) && getClassSvg(classType as number)}
-      <Typography variant="h5" sx={{ml: 1, mt: "-4px"}} noWrap>
+      <Typography variant="h5" sx={{ml: 1, mt: "-4px"}}>
         {player.bungieGlobalDisplayName}
         {showCode && "#" + player.bungieGlobalDisplayNameCode}
       </Typography>

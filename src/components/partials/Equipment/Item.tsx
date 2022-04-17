@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Link, Paper, Typography } from "@mui/material";
 
 import db from "store/db";
 import { getAssetUrl } from "utils/functions";
@@ -24,34 +23,11 @@ type Props = {
 }
 
 const Item = ( {itemDefinition, itemInstance, itemInstanceDetails, itemSockets, damageTypes, energyTypes}: Props ) => {
-  const [clickCount, setClickCount] = useState(0);
   const isWeapon = itemDefinition.traitIds.includes("item_type.weapon");
   const elementTypes = isWeapon ? damageTypes : energyTypes;
   const elementType = findElementType(itemDefinition, itemInstanceDetails, elementTypes);
   const itemUrl = `${LIGHT_GG_URL}${itemDefinition.hash}`;
   const watermarkIcon = itemDefinition.quality.displayVersionWatermarkIcons[itemInstance.versionNumber];
-
-  const onClick = () => {
-    setClickCount(clickCount + 1);
-  }
-
-  // handle open in new window
-  useEffect(() => {
-    if (clickCount === 0) {
-      return;
-    }
-
-    // on the first click set a timeout
-    if (clickCount === 1) {
-      setTimeout(() => {
-        setClickCount(0);
-      }, 300);
-      return;
-    }
-
-    setClickCount(0);
-    window.open(itemUrl, "_blank")
-  }, [clickCount]);
 
   const exoticPlugs = useLiveQuery(async () => {
     const socketHashes = itemSockets.sockets.filter(s => !!s.plugHash).map(s => s.plugHash.toString());
@@ -59,12 +35,17 @@ const Item = ( {itemDefinition, itemInstance, itemInstanceDetails, itemSockets, 
     return getExoticArmorMods(plugs as any);
   });
 
-  const renderItemName = (itemDefinition: any, elementType: any) => {
+  const renderItemName = (
+    itemDefinition: BI.Destiny.Definitions.DestinyInventoryItemDefinition,
+    elementType: BI.Destiny.Definitions.EnergyTypes.DestinyEnergyTypeDefinition
+  ) => {
     if (elementType?.displayProperties.hasIcon) {
       return (
         <Box sx={{ p: 0, m: 0, display: "flex", flexDirection: "row" }}>
           <Typography variant="h6" sx={{ flexGrow: 1, mr: 2 }}>
-            {itemDefinition.displayProperties.name}
+            <Link href={itemUrl} target="_blank" color="inherit" underline="none">
+              {itemDefinition.displayProperties.name}
+            </Link>
           </Typography>
           <Image src={getAssetUrl(elementType.displayProperties.icon)} sx={{ width: 22, height: 22, mt: 1 }} />
         </Box>
@@ -72,16 +53,20 @@ const Item = ( {itemDefinition, itemInstance, itemInstanceDetails, itemSockets, 
     }
 
     return (
-      <Typography variant="h6">{itemDefinition.displayProperties.name}</Typography>
+      <Typography variant="h6">
+        <Link href={itemUrl} target="_blank" color="inherit" underline="none">
+          {itemDefinition.displayProperties.name}
+        </Link>
+      </Typography>
     )
   }
 
-  const renderExoticPerks = (plugs: any) => {
+  const renderExoticPerks = (plugs: BI.Destiny.Definitions.DestinyInventoryItemDefinition[] | undefined) => {
     if (!plugs || plugs.length === 0) {
       return (<></>);
     }
 
-    return plugs.map((plug: any) => (
+    return plugs.map(plug => (
       <Box key={plug.hash}>
         <Box sx={{ p: 0, m: 0, mt: 2, display: "flex", flexDirection: "row" }}>
           <Image src={getAssetUrl(plug.displayProperties.icon)} sx={{ width: 22, height: 22, mt: 1, mr: 1 }} />
@@ -103,7 +88,7 @@ const Item = ( {itemDefinition, itemInstance, itemInstanceDetails, itemSockets, 
         {renderExoticPerks(exoticPlugs)}
       </>
     } flow={false}>
-      <Paper key={itemInstance.itemInstanceId} variant="equipment" onClick={onClick}>
+      <Paper key={itemInstance.itemInstanceId} variant="equipment">
         <Image src={getAssetUrl(itemDefinition.displayProperties.icon)} variant="item" />
         <Image src={getAssetUrl(watermarkIcon)} variant="item" />
         {elementType?.displayProperties.hasIcon &&

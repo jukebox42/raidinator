@@ -2,9 +2,8 @@ import { memo } from "react";
 import {
   Box,
   Typography,
+  CircularProgress,
 } from "@mui/material";
-
-import "./Loading.css";
 
 type Props = {
   marginTop: string;
@@ -14,7 +13,7 @@ type Props = {
 const Loading = memo(({ marginTop, loadingText }: Props) => {
   return (
     <Box className="loading" sx={{ mt: marginTop, justifyContent: "center", textAlign: "center" }}>
-      <div className="clock"></div>
+      <CircularProgress color="inherit" size={65} />
       {loadingText &&
         <Typography variant="body1" sx={{ color: "white" }}>{loadingText}</Typography>}
     </Box>

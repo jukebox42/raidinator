@@ -1,7 +1,7 @@
 import { DestinyInventoryItemDefinition } from "bungie/interfaces/Destiny/Definitions";
 
 const isExoticArmorMod = (mod: DestinyInventoryItemDefinition) => {
-  return mod.itemTypeAndTierDisplayName === "Exotic Intrinsic" && mod.itemTypeDisplayName === "Intrinsic";
+  return mod.itemTypeDisplayName === "Intrinsic" && !/\sFrame$/.test(mod.displayProperties.name);
 }
 
 /**

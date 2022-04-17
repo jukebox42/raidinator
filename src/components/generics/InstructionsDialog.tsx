@@ -44,10 +44,6 @@ const instructions = [
     text: "Tap on a mod, equipped item or subclass to view it's details.",
   },
   {
-    icon: [<TouchAppIcon />],
-    text: "Double tap on an equipped item to open light.gg.",
-  },
-  {
     icon: [<DoNotDisturbAltIcon />],
     text: "Mods crossed out don't have their requirements met. Tap on the mod for details.",
   },
@@ -56,7 +52,7 @@ const instructions = [
       <LightModeIcon color="success" sx={{mt:-3}} />,
       <DarkModeIcon color="warning" sx={{mt:3}} />
     ],
-    text: "The sun indicates the last online guardian for that player. The moon indicates the character was not the lost online guardian.",
+    text: "The sun indicates the last played guardian for that player. The moon indicates the guardian was not the last played.",
   },
 ]
 
