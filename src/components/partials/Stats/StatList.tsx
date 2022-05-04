@@ -23,13 +23,13 @@ const StatList = ( { stats, statTypes }: Props ) => {
       {statTypes.map(statType => {
         // Skip the light stat. We don't want/need it in the list.
         if (statType.hash.toString() === LIGHT_STAT_HASH) {
-          return (<></>);
+          return;
         }
 
         // Find the stat that matches
         const statKey = Object.keys(stats).find(statHash => statType.hash.toString() === statHash);
         if (!statKey) {
-          return (<></>);
+          return;
         }
 
         return (

@@ -265,15 +265,6 @@ class Db extends Dexie {
   }
 
   /**
-   * Get the app settings
-   */
-  async getSettings (): Promise<AppSettings> {
-    const settings = await db.AppSettings.get(1);
-
-    return { detailed: false, ...settings };
-  }
-
-  /**
    * Load selected character id from the db. Returns 0 if they dont exist.
    * @param playerId aka membershipId
    * @returns 

@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Alert,
-  Chip,
-  Typography,
-} from "@mui/material";
+import { Alert, Typography } from "@mui/material";
 import { v4 as uuid } from "uuid";
 import uniq from "lodash/uniq";
 
@@ -45,8 +41,6 @@ const Mod = ( {plug, showWarning, showError, reason}: Props ) => {
 
   const formatMod = () => {
     const modImage = ModImage({ src: getAssetUrl(plug.displayProperties.icon), className:imageClasses });
-    // if big mode
-    //return (<Chip icon={modImage} label={plug.displayProperties.name}/>);
 
     return modImage
   }

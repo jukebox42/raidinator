@@ -1,3 +1,4 @@
+import { useLiveQuery } from "dexie-react-hooks";
 import { Box, Link, Paper, Typography } from "@mui/material";
 
 import db from "store/db";
@@ -10,7 +11,6 @@ import { Description, DetailTooltip, Image } from "../../generics";
 // Interfaces
 import * as BI from "bungie/interfaces";
 import { LIGHT_GG_URL } from "utils/constants";
-import { useLiveQuery } from "dexie-react-hooks";
 import { getExoticArmorMods } from "../Mods/rules/exoticArmorRules";
 
 type Props = {
@@ -84,7 +84,6 @@ const Item = ( {itemDefinition, itemInstance, itemInstanceDetails, itemSockets, 
       <>
         {renderItemName(itemDefinition, elementType)}
         <Description fade>{itemDefinition.itemTypeDisplayName}</Description>
-        <Description>{itemDefinition.flavorText}</Description>
         {renderExoticPerks(exoticPlugs)}
       </>
     } flow={false}>

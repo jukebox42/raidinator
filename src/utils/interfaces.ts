@@ -5,7 +5,12 @@ import * as Components from "bungie/interfaces/Destiny/Components";
 import { DestinyDisplayPropertiesDefinition } from "bungie/interfaces/Destiny/Definitions/Common";
 
 export interface AppSettings {
-  detailed: boolean;
+  championMods: boolean;
+  ammoMods: boolean;
+  lightMods: boolean;
+  wellMods: boolean;
+  raidMods: boolean;
+  specialMods: boolean;
 }
 
 /**

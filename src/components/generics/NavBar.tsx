@@ -22,6 +22,7 @@ import HelpIcon from "@mui/icons-material/Help";
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 //import DownloadingIcon from '@mui/icons-material/Downloading';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
+import Settings from '@mui/icons-material/Settings';
 
 import db from "store/db";
 import { SOURCE_URL, VERSION } from "utils/constants";
@@ -30,6 +31,7 @@ import { SOURCE_URL, VERSION } from "utils/constants";
 import InstructionsDialog from "./InstructionsDialog";
 import AboutDialog from "./AboutDialog";
 import AreYouSureDialog from "./AreYouSureDialog";
+import SettingsDialog from "./SettingsDialog";
 
 const spin = keyframes`
   from {
@@ -52,6 +54,7 @@ const NavBar = ({ acting, refreshCallback, reloadManifestCallback }: Props) => {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
   const [reloadOpen, setReloadOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const refreshAll = () => {
     if (acting) {
@@ -99,6 +102,10 @@ const NavBar = ({ acting, refreshCallback, reloadManifestCallback }: Props) => {
             <ListItemIcon><HelpIcon /></ListItemIcon>
             <ListItemText primary="Instructions" />
           </ListItemButton>
+          <ListItemButton key="settings" onClick={() => setSettingsOpen(true)}>
+            <ListItemIcon><Settings /></ListItemIcon>
+            <ListItemText primary="Settings" />
+          </ListItemButton>
           <ListItemButton key="about" onClick={() => setAboutOpen(true)}>
             <ListItemIcon><AutoAwesomeIcon /></ListItemIcon>
             <ListItemText primary="About" />
@@ -139,6 +146,7 @@ const NavBar = ({ acting, refreshCallback, reloadManifestCallback }: Props) => {
         }}
         onNo={() => setResetOpen(false)}
         text="This will delete all cached data, reload the destiny database, and clear all guardians." />
+      <SettingsDialog open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </Box>
   );
 }

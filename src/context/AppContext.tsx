@@ -1,4 +1,4 @@
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect } from "react";
 import { v4 as uuid } from "uuid";
 
 import db from "store/db";
@@ -7,7 +7,7 @@ import db from "store/db";
 import { Toast, SeverityType } from "components/generics";
 
 // Interfaces
-import { PlayerData } from "utils/interfaces";
+import { PlayerData, AppSettings } from "utils/interfaces";
 
 interface AppContextProviderProps {
   children?: JSX.Element;
@@ -19,6 +19,9 @@ interface Card {
 }
 
 type AppContextType = {
+  loadAppSettings: () => Promise<void>;
+  appSettings: AppSettings;
+  setAppSettings: (newAppSettings: AppSettings) => void;
   cards: Card[],
   addCard: (membershipId: number, player: PlayerData) => void;
   deleteCard: (membershipId: number) => Promise<void>;
@@ -28,20 +31,49 @@ type AppContextType = {
   addToast: (message: string, severity?: SeverityType) => void;
 }
 
+const defaultAppSettings: AppSettings = {
+  championMods: true,
+  ammoMods: true,
+  lightMods: true,
+  wellMods: true,
+  raidMods: true,
+  specialMods: true,
+}
+
 export const AppContext = createContext<AppContextType>({
+  loadAppSettings: () => Promise.resolve(),
+  appSettings: defaultAppSettings,
+  setAppSettings: () => {},
+
   cards: [],
   addCard: () => {},
   deleteCard: () => Promise.resolve(),
   replaceCards: () => {},
+
   lastRefresh: 0,
   refresh: () => {},
   addToast: () => {},
 });
 
 const AppContextProvider = ({ children }: AppContextProviderProps) => {
+  const [appSettings, _setAppSettings] = useState<AppSettings>(defaultAppSettings);
   const [cards, setCards] = useState<Card[]>([]);
   const [lastRefresh, setLastRefresh] = useState(0);
   const [toasts, setToasts] = useState<any[]>([]);
+
+  const loadAppSettings = async () => {
+    const dbSettings = await db.AppSettings.get(1);
+    if (dbSettings) {
+      _setAppSettings(dbSettings);
+    } else {
+      db.AppSettings.put(appSettings, 1);
+    }
+  };
+
+  const setAppSettings = async (newAppSettings: AppSettings) => {
+    _setAppSettings({ ...newAppSettings });
+    db.AppSettings.put(newAppSettings, 1);
+  }
 
   const addCard = async (membershipId: number, player: PlayerData) => {
     if (cards.length === 6 || cards.find(c => c.membershipId === membershipId)) {
@@ -84,7 +116,7 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
       ...toasts,
       {
         key: key,
-        toast: <Toast key={key} id={key} message={message} severity={severity} onClose={removeToast} />
+        toast: <Toast key={key} id={key} message={message} severity={severity} onClose={_removeToast} />
       }
     ]);
   }
@@ -92,7 +124,7 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   /**
    * Internal function to allow the toast to be removed by it's onClose.
    */
-  const removeToast = (key: string) => {
+  const _removeToast = (key: string) => {
     const tempToasts = toasts.filter(t => t.key !== key);
 
     setToasts([...tempToasts]);
@@ -101,6 +133,9 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   return (
     <AppContext.Provider
       value={{
+        loadAppSettings,
+        appSettings,
+        setAppSettings,
         cards,
         addCard,
         replaceCards,

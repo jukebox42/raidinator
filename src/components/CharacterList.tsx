@@ -68,6 +68,8 @@ function CharacterList() {
       try {
         await db.init();
 
+        await context.loadAppSettings();
+
         // Check manifest version
         const liveVersion = data.version;
         const savedVersion = await db.AppManifestVersion.get(1);

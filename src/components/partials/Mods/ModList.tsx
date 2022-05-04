@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Grid } from "@mui/material";
 import { v4 as uuid } from "uuid";
@@ -33,6 +34,7 @@ import Mod from "./Mod";
 import { CharactersData } from "utils/interfaces";
 import * as BI from "bungie/interfaces/";
 import { DestinyItemSocketState } from "bungie/interfaces/Destiny/Entities/Items";
+import { AppContext } from "context/AppContext";
 
 type Props = {
   data: CharactersData;
@@ -43,6 +45,7 @@ type Props = {
 }
 
 const ModList = ( {data, characterId, weaponTypes, weaponEnergyTypes, subclassEnergyType}: Props ) => {
+  const appContext = useContext(AppContext);
   const instances = data.itemComponents.instances.data;
   const sockets = data.itemComponents.sockets.data;
   const characterEquipment = data.characterEquipment.data[characterId];
@@ -68,6 +71,7 @@ const ModList = ( {data, characterId, weaponTypes, weaponEnergyTypes, subclassEn
     return <></>;
   }
 
+  // Get mods by type
   const championMods = getChampionMods(plugs);
   const chargedWithLightChargerMods = getChargedWithLightChargerMods(plugs);
   const chargedWithLightSpenderMods = getChargedWithLightSpenderMods(plugs);
@@ -79,33 +83,33 @@ const ModList = ( {data, characterId, weaponTypes, weaponEnergyTypes, subclassEn
 
   return (
     <Grid container spacing={1} sx={{ mt:0, ml: 1, mb: 1}}>
-      {championMods.map(plug => {
+      {appContext.appSettings.championMods && championMods.map(plug => {
         // Champion Mods
         const good = checkChampionMod(plug, weaponTypes, subclassEnergyType);
         return (<Mod key={uuid()} plug={plug} showError={!good} reason="Required champion weapon is not equipped." />);
       })}
-      {ammoFinderMods.map(plug => {
+      {appContext.appSettings.ammoMods && ammoFinderMods.map(plug => {
         // Ammo Finder Mods
         const good = checkAmmoFinderMod(plug, weaponTypes);
         if (!good) {
           return (<Mod key={uuid()} plug={plug} showError={!good} reason="Matching weapon is not equipped." />);
         }
       })}
-      {chargedWithLightChargerMods.map(plug => {
+      {appContext.appSettings.lightMods && chargedWithLightChargerMods.map(plug => {
         // Charged With Light Mods
         const good = checkChargedWithLightMod(plug, weaponTypes, weaponEnergyTypes, subclassEnergyType);
         const canUse = chargedWithLightSpenderMods.length > 0;
         const reason = !canUse ? "Missing mods to spend charged with light." : "Missing requirements to activate this mod.";
         return (<Mod key={uuid()} plug={plug} showError={!good && canUse} showWarning={!good && !canUse} reason={reason} />);
       })}
-      {chargedWithLightSpenderMods.map(plug => {
+      {appContext.appSettings.lightMods && chargedWithLightSpenderMods.map(plug => {
         // Charged With Light Mods
         const good = checkChargedWithLightMod(plug, weaponTypes, weaponEnergyTypes, subclassEnergyType);
         const canCreate = chargedWithLightChargerMods.length > 0;
         const reason = !canCreate ? "Missing mods to create charged with light." : "Missing requirements to activate this mod.";
         return (<Mod key={uuid()} plug={plug} showError={!good && canCreate} showWarning={!good && !canCreate} reason={reason} />);
       })}
-      {wellGeneratorMods.map(plug => {
+      {appContext.appSettings.wellMods && wellGeneratorMods.map(plug => {
         // Generating Well Mods
         const wellType = checkWellMod(plug, weaponEnergyTypes, subclassEnergyType);
         const good = Number.isInteger(wellType);
@@ -116,24 +120,22 @@ const ModList = ( {data, characterId, weaponTypes, weaponEnergyTypes, subclassEn
         const reason = !canUse ? "Missing mods to use wells." : "Missing requirements to activate this mod.";
         return (<Mod key={uuid()} plug={plug} showError={!good && canUse} showWarning={!good && !canUse} reason={reason} />);
       })}
-      {wellSpenderMods.map(plug => {
+      {appContext.appSettings.wellMods && wellSpenderMods.map(plug => {
         // Spending Well Mods
         const good = checkWellMod(plug, weaponEnergyTypes, subclassEnergyType, wellEnergies);
         const canCreate = wellGeneratorMods.length > 0;
         const reason = !canCreate ? "Missing mods to create wells." : "Missing requirements to activate this mod.";
        return (<Mod key={uuid()} plug={plug} showError={!good && canCreate} showWarning={!good && !canCreate} reason={reason} />);
       })}
-      {raidMods.map(plug => {
+      {appContext.appSettings.raidMods && raidMods.map(plug => {
         // Raid Mods
         return (<Mod key={uuid()} plug={plug} />);
       })}
-      {plugs.map(plug => {
+      {appContext.appSettings.specialMods && plugs.map(plug => {
         if (!plug) {
           return;
         }
-        // if (plug.displayProperties) {
-        //   console.log(plug.displayProperties.name, plug);
-        // }
+        // if (plug.displayProperties) { console.log(plug.displayProperties.name, plug); }
         // Additional Special Mods
         if (plug.displayProperties && specialDamageMods.includes(plug.displayProperties.name)) {
           return (<Mod key={uuid()} plug={plug} />);
