@@ -90,6 +90,7 @@ function CharacterList() {
         const error = "Failed to load manifest.";
         context.addToast(error);
         setError(error);
+        return setLoading(false);
       }
     });
   }
