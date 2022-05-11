@@ -174,7 +174,7 @@ class Db extends Dexie {
       return Promise.resolve();
     }
 
-    this.version(1).stores({
+    this.version(2).stores({
       AppSettings: "",
       AppManifestVersion: "",
       // holds the most recent version of the destiny manifest, this tells us if we need to reload
