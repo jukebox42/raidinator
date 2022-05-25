@@ -1,15 +1,4 @@
 /* TODO: collapse this into the files */
-.subclass.thermal:before {
-  content: "";
-  width: 39px;
-  height:39px;
-  background-image: linear-gradient(to bottom right, rgba(212, 101, 27, 0.2),  rgba(212, 101, 27, 1));
-  position: absolute;
-  left: 8px;
-  top: 8px;;
-  transform: rotate(45deg);
-}
-
 .subclass.arc:before {
   content: "";
   width: 39px;

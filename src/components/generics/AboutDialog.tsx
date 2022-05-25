@@ -26,6 +26,7 @@ const AboutDialog = ({ onClose, open = false }: Props) => {
 
         <strong>Changes:</strong>
         <List sx={{ maxHeight: 100, overflowY: "auto" }}>
+          <ListItem>1.2.0 - Update artifact mod list</ListItem>
           <ListItem>1.1.1 - Fix upgrade bug</ListItem>
           <ListItem>1.1.0 - Added mod settings.</ListItem>
           <ListItem>1.0.0 - Initial Version.</ListItem>

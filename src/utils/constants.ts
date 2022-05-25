@@ -1,7 +1,7 @@
 import { createTheme } from "@mui/material";
 import darkScrollbar from "@mui/material/darkScrollbar";
 
-export const VERSION = "1.1.1";
+export const VERSION = "1.2.1";
 
 // API
 export const DEV_MODE = process.env.NODE_ENV === "development";
@@ -43,11 +43,6 @@ export const DESTINY_API_URLS = {
   GET_MANIFEST: `${API_URL}/Destiny2/Manifest/`,
   GET_PROFILE: `${API_URL}/Destiny2/{membershipType}/Profile/{destinyMembershipId}/?components=${PROFILE_COMPONENTS.join(",")}`,
 }
-
-export const specialDamageMods = [
-  "Suppressing Glave",
-  "Suppressive Darkness",
-];
 
 /**
  * This is the hash of the light stat. Used to pull it out of the list.

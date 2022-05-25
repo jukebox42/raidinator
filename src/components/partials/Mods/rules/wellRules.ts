@@ -27,7 +27,8 @@ interface Spenders {
  */
 const chargers: Generators[] = [
   // === Artifact ===
-  { name: "Melee Wellmaker", hash: 288409047, matchSubclass: true, },
+  // TODO: This will trigger as a false positive, it requires solar exotics and this will trigger on any solar weapon
+  { name: "Flame Harvesting", hash: 2240395226, matchSubclass: false, energy: DestinyEnergyType.Thermal, alwaysTrue: true },
   // === Rest ===
   { name: "Elemental Armaments", hash: 1515669996, matchSubclass: true, source: src.WEAPON, },
   { name: "Elemental Light", hash: 2823326549, matchSubclass: true, },
@@ -46,8 +47,7 @@ const chargers: Generators[] = [
 
 const spenders: Spenders[] = [
   // === Artifact ===
-  { name: "Font of Might", hash: 2119661524, matchSubclass: true, },
-  { name: "Volatile Flow", hash: 2129265545, matchSubclass: false, energy: DestinyEnergyType.Void, },
+  
   // === Rest ===
   { name: "Font of Might", hash: 1740246051, matchSubclass: true, },
   { name: "Font of Wisdom", hash: 1196831979, matchSubclass: true, },

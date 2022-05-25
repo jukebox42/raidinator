@@ -4,7 +4,7 @@ import { Grid } from "@mui/material";
 import { v4 as uuid } from "uuid";
 
 import db from "store/db";
-import { specialDamageMods } from "utils/constants";
+import { isArtifactMod } from "./rules/artifactMods";
 import { getChampionMods, checkChampionMod } from "./rules/championRules";
 import {
   getChargedWithLightChargerMods,
@@ -137,7 +137,7 @@ const ModList = ( {data, characterId, weaponTypes, weaponEnergyTypes, subclassEn
         }
         // if (plug.displayProperties) { console.log(plug.displayProperties.name, plug); }
         // Additional Special Mods
-        if (plug.displayProperties && specialDamageMods.includes(plug.displayProperties.name)) {
+        if (isArtifactMod(plug)) {
           return (<Mod key={uuid()} plug={plug} />);
         }
         return;
